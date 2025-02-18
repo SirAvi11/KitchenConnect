@@ -1,0 +1,20 @@
+# Maven
+target/
+*.log
+
+# Gradle
+.gradle/
+build/
+*.log
+
+# IDEs
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db 

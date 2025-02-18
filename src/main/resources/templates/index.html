@@ -1,0 +1,192 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitchenConnect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/index.css}">
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="overlay">
+            <h1>Discover Local Chefs & Their Specialties</h1>
+            <p>Order directly from professional chefs in your area</p>
+            <div>
+                <button class="btn btn-order-now">Order Now</button>
+                <button class="btn btn-join-chef">Join as Chef</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Kitchens -->
+    <section class="container my-5">
+        <h2 class="font-weight-bold mb-4">Featured Kitchens</h2>
+        <div class="row">
+            <!-- Kitchen 1 -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm position-relative">
+                    <img alt="Chef Maria's Kitchen" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/ytroEVcQDbdmd7ufGrYf1JE02x6yD4HEn0UcszHz-Lo.jpg">
+                    <div class="rating-overlay">
+                        <i class="fas fa-star"></i> 4.8
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Chef Maria's Kitchen</h5>
+                        <p class="card-text text-muted">Italian • Mediterranean</p>
+                        <div class="d-flex justify-content-between text-muted">
+                            <span>20-45 min</span>
+                            <span>Free delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Kitchen 2 -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm position-relative">
+                    <img alt="Sushi Master Ken" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/AR4J55xJeqNUitqfHOSh6nqexMUqqscLNMiHpb8U44s.jpg">
+                    <div class="rating-overlay">
+                        <i class="fas fa-star"></i> 4.6
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Sushi Master Ken</h5>
+                        <p class="card-text text-muted">Japanese • Asian Fusion</p>
+                        <div class="d-flex justify-content-between text-muted">
+                            <span>20-25 min</span>
+                            <span>₹150 delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Kitchen 3 -->
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm position-relative">
+                    <img alt="Spice Route" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/6YqOQ5MgNRd4cR29G23JCCDnB5cRQY186C_Ff0ssJ8s.jpg">
+                    <div class="rating-overlay">
+                        <i class="fas fa-star"></i> 4.7
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Spice Route</h5>
+                        <p class="card-text text-muted">Indian • Contemporary</p>
+                        <div class="d-flex justify-content-between text-muted">
+                            <span>40-55 min</span>
+                            <span>₹225 delivery</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Dishes -->
+    <section class="container my-5 popular-dishes">
+        <h2 class="font-weight-bold mb-4">Popular Dishes</h2>
+        <div class="row">
+            <!-- Dish 1 -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <img alt="Truffle Pasta" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/sCycru1tdDTbVZuO7-XycEIJEE6FbTeRahumc5DXuII.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Truffle Pasta</h5>
+                        <p class="card-text text-muted">By Chef Maria's Kitchen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="price">₹1399</span>
+                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dish 2 -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <img alt="Premium Sushi Set" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/NOYzV-l3yV5xJa30RzhxiSjaabDPTvXZXPzwBUKq8w0.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Premium Sushi Set</h5>
+                        <p class="card-text text-muted">By Sushi Master Ken</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="price">₹1899</span>
+                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dish 3 -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <img alt="Butter Chicken" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/RoZtZuehQR47oJ-Ymztg5nJlWI2nfCl4WyMHA1loCKE.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Butter Chicken</h5>
+                        <p class="card-text text-muted">By Spice Route</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="price">₹1299</span>
+                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dish 4 -->
+            <div class="col-md-3 mb-4">
+                <div class="card shadow-sm">
+                    <img alt="Seafood Paella" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/f76bXKSPYILgyAqB-M4sQcQmuqP4P3chGw7-uZQLGk4.jpg">
+                    <div class="card-body">
+                        <h5 class="card-title font-weight-bold">Seafood Paella</h5>
+                        <p class="card-text text-muted">By Chef Maria's Kitchen</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="price">₹1699</span>
+                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="row">
+                <div class="col-md-4 step">
+                    <i class="fas fa-utensils"></i>
+                    <h5>Browse Kitchens 🍽️</h5>
+                    <p>Explore local chefs and their unique menus.</p>
+                </div>
+                <div class="col-md-4 step">
+                    <i class="fas fa-concierge-bell"></i>
+                    <h5>Choose Your Meal 🍴</h5>
+                    <p>Select from a variety of fresh, homemade dishes.</p>
+                </div>
+                <div class="col-md-4 step">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h5>Fast Delivery 🚚</h5>
+                    <p>Get your food delivered right to your doorstep.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Are You a Chef Section -->
+    <section class="are-you-a-chef">
+        <div class="container">
+            <div class="text-content">
+                <h2>Are You a Chef?</h2>
+                <p>Join our platform and start selling your specialties to hungry customers in your area.</p>
+                <button class="btn btn-register">Register as Chef</button>
+            </div>
+            <div class="image-content">
+                <img src="/images/ChefCooking.jfif" alt="Chef preparing food in kitchen">
+            </div>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

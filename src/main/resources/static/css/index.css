@@ -1,0 +1,137 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+.hero-section {
+    position: relative;
+    height: 600px;
+    background: url('https://storage.googleapis.com/a1aa/image/J_1K5YcBTSCAGW8mo-AqFULWXDpQMOk6NBfM4RRF6YA.jpg') no-repeat center center/cover;
+}
+.hero-section .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+}
+.hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+.hero-section p {
+    margin-top: 10px;
+}
+.hero-section .btn {
+    margin-top: 20px;
+    margin-right: 10px;
+    border-radius: 50px;
+    padding: 10px 20px;
+}
+.btn-order-now {
+    background-color: #ff5722;
+    color: white;
+}
+.btn-join-chef {
+    background-color: white;
+    color: #ff5722;
+    border: 2px solid #ff5722;
+}
+.featured-kitchens img, .popular-dishes img {
+    height: 250px;
+    object-fit: cover;
+}
+.rating {
+    background-color: #ffc107;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50px;
+}
+.price {
+    color: #ff5722;
+    font-weight: bold;
+}
+.card {
+    height: 100%;
+}
+.card img {
+    height: 200px;
+    object-fit: cover;
+}
+.rating-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    color: black;
+    padding: 5px 10px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+}
+.rating-overlay i {
+    color: #ffc107;
+    margin-right: 5px;
+}
+.how-it-works {
+    background-color: #f0f8ff; /* Light blueish background */
+    padding: 60px 0;
+    text-align: center;
+}
+.how-it-works h2 {
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+.how-it-works .step {
+    margin-bottom: 20px;
+}
+.how-it-works .step i {
+    font-size: 2.5rem;
+    color: #ff5722;
+    margin-bottom: 10px;
+}
+.how-it-works .step h5 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.are-you-a-chef {
+    background-color: #ff5722;
+    color: white;
+    padding: 60px 0;
+}
+.are-you-a-chef .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:200px;
+}
+.are-you-a-chef .text-content {
+    max-width: 50%;
+}
+.are-you-a-chef .image-content {
+    max-width: 50%;
+}
+.are-you-a-chef .image-content img {
+    width: 80%;
+    border-radius: 10px;
+}
+.are-you-a-chef h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.are-you-a-chef p {
+    margin-bottom: 30px;
+}
+.are-you-a-chef .btn-register {
+    background-color: white;
+    color: #ff5722;
+    border: 2px solid white;
+    border-radius: 50px;
+    padding: 10px 20px;
+}

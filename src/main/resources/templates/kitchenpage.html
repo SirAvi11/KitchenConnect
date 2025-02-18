@@ -1,0 +1,229 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitchenConnect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/kitchenpage.css}">
+
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Kitchen Section -->
+    <main class="container main">
+        <!-- Restaurant Profile and About My Kitchen Combined -->
+        <div class="card">
+         <div class="flex flex-col items-center">
+          <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="192" src="https://storage.googleapis.com/a1aa/image/zr_9HB7-BYgX8k49P4XnPNXaOAQD35So_j6Go-fjn7c.jpg" width="256"/>
+          <h2>
+           Mediterranean Delights
+          </h2>
+          <p>
+           Specialty: Mediterranean Cuisine
+          </p>
+          <div class="rating">
+           <i class="fas fa-star">
+           </i>
+           <span>
+            4.8
+           </span>
+           <span>
+            (124 reviews)
+           </span>
+          </div>
+         </div>
+         <div class="info">
+          <h3>
+           About Our Kitchen
+          </h3>
+          <p>
+           With over 15 years of experience in Mediterranean cuisine, we bring authentic flavors from our grandmother's kitchen to your table. Every dish is prepared with fresh, locally sourced ingredients and lots of love.
+          </p>
+          <div class="details">
+           <div class="detail">
+            <p>
+             Preparation Time
+            </p>
+            <p>
+             30-45 mins
+            </p>
+           </div>
+           <div class="detail">
+            <p>
+             Delivery Range
+            </p>
+            <p>
+             5 miles
+            </p>
+           </div>
+           <div class="detail">
+            <p>
+             Available Days
+            </p>
+            <p>
+             Mon-Sat
+            </p>
+           </div>
+          </div>
+         </div>
+        </div>
+        <!-- Menu -->
+        <div class="menu">
+        <h3>Menu</h3>
+         <div class="items">
+          <!-- Menu Item 1 -->
+          <div class="item">
+           <div>
+            <img alt="Greek Salad" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/CZKJlADBTSBXlUy-vOkSGbKRoRJMW_B79fuAEQ2aaPs.jpg" width="300"/>
+            <h4>
+             Greek Salad
+            </h4>
+            <p>
+             Fresh cucumbers, tomatoes, olives, feta cheese with olive oil dressing.
+            </p>
+           </div>
+           <div class="price-rating">
+            <div class="price">
+             <span>
+              ₹999
+             </span>
+             <span class="status">
+              Available
+             </span>
+            </div>
+            <div class="rating">
+             <i class="fas fa-star">
+             </i>
+             <span>
+              4.7
+             </span>
+             <span>
+              (89)
+             </span>
+            </div>
+           </div>
+           <button class="add-to-cart">
+            Add to Cart
+           </button>
+          </div>
+          <!-- Menu Item 2 -->
+          <div class="item">
+           <div>
+            <img alt="Homemade Hummus" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/_7DIHaX71t-eHm_WMvCTCgZQFAYGpCtn2IRyQnV2X8I.jpg" width="300"/>
+            <h4>
+             Homemade Hummus
+            </h4>
+            <p>
+             Creamy chickpea hummus with tahini, olive oil, and a touch of fresh pita bread.
+            </p>
+           </div>
+           <div class="price-rating">
+            <div class="price">
+             <span>
+              ₹699
+             </span>
+             <span class="status">
+              Available
+             </span>
+            </div>
+            <div class="rating">
+             <i class="fas fa-star">
+             </i>
+             <span>
+              4.7
+             </span>
+             <span>
+              (42)
+             </span>
+            </div>
+           </div>
+           <button class="add-to-cart">
+            Add to Cart
+           </button>
+          </div>
+          <!-- Menu Item 3 -->
+          <div class="item">
+           <div>
+            <img alt="Lamb Kebabs" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/0aQmxt9fJ_C-ZMD8Z-wI-Crs292Lvsx5Fv9FHT_90wM.jpg" width="300"/>
+            <h4>
+             Lamb Kebabs
+            </h4>
+            <p>
+             Grilled lamb kebabs served with rice, vegetables, and a side of tzatziki sauce.
+            </p>
+           </div>
+           <div class="price-rating">
+            <div class="price">
+             <span>
+              ₹1,999
+             </span>
+             <span class="status sold-out">
+              Sold Out
+             </span>
+            </div>
+            <div class="rating">
+             <i class="fas fa-star">
+             </i>
+             <span>
+              4.9
+             </span>
+             <span>
+              (56)
+             </span>
+            </div>
+           </div>
+           <button class="add-to-cart">
+            Add to Cart
+           </button>
+          </div>
+          <!-- Menu Item 3-->
+          <div class="item">
+            <div>
+             <img alt="Greek Salad" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/CZKJlADBTSBXlUy-vOkSGbKRoRJMW_B79fuAEQ2aaPs.jpg" width="300"/>
+             <h4>
+              Greek Salad
+             </h4>
+             <p>
+              Fresh cucumbers, tomatoes, olives, feta cheese with olive oil dressing.
+             </p>
+            </div>
+            <div class="price-rating">
+             <div class="price">
+              <span>
+               ₹999
+              </span>
+              <span class="status">
+               Available
+              </span>
+             </div>
+             <div class="rating">
+              <i class="fas fa-star">
+              </i>
+              <span>
+               4.7
+              </span>
+              <span>
+               (89)
+              </span>
+             </div>
+            </div>
+            <button class="add-to-cart">
+             Add to Cart
+            </button>
+           </div>
+         </div>
+        </div>
+       </main>
+
+    <!-- Include Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

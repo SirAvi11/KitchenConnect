@@ -1,0 +1,57 @@
+/* Footer Styling */
+
+.footer {
+    background-color: #121A26;
+    color: white;
+}
+
+.footer h5 {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.footer-link {
+    color: #B0B3B8;
+    text-decoration: none;
+    transition: color 0.3s ease-in-out;
+}
+
+.footer-link:hover {
+    color: #FF7F50;
+}
+
+
+/* Contact Info */
+
+.footer p {
+    margin: 5px 0;
+}
+
+.footer i {
+    margin-right: 8px;
+}
+
+
+/* Social Media Icons */
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icon {
+    color: #B0B3B8;
+    font-size: 18px;
+    transition: color 0.3s ease-in-out;
+}
+
+.social-icon:hover {
+    color: #FF7F50;
+}
+
+
+/* Copyright Section */
+
+.text-muted {
+    font-size: 14px;
+}

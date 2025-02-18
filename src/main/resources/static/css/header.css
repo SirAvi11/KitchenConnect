@@ -1,0 +1,21 @@
+.navbar-nav {
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+.navbar-nav .nav-item {
+    margin-left: 20px;
+}
+.input-group {
+    width: 300px;
+}
+@media (max-width: 767.98px) {
+    .navbar-collapse {
+        display: flex;
+        flex-direction: column;
+    }
+    .navbar-collapse .input-group {
+        order: -1;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+}

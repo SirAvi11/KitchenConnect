@@ -1,0 +1,141 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitchenConnect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .background-image {
+            background-image: url('./images/login2.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(2px);
+        }
+        @media (max-width: 576px) {
+            .background-image {
+                display: none;
+            }
+        }
+        .btn-orange {
+            background-color: #ff7f00;
+            color: white;
+        }
+        .btn-orange:hover {
+            background-color: #e67300;
+        }
+        .text-orange {
+            color: #ff7f00;
+        }
+        .border-orange {
+            border-color: #ff7f00;
+        }
+        .tab-button {
+            color: black;
+        }
+        .tab-button.active {
+            color: black;
+            border-bottom: 2px solid #ff7f00;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    <div class="d-flex align-items-center justify-content-center vh-100">
+        <div class="position-absolute w-100 h-100 background-image d-none d-sm-block"></div>
+        <div class="position-relative bg-white bg-opacity-90 p-4 rounded-lg shadow-lg w-50 max-w-sm">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800">Welcome to <span class="text-orange">KitchenConnect</span></h1>
+                <p class="text-gray-600 mt-2">Your gateway to delicious homemade meals from local kitchens</p>
+            </div>
+            <div class="d-flex justify-content-center mb-4">
+                <button id="loginTab" class="btn btn-link tab-button active">Login</button>
+                <button id="registerTab" class="btn btn-link tab-button">Register</button>
+            </div>
+            <div id="loginForm">
+                <form>
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter password">
+                    </div>
+                    <button type="submit" class="btn btn-orange btn-block">Login</button>
+                </form>
+            </div>
+            <div id="registerForm" class="d-none">
+                <form th:action="@{/register}" method="post" th:object="${user}">
+                    <div class="container">
+                        <div class="row">
+                            <!-- Left Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="regUsername">Username</label>
+                                    <input th:field="*{username}" type="text" class="form-control" id="regUsername" placeholder="Enter username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regFirstname">First Name</label>
+                                    <input th:field="*{firstname}" type="text" class="form-control" id="regFirstname" placeholder="Enter first name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regLastname">Last name</label>
+                                    <input th:field="*{lastname}" type="text" class="form-control" id="regLastname" placeholder="Enter last name" required>
+                                </div>
+                            </div>
+                    
+                            <!-- Right Column -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="regEmail">Email</label>
+                                    <input th:field="*{email}" type="email" class="form-control" id="regEmail" placeholder="Enter email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPassword">Password</label>
+                                    <input th:field="*{password}" type="password" class="form-control" id="regPassword" placeholder="Enter password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="block text-gray-700">I am a</label>
+                                    <select th:field="*{role}" class="w-full border rounded py-2 px-3" required>
+                                        <option value="chef">Chef</option>
+                                        <option value="food_lover">Food Lover</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-orange btn-block">Register</button>
+                </form>
+                <div class="message" th:if="${registrationMessage}" th:text="${registrationMessage}"></div>
+            </div>
+        </div>
+        
+    </div>
+    <!-- Include Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#loginTab').on('click', function () {
+                    $(this).addClass('active');
+                    $('#registerTab').removeClass('active');
+                    $('#loginForm').removeClass('d-none');
+                    $('#registerForm').addClass('d-none');
+                });
+    
+                $('#registerTab').on('click', function () {
+                    $(this).addClass('active');
+                    $('#loginTab').removeClass('active');
+                    $('#registerForm').removeClass('d-none');
+                    $('#loginForm').addClass('d-none');
+                });
+            });
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,178 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitchenConnect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        .kitchens-section {
+            padding: 60px 0;
+        }
+        .kitchens-section .filter-options {
+            margin-bottom: 30px;
+        }
+        .kitchens-section .filter-options select {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Kitchens Section -->
+    <section class="kitchens-section">
+        <div class="container">
+            <h2 class="font-weight-bold mb-4">All Kitchens</h2>
+            <div class="filter-options">
+                <select class="form-control d-inline-block" style="width: auto;">
+                    <option value="">Cuisine</option>
+                    <option value="italian">Italian</option>
+                    <option value="japanese">Japanese</option>
+                    <option value="indian">Indian</option>
+                </select>
+                <select class="form-control d-inline-block" style="width: auto;">
+                    <option value="">Rating</option>
+                    <option value="4">4 Stars & Up</option>
+                    <option value="3">3 Stars & Up</option>
+                    <option value="2">2 Stars & Up</option>
+                </select>
+                <select class="form-control d-inline-block" style="width: auto;">
+                    <option value="">Delivery Time</option>
+                    <option value="20">Under 20 mins</option>
+                    <option value="30">Under 30 mins</option>
+                    <option value="40">Under 40 mins</option>
+                </select>
+            </div>
+            <div class="row">
+                <!-- Kitchen 1 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm position-relative">
+                        <i class="fas fa-heart favorite-icon"></i>
+                        <img alt="Chef Maria's Kitchen" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/ytroEVcQDbdmd7ufGrYf1JE02x6yD4HEn0UcszHz-Lo.jpg">
+                        <div class="rating-overlay">
+                            <i class="fas fa-star"></i> 4.8
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">Chef Maria's Kitchen</h5>
+                            <p class="card-text text-muted">Italian • Mediterranean</p>
+                            <div class="d-flex justify-content-between text-muted">
+                                <span>20-45 min</span>
+                                <span>Free delivery</span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3">View Menu</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kitchen 2 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm position-relative">
+                        <i class="fas fa-heart favorite-icon"></i>
+                        <img alt="Sushi Master Ken" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/AR4J55xJeqNUitqfHOSh6nqexMUqqscLNMiHpb8U44s.jpg">
+                        <div class="rating-overlay">
+                            <i class="fas fa-star"></i> 4.6
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">Sushi Master Ken</h5>
+                            <p class="card-text text-muted">Japanese • Asian Fusion</p>
+                            <div class="d-flex justify-content-between text-muted">
+                                <span>20-25 min</span>
+                                <span>₹150 delivery</span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3">View Menu</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kitchen 3 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm position-relative">
+                        <i class="fas fa-heart favorite-icon"></i>
+                        <img alt="Spice Route" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/6YqOQ5MgNRd4cR29G23JCCDnB5cRQY186C_Ff0ssJ8s.jpg">
+                        <div class="rating-overlay">
+                            <i class="fas fa-star"></i> 4.7
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">Spice Route</h5>
+                            <p class="card-text text-muted">Indian • Contemporary</p>
+                            <div class="d-flex justify-content-between text-muted">
+                                <span>40-55 min</span>
+                                <span>₹225 delivery</span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3">View Menu</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kitchen 4 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm position-relative">
+                        <i class="fas fa-heart favorite-icon"></i>
+                        <img alt="Chef Luigi's Kitchen" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/chef-luigi.jpg">
+                        <div class="rating-overlay">
+                            <i class="fas fa-star"></i> 4.9
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">Chef Luigi's Kitchen</h5>
+                            <p class="card-text text-muted">Italian • Pizza</p>
+                            <div class="d-flex justify-content-between text-muted">
+                                <span>15-30 min</span>
+                                <span>Free delivery</span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3">View Menu</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kitchen 5 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm position-relative">
+                        <i class="fas fa-heart favorite-icon"></i>
+                        <img alt="Chef Aiko's Kitchen" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/chef-aiko.jpg">
+                        <div class="rating-overlay">
+                            <i class="fas fa-star"></i> 4.5
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">Chef Aiko's Kitchen</h5>
+                            <p class="card-text text-muted">Japanese • Sushi</p>
+                            <div class="d-flex justify-content-between text-muted">
+                                <span>20-35 min</span>
+                                <span>₹100 delivery</span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3">View Menu</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Kitchen 6 -->
+                <div class="col-md-4 mb-4">
+                    <div class="card shadow-sm position-relative">
+                        <i class="fas fa-heart favorite-icon"></i>
+                        <img alt="Chef Priya's Kitchen" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/chef-priya.jpg">
+                        <div class="rating-overlay">
+                            <i class="fas fa-star"></i> 4.8
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title font-weight-bold">Chef Priya's Kitchen</h5>
+                            <p class="card-text text-muted">Indian • Vegetarian</p>
+                            <div class="d-flex justify-content-between text-muted">
+                                <span>25-40 min</span>
+                                <span>₹50 delivery</span>
+                            </div>
+                            <button class="btn btn-outline-primary mt-3">View Menu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Include Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
