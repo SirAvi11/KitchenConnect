@@ -74,7 +74,6 @@
             <div class="row">
                 <!-- Kitchen 1 -->
                 <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
-                    <a class="text-decoration-none" href="#">
                      <div class="card shadow-sm position-relative">
                       <img alt="Chef Maria's Kitchen logo with a female chef holding a fork and a plate of food" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/hHHfZwbxzJiwPcXdG8cJIurGzTyTSWR7lAg4PK7CFGM.jpg"/>
                       <div class="rating-overlay">
@@ -89,12 +88,9 @@
                         <span th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"></span>
                         <span th:text="'Rs ' + ${kitchen.deliveryFees} + ' delivery'"></span>
                        </div>
-                       <button class="btn btn-orange mt-3">
-                        View Menu
-                       </button>
+                       <a class="btn btn-orange mt-3" th:href="@{'/kitchens/' + ${kitchen.kitchenId}}">View Menu</a>
                       </div>
                      </div>
-                    </a>
                    </div>
                 </div>
             </div>
