@@ -32,21 +32,15 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/kitchens")
-    public String kitchens() {
-        return "kitchens";
-    }
-
     @GetMapping("/chef")
     public String chef() {
         return "chef";
     }
 
-    @GetMapping("/kitchenpage")
-    public String kitchenpage() {
-        return "kitchenpage";
+    @GetMapping("/orders")
+    public String orders() {
+        return "orders";
     }
-    
 
     // Show the registration and login page
     @GetMapping("/accounts")

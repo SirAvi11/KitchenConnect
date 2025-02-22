@@ -40,12 +40,13 @@ public class UserServiceImpl implements UserService {
     }
 
     public User loadUserByUsername(String username){
-        Optional<User> user =  userRepository.findByUsername(username);
+            return null;
+        // Optional<User> user =  userRepository.findByUsername(username);
 
-        if(user.isPresent()){
-            var userObj = user.get();
-            return User.builder().username(userObj.getUsername()).password(userObj.getPassword());
-        }
+        // if(user.isPresent()){
+        //     var userObj = user.get();
+        //     return User.builder().username(userObj.getUsername()).password(userObj.getPassword());
+        // }
     }
 
     

@@ -19,54 +19,50 @@
         <div class="card">
          <div class="flex flex-col items-center">
           <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="192" src="https://storage.googleapis.com/a1aa/image/zr_9HB7-BYgX8k49P4XnPNXaOAQD35So_j6Go-fjn7c.jpg" width="256"/>
-          <h2>
-           Mediterranean Delights
-          </h2>
+          <h2 th:text="${kitchen.kitchenName}"></h2>
           <p>
-           Specialty: Mediterranean Cuisine
+           Specialty: <span th:text="${kitchen.speciality}"></span>
           </p>
           <div class="rating">
            <i class="fas fa-star">
            </i>
-           <span>
-            4.8
-           </span>
-           <span>
-            (124 reviews)
-           </span>
+           <span th:text="${kitchen.overallRating}"></span>
+           <span>(<span th:text="${kitchen.totalRatingsCount}"></span> reviews)</span>
           </div>
          </div>
          <div class="info">
           <h3>
            About Our Kitchen
           </h3>
-          <p>
-           With over 15 years of experience in Mediterranean cuisine, we bring authentic flavors from our grandmother's kitchen to your table. Every dish is prepared with fresh, locally sourced ingredients and lots of love.
-          </p>
+          <p th:text="${kitchen.kitchenDescription}"></p>
           <div class="details">
            <div class="detail">
             <p>
-             Preparation Time
+             Managed By
             </p>
             <p>
-             30-45 mins
+             Chef Raj
             </p>
            </div>
            <div class="detail">
             <p>
-             Delivery Range
+             Delivered In
             </p>
             <p>
-             5 miles
+              <span th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"></span>
             </p>
            </div>
            <div class="detail">
             <p>
              Available Days
             </p>
+            <p th:text="${kitchen.availableDays}"></p>
+           </div>
+           <div class="detail">
             <p>
-             Mon-Sat
+             Delivery Fees
             </p>
+            <p th:text="'Rs ' + ${kitchen.deliveryFees}"></p>
            </div>
           </div>
          </div>
