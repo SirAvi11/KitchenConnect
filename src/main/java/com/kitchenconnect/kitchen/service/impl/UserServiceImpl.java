@@ -35,9 +35,18 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
-    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
+
+    public User loadUserByUsername(String username){
+        Optional<User> user =  userRepository.findByUsername(username);
+
+        if(user.isPresent()){
+            var userObj = user.get();
+            return User.builder().username(userObj.getUsername()).password(userObj.getPassword());
+        }
+    }
+
     
 }
