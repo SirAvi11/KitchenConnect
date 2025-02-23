@@ -75,7 +75,7 @@
                 <!-- Kitchen 1 -->
                 <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
                      <div class="card shadow-sm position-relative">
-                      <img alt="Chef Maria's Kitchen logo with a female chef holding a fork and a plate of food" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/hHHfZwbxzJiwPcXdG8cJIurGzTyTSWR7lAg4PK7CFGM.jpg"/>
+                      <img th:alt="${kitchen.chef.user.firstname} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}"/>
                       <div class="rating-overlay">
                        <i class="fas fa-star">
                        </i>
@@ -85,7 +85,10 @@
                        <h5 class="card-title font-weight-bold text-black" th:text="${kitchen.kitchenName}"></h5>
                        <p class="card-text text-muted" th:text="${kitchen.speciality}"></p>
                        <div class="d-flex justify-content-between text-muted">
-                        <span th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"></span>
+                        <div>
+                            <i class="fas fa-clock"></i>
+                            <span th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"></span>
+                        </div>
                         <span th:text="'Rs ' + ${kitchen.deliveryFees} + ' delivery'"></span>
                        </div>
                        <a class="btn btn-orange mt-3" th:href="@{'/kitchens/' + ${kitchen.kitchenId}}">View Menu</a>

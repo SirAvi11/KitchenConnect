@@ -4,7 +4,9 @@ body {
 .hero-section {
     position: relative;
     height: 600px;
-    background: url('https://storage.googleapis.com/a1aa/image/J_1K5YcBTSCAGW8mo-AqFULWXDpQMOk6NBfM4RRF6YA.jpg') no-repeat center center/cover;
+    background: url('/images/homepage/chef_cooking.jpg') no-repeat center center/cover;
+    background-position: center top 20%;
+
 }
 .hero-section .overlay {
     position: absolute;

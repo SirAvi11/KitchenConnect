@@ -17,8 +17,8 @@
             <h1>Discover Local Chefs & Their Specialties</h1>
             <p>Order directly from professional chefs in your area</p>
             <div>
-                <button class="btn btn-order-now">Order Now</button>
-                <button class="btn btn-join-chef">Join as Chef</button>
+                <a th:href="@{/kitchens}" class="btn btn-order-now">Order Now</a>
+                <a th:href="@{/accounts}" class="btn btn-join-chef">Join as Chef</a>
             </div>
         </div>
     </section>
@@ -31,7 +31,7 @@
             <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
                 <a th:href="@{'/kitchens/' + ${kitchen.kitchenId}}" class="text-decoration-none">
                     <div class="card shadow-sm position-relative">
-                        <img alt="Chef Maria's Kitchen" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/ytroEVcQDbdmd7ufGrYf1JE02x6yD4HEn0UcszHz-Lo.jpg">
+                        <img th:alt="${kitchen.chef.user.firstname} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}">
                         <div class="rating-overlay">
                             <i class="fas fa-star"></i> <span th:text="${kitchen.overallRating}"></span>
                         </div>
