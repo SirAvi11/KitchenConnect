@@ -1,0 +1,70 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to bottom, #FFA500, #FF6347);
+    color: white;
+}
+.profile-img {
+    border-radius: 50%;
+    border: 4px solid white;
+}
+.background-text {
+    font-size: 10rem;
+    font-weight: bold;
+    opacity: 0.1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    line-height: 1;
+    text-align: center;
+}
+.view-kitchen-btn {
+    background-color: #FF4500;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    margin-top: 1rem;
+    text-decoration: none;
+}
+.social-icons{
+    margin-bottom:25px;
+}
+.social-icons a {
+    color: white;
+    font-size: 2rem;
+    margin: 0 1rem;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    z-index: 1000;
+}
+.overlay-content {
+    max-width: 800px;
+}
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.biography-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.5em; /* Adjust height based on font size */
+}

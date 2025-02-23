@@ -2,10 +2,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KitchenConnect</title>
+    <title>KitchenConnect - Kitchen</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" th:href="@{/images/favicon_io/favicon-16x16.png}">
     <link rel="stylesheet" th:href="@{/css/kitchenpage.css}">
 
 </head>
@@ -18,55 +19,70 @@
         <!-- Restaurant Profile and About My Kitchen Combined -->
         <div class="card">
          <div class="flex flex-col items-center">
-          <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="192" src="https://storage.googleapis.com/a1aa/image/zr_9HB7-BYgX8k49P4XnPNXaOAQD35So_j6Go-fjn7c.jpg" width="256"/>
-          <h2>
-           Mediterranean Delights
-          </h2>
+          <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="200" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}" width="300"/>
+          <h2 th:text="${kitchen.kitchenName}"></h2>
           <p>
-           Specialty: Mediterranean Cuisine
+           Specialty: <span th:text="${kitchen.speciality}"></span>
           </p>
           <div class="rating">
-           <i class="fas fa-star">
-           </i>
-           <span>
-            4.8
-           </span>
-           <span>
-            (124 reviews)
-           </span>
+            <i class="fas fa-star"></i>
+           <span th:text="${kitchen.overallRating}"></span>
+           <span>(<span th:text="${kitchen.totalRatingsCount}"></span> reviews)</span>
           </div>
          </div>
          <div class="info">
           <h3>
            About Our Kitchen
           </h3>
-          <p>
-           With over 15 years of experience in Mediterranean cuisine, we bring authentic flavors from our grandmother's kitchen to your table. Every dish is prepared with fresh, locally sourced ingredients and lots of love.
-          </p>
+          <p th:text="${kitchen.kitchenDescription}"></p>
           <div class="details">
            <div class="detail">
+            <div>
+              <p>
+                <i class="fas fa-utensils"></i>
+              </p>
+              <p>
+               Managed By
+              </p>
+            </div>
             <p>
-             Preparation Time
-            </p>
-            <p>
-             30-45 mins
-            </p>
-           </div>
-           <div class="detail">
-            <p>
-             Delivery Range
-            </p>
-            <p>
-             5 miles
+             <a th:href="@{'/chef/' + ${chefId}}" class="text-decoration-none">Chef <span th:text="${chefName}"></span></a>
             </p>
            </div>
            <div class="detail">
+            <div>
+              <p>
+                <i class="fas fa-clock"></i>
+              </p>
+              <p>
+               Delivered In
+              </p>
+            </div>
             <p>
-             Available Days
+              <span th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"></span>
             </p>
-            <p>
-             Mon-Sat
-            </p>
+           </div>
+           <div class="detail">
+            <div>
+              <p>
+                <i class="fas fa-calendar-check"></i>
+              </p>
+              <p>
+               Available Days
+              </p>
+            </div>
+            <p th:text="${kitchen.availableDays}"></p>
+           </div>
+           <div class="detail">
+            <div>
+              <p>
+                <i class="fas fa-money-bill-wave"></i>
+              </p>
+              <p>
+               Delivery Fees
+              </p>
+            </div>
+            <p th:text="'Rs ' + ${kitchen.deliveryFees}"></p>
            </div>
           </div>
          </div>

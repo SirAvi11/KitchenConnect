@@ -1,34 +1,46 @@
 package com.kitchenconnect.kitchen.controller;
-
-import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.kitchenconnect.kitchen.entity.Role;
+import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.User;
+import com.kitchenconnect.kitchen.service.KitchenService;
 
 
 @Controller
+@RequestMapping("/")
 public class HomeController {
 
-    @GetMapping("/")
-    public String home() {
+    @Autowired
+    private KitchenService kitchenService;
+
+    // @Autowired
+    // private FoodItemService foodItemService;
+
+    @GetMapping
+    public String showHomePage(Model model) {
+        List<Kitchen> featuredKitchens = kitchenService.getFeaturedKitchens();
+        // List<FoodItem> featuredFoodItems = foodItemService.getFeaturedFoodItems();
+
+        model.addAttribute("kitchens", featuredKitchens);
+        // model.addAttribute("foodItems", featuredFoodItems);
         return "index";
     }
 
-    @GetMapping("/kitchens")
-    public String kitchens() {
-        return "kitchens";
+    @GetMapping("/orders")
+    public String orders() {
+        return "orders";
     }
 
-    @GetMapping("/kitchenpage")
-    public String kitchenpage() {
-        return "kitchenpage";
+    @GetMapping("/cart")
+    public String cart() {
+        return "cart";
     }
-    
 
     // Show the registration and login page
     @GetMapping("/accounts")

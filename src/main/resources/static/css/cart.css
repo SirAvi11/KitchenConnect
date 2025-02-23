@@ -1,0 +1,32 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+.main-content {
+    margin-top: 2rem;
+    min-height: calc(100vh - 90px); 
+}
+.cart-item-container{
+    overflow-y: auto;
+    max-height: 480px;
+}
+.cart-item-container .name{
+    gap:8px;
+}
+.cart-items, .order-summary {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+}
+.cart-items h1 {
+    color: #ff6600;
+}
+.cart-items .item {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.order-summary h2 {
+    color: #ff6600;
+}
