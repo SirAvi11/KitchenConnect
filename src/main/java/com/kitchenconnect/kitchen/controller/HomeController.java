@@ -37,6 +37,11 @@ public class HomeController {
         return "orders";
     }
 
+    @GetMapping("/cart")
+    public String cart() {
+        return "cart";
+    }
+
     // Show the registration and login page
     @GetMapping("/accounts")
     public String showAccountsPage(Model model) {

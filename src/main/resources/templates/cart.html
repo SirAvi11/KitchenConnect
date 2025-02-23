@@ -1,0 +1,127 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Cart</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/cart.css}">
+</head>
+<body>
+    <!-- Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <!-- Main Content -->
+    <main class="container main-content">
+        <div class="row">
+            <!-- Cart Items -->
+            <div class="col-md-8 cart-items">
+                <h1 class="h4 mb-4">Food Cart (3 items)</h1>
+                <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                    <h5 class="mb-0 w-50">Item</h5>
+                    <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
+                        <h5 class="mb-0">Quantity</h5>
+                        <h5 class="mb-0 mr-4">Price</h5>
+                    </div>
+                </div>
+                <div class="cart-item-container">
+                    <div class="item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center name w-50">
+                            <img src="https://storage.googleapis.com/a1aa/image/672O9XRWwqYPMwKiXOlGHVjDT5r7l6T4XTvKtjPR6VA.jpg" alt="Pizza" class="img-fluid me-3" style="width: 50px; height: 50px;">
+                            <span>Pizza</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-warning btn-sm">-</button>
+                                <span class="mx-2">1</span>
+                                <button class="btn btn-warning btn-sm">+</button>
+                            </div>
+                            <span>₹1125.00</span>
+                        </div>
+                    </div>
+                    <div class="item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center name w-50">
+                            <img src="https://storage.googleapis.com/a1aa/image/672O9XRWwqYPMwKiXOlGHVjDT5r7l6T4XTvKtjPR6VA.jpg" alt="Pizza" class="img-fluid me-3" style="width: 50px; height: 50px;">
+                            <span>Pizza</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-warning btn-sm">-</button>
+                                <span class="mx-2">1</span>
+                                <button class="btn btn-warning btn-sm">+</button>
+                            </div>
+                            <span>₹725.00</span>
+                        </div>
+                    </div>
+                    <div class="item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center name w-50">
+                            <img src="https://storage.googleapis.com/a1aa/image/672O9XRWwqYPMwKiXOlGHVjDT5r7l6T4XTvKtjPR6VA.jpg" alt="Pizza" class="img-fluid me-3" style="width: 50px; height: 50px;">
+                            <span>Pizza With Very Long Name To Test UI visually</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
+                            <div class="d-flex align-items-center">
+                                <button class="btn btn-warning btn-sm">-</button>
+                                <span class="mx-2">1</span>
+                                <button class="btn btn-warning btn-sm">+</button>
+                            </div>
+                            <span>₹925.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Order Summary -->
+            <div class="col-md-4 order-summary">
+                <h2 class="h5 mb-4">Order Summary</h2>
+                <div class="mb-4">
+                    <h3 class="h6"><b>Delivery Time</b></h3>
+                    <p>Estimated Delivery: 30-45 minutes</p>
+                </div>
+                <div class="mb-4">
+                    <h3 class="h6 d-flex justify-content-between align-items-center">
+                        <b>Delivery Address</b>
+                        <button class="btn btn-link p-0"><i class="fas fa-edit"></i></button>
+                    </h3>
+                    <p>123 Main Street, City, Country</p>
+                </div>
+                <div class="mb-4">
+                    <h3 class="h6 d-flex justify-content-between align-items-center">
+                        <b>Contact Information</b>
+                        <button class="btn btn-link p-0"><i class="fas fa-edit"></i></button>
+                    </h3>
+                    <p>Phone: +123 456 7890</p>
+                </div>
+                <div class="text-dark">
+                    <div class="d-flex justify-content-between py-1">
+                        <span>Subtotal:</span>
+                        <span>₹2250.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1">
+                        <span>Tax (5%):</span>
+                        <span>₹112.50</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1">
+                        <span>Delivery Fees:</span>
+                        <span>₹225.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1">
+                        <span>Platform Fees:</span>
+                        <span>₹150.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between font-weight-bold py-1">
+                        <span>Total:</span>
+                        <span>₹2737.50</span>
+                    </div>
+                </div>
+                <button class="btn btn-warning w-100 mt-4">Place Order</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></body>
+</html>
