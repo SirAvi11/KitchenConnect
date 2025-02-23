@@ -29,10 +29,19 @@ public class KitchenController {
     @GetMapping("/{id}")
     public String showKitchenDetails(@PathVariable Long id, Model model) {
         Kitchen kitchen = kitchenService.getKitchenById(id);
+
         if (kitchen != null) {
+            // Fetch the chef's name from the associated Chef entity
+            String chefName = kitchen.getChef().getUser().getFirstname() + " " + kitchen.getChef().getUser().getLastname();
+            Long chefId = kitchen.getChef().getChefId();
+
             model.addAttribute("kitchen", kitchen);
+            model.addAttribute("chefName", chefName); // Add chef's name to the model
+            model.addAttribute("chefId", chefId); // Add chef's Id to the model
+
             return "kitchenpage";
         }
+        
         return "redirect:/"; // Redirect to homepage if kitchen not found
     }
 }

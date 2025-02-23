@@ -32,11 +32,6 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/chef")
-    public String chef() {
-        return "chef";
-    }
-
     @GetMapping("/orders")
     public String orders() {
         return "orders";

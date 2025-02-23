@@ -13,14 +13,12 @@ public class Chef {
     @OneToOne(mappedBy = "chef", cascade = CascadeType.ALL)
     private Kitchen kitchen;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true) // Foreign key reference to User
+    private User user;
+
     @Column(columnDefinition = "TEXT")
     private String chefProfilePicture;
-
-    @Column(nullable = false, length = 50)
-    private String firstName;
-
-    @Column(nullable = false, length = 50)
-    private String lastName;
 
     @Column(columnDefinition = "TEXT")
     private String biography;
@@ -53,22 +51,6 @@ public class Chef {
         this.chefProfilePicture = chefProfilePicture;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getBiography() {
         return biography;
     }
@@ -83,6 +65,14 @@ public class Chef {
 
     public void setFavouriteDishes(String favouriteDishes) {
         this.favouriteDishes = favouriteDishes;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
     }
 }
 

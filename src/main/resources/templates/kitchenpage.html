@@ -24,8 +24,7 @@
            Specialty: <span th:text="${kitchen.speciality}"></span>
           </p>
           <div class="rating">
-           <i class="fas fa-star">
-           </i>
+            <i class="fas fa-star"></i>
            <span th:text="${kitchen.overallRating}"></span>
            <span>(<span th:text="${kitchen.totalRatingsCount}"></span> reviews)</span>
           </div>
@@ -37,31 +36,51 @@
           <p th:text="${kitchen.kitchenDescription}"></p>
           <div class="details">
            <div class="detail">
+            <div>
+              <p>
+                <i class="fas fa-utensils"></i>
+              </p>
+              <p>
+               Managed By
+              </p>
+            </div>
             <p>
-             Managed By
-            </p>
-            <p>
-             Chef Raj
+             <a th:href="@{'/chef/' + ${chefId}}" class="text-decoration-none">Chef <span th:text="${chefName}"></span></a>
             </p>
            </div>
            <div class="detail">
-            <p>
-             Delivered In
-            </p>
+            <div>
+              <p>
+                <i class="fas fa-clock"></i>
+              </p>
+              <p>
+               Delivered In
+              </p>
+            </div>
             <p>
               <span th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"></span>
             </p>
            </div>
            <div class="detail">
-            <p>
-             Available Days
-            </p>
+            <div>
+              <p>
+                <i class="fas fa-calendar-check"></i>
+              </p>
+              <p>
+               Available Days
+              </p>
+            </div>
             <p th:text="${kitchen.availableDays}"></p>
            </div>
            <div class="detail">
-            <p>
-             Delivery Fees
-            </p>
+            <div>
+              <p>
+                <i class="fas fa-money-bill-wave"></i>
+              </p>
+              <p>
+               Delivery Fees
+              </p>
+            </div>
             <p th:text="'Rs ' + ${kitchen.deliveryFees}"></p>
            </div>
           </div>

@@ -6,70 +6,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to bottom, #FFA500, #FF6347);
-            color: white;
-        }
-        .profile-img {
-            border-radius: 50%;
-            border: 4px solid white;
-        }
-        .background-text {
-            font-size: 10rem;
-            font-weight: bold;
-            opacity: 0.1;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
-            line-height: 1;
-            text-align: center;
-        }
-        .view-kitchen-btn {
-            background-color: #FF4500;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            margin-top: 1rem;
-            text-decoration: none;
-        }
-        .social-icons{
-            margin-bottom:25px;
-        }
-        .social-icons a {
-            color: white;
-            font-size: 2rem;
-            margin: 0 1rem;
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 2rem;
-            z-index: 1000;
-        }
-        .overlay-content {
-            max-width: 800px;
-        }
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 2rem;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/chef.css}">
 </head>
 <body>
     <!-- Include Header -->
@@ -79,16 +16,15 @@
         <div class="position-relative">
             <img src="https://storage.googleapis.com/a1aa/image/v7J8xImRnQh1Hvm5C0_qWPDO7Sxc0pz_1j58CvLH8d4.jpg" alt="Chef Daniel holding a plate of food" class="profile-img" width="300" height="300">
             <div class="background-text">
-                CHEF<br>DANIEL
+                CHEF<br><span th:text="${chef.user.firstname}"></span>
             </div>
         </div>
-        <h2 class="mt-4">Chef Daniel</h2>
-        <p>Alum of The Royal Orchids & Taj Hotels</p>
-        <a href="#" class="view-kitchen-btn">View Kitchen</a>
-        <p class="mt-4 mx-3 px-2 px-md-4">
-            Chef Rochelle Daniel discovered her passion for cooking at the age of 15 and soon embarked on an illustrious culinary journey that has led her to her current role as head Chef of the award-winning Cress on Oak Creek and Etch Kitchen...
-            <a href="#" class="text-warning" id="read-more-btn">Read More</a>
+        <h2 class="mt-4">Chef <span th:text="${chef.user.firstname}"></span></h2>
+        <p>Chef's Special : <span th:text="${chef.favouriteDishes}"></span></p>
+        <a th:href="@{'/kitchens/' + ${chef.kitchen.kitchenId}}" class="view-kitchen-btn">View Kitchen</a>
+        <p class="mt-4 mx-3 px-2 px-md-4 biography-text" th:text="${chef.biography}">
         </p>
+        <a href="#" class="text-warning" id="read-more-btn">Read More</a>
         <div class="social-icons mt-4">
             <a href="#"><i class="fab fa-facebook"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
@@ -99,8 +35,8 @@
     <div class="overlay" id="overlay">
         <div class="overlay-content">
             <span class="close-btn" id="close-btn">&times;</span>
-            <h2>Chef Daniel</h2>
-            <p>Chef Rochelle Daniel discovered her passion for cooking at the age of 15 and soon embarked on an illustrious culinary journey that has led her to her current role as head Chef of the award-winning Cress on Oak Creek and Etch Kitchen. Her culinary expertise spans multiple cuisines, and she is known for her innovative approach to traditional dishes. Chef Daniel has received numerous accolades and awards throughout her career, and she continues to inspire aspiring chefs around the world.</p>
+            <h2>Chef <span th:text="${chef.user.firstname}"></h2>
+            <p th:text="${chef.biography}"></p>
         </div>
     </div>
 
