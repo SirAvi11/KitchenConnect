@@ -1,6 +1,8 @@
 package com.kitchenconnect.kitchen.controller;
 
+import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
+import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
 import java.util.List;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class KitchenController {
     @Autowired
     private KitchenService kitchenService;
+
+    @Autowired
+    private FoodItemService foodItemService;
 
     @GetMapping
     public String showAllKitchens(Model model) {
@@ -35,9 +40,13 @@ public class KitchenController {
             String chefName = kitchen.getChef().getUser().getFirstname() + " " + kitchen.getChef().getUser().getLastname();
             Long chefId = kitchen.getChef().getChefId();
 
+            //Fetch Food items (menu)
+            List<FoodItem> menuItems = foodItemService.findByKitchenId(id);
+
             model.addAttribute("kitchen", kitchen);
             model.addAttribute("chefName", chefName); // Add chef's name to the model
             model.addAttribute("chefId", chefId); // Add chef's Id to the model
+            model.addAttribute("menuItems", menuItems); // Add menu items to model
 
             return "kitchenpage";
         }

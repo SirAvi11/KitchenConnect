@@ -57,58 +57,26 @@
     <section class="container my-5 popular-dishes">
         <h2 class="font-weight-bold mb-4">Popular Dishes</h2>
         <div class="row">
-            <!-- Dish 1 -->
-            <div class="col-md-3 mb-4">
+            <!-- Dishes -->
+            <div th:each="foodItem : ${foodItems}" class="col-md-3 mb-4">
                 <div class="card shadow-sm">
-                    <img alt="Truffle Pasta" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/sCycru1tdDTbVZuO7-XycEIJEE6FbTeRahumc5DXuII.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Truffle Pasta</h5>
-                        <p class="card-text text-muted">By Chef Maria's Kitchen</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1399</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
-                        </div>
+                    <img th:alt="${foodItem.name}" class="card-img-top" th:src="@{'/images/food/' + ${foodItem.picture}}">
+                    <div class="rating-overlay">
+                        <i class="fas fa-star"></i><span th:text="${foodItem.overallRating}"></span>
                     </div>
-                </div>
-            </div>
-            <!-- Dish 2 -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <img alt="Premium Sushi Set" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/NOYzV-l3yV5xJa30RzhxiSjaabDPTvXZXPzwBUKq8w0.jpg">
                     <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Premium Sushi Set</h5>
-                        <p class="card-text text-muted">By Sushi Master Ken</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1899</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Dish 3 -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <img alt="Butter Chicken" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/RoZtZuehQR47oJ-Ymztg5nJlWI2nfCl4WyMHA1loCKE.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Butter Chicken</h5>
-                        <p class="card-text text-muted">By Spice Route</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1299</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Dish 4 -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <img alt="Seafood Paella" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/f76bXKSPYILgyAqB-M4sQcQmuqP4P3chGw7-uZQLGk4.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Seafood Paella</h5>
-                        <p class="card-text text-muted">By Chef Maria's Kitchen</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1699</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
+                        <h5 class="card-title font-weight-bold" th:text="${foodItem.name}"></h5>
+                        <p class="card-text text-muted">By <span th:text="${foodItem.kitchen.kitchenName}"></p>
+                        <div class="card-bottom-section">
+                            <div class="price">
+                                <span th:text="'Rs ' + ${foodItem.price}"></span>
+                                <span th:class="${foodItem.availability} ? 'status' : 'status sold-out'"
+                                    th:text="${foodItem.availability} ? 'Available' : 'Sold Out'">
+                                </span>
+                            </div>
+                              <button class="add-to-cart">
+                                Add to Cart
+                              </button>
                         </div>
                     </div>
                 </div>

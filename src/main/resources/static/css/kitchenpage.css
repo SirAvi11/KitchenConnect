@@ -125,7 +125,7 @@ gap: 1.5rem;
 background-color: #ffffff;
 padding: 1rem;
 border-radius: 0.5rem;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.67);
 display: flex;
 flex-direction: column;
 justify-content: space-between;
@@ -135,6 +135,7 @@ margin: 0 auto;
 .menu .item img {
 border-radius: 0.5rem;
 object-fit: cover;
+height: 220px;
 }
 .menu .item h4 {
 font-size: 1.125rem;
@@ -196,7 +197,15 @@ border-radius: 0.5rem;
 border: none;
 cursor: pointer;
 margin-top: 1rem;
-width: 100%;
+margin:auto;
+}
+
+.card-bottom-section{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+    align-items: center;
+    flex-wrap: nowrap;
 }
 .footer {
 margin-top: 3rem;
@@ -221,4 +230,26 @@ font-size: 0.875rem;
 .footer .social-icons {
 display: flex;
 gap: 1rem;
+}
+.cart-btn {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin:4px;
+}
+div[id^="cart-button-container-"] {
+    height: 40px;
+}
+
+.cart-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.count {
+    font-size: 18px;
+    font-weight: bold;
 }
