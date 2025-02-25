@@ -38,7 +38,7 @@ public class CartController {
         List<FoodItem> foodItems = foodItemIds.isEmpty() ? new ArrayList<>() : foodItemService.getFoodItemsByIds(foodItemIds);
 
         // Calculate the total number of items in the cart
-        int totalItemsInCart = cart.values().stream().mapToInt(Integer::intValue).sum();
+        int totalItemsInCart = cart.size();
 
         // Add food items and cart quantities to model
         model.addAttribute("foodItems", foodItems);

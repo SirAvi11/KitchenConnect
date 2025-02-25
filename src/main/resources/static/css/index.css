@@ -168,3 +168,27 @@ margin:auto;
     flex-direction: column;
     gap:15px;
 }
+
+.cart-btn {
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin:4px;
+}
+div[id^="cart-button-container-"] {
+    height: 40px;
+    margin:auto;
+}
+
+.cart-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+.count {
+    font-size: 18px;
+    font-weight: bold;
+}

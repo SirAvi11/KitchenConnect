@@ -74,9 +74,18 @@
                                     th:text="${foodItem.availability} ? 'Available' : 'Sold Out'">
                                 </span>
                             </div>
-                              <button class="add-to-cart">
-                                Add to Cart
-                              </button>
+                            <div th:id="'cart-button-container-' + ${foodItem.id}">
+                                <th:block th:if="${cartItems.containsKey(foodItem.id)}">
+                                    <button class="cart-btn" th:onclick="'decreaseCount(' + ${foodItem.id} + ')'">-</button>
+                                    <span th:id="'itemCount-' + ${foodItem.id}" class="count" th:text="${cartItems.get(foodItem.id)}"></span>
+                                    <button class="cart-btn" th:onclick="'increaseCount(' + ${foodItem.id} + ')'">+</button>
+                                </th:block>
+                                <th:block th:unless="${cartItems.containsKey(foodItem.id)}">
+                                    <button th:id="'addToCart-' + ${foodItem.id}" class="add-to-cart" th:onclick="'toggleCart(' + ${foodItem.id} + ')'">
+                                        Add to Cart
+                                    </button>
+                                </th:block>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -125,6 +134,7 @@
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <script src="/addToCart.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

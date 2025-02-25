@@ -116,10 +116,17 @@
               </div>
              </div>
              <div th:id="'cart-button-container-' + ${foodItem.id}">
-              <button th:id="'addToCart-' + ${foodItem.id}" class="add-to-cart" th:onclick="'toggleCart(' + ${foodItem.id} + ')'">
-                  Add to Cart
-              </button>
-             </div>
+              <th:block th:if="${cartItems.containsKey(foodItem.id)}">
+                  <button class="cart-btn" th:onclick="'decreaseCount(' + ${foodItem.id} + ')'">-</button>
+                  <span th:id="'itemCount-' + ${foodItem.id}" class="count" th:text="${cartItems.get(foodItem.id)}"></span>
+                  <button class="cart-btn" th:onclick="'increaseCount(' + ${foodItem.id} + ')'">+</button>
+              </th:block>
+              <th:block th:unless="${cartItems.containsKey(foodItem.id)}">
+                  <button th:id="'addToCart-' + ${foodItem.id}" class="add-to-cart" th:onclick="'toggleCart(' + ${foodItem.id} + ')'">
+                      Add to Cart
+                  </button>
+              </th:block>
+            </div>
            </div>
           </div>
          </div>
@@ -129,76 +136,7 @@
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
-
-    <script>
-      function toggleCart(foodItemId) {
-        let container = document.getElementById(`cart-button-container-${foodItemId}`);
-        console.log("id",foodItemId)
-    
-        // Create new elements
-        let minusBtn = document.createElement("button");
-        minusBtn.innerText = "-";
-        minusBtn.classList.add("cart-btn");
-        minusBtn.onclick = function () { decreaseCount(foodItemId); };
-    
-        let countDisplay = document.createElement("span");
-        countDisplay.innerText = "1";
-        countDisplay.classList.add("count");
-        countDisplay.id = `itemCount-${foodItemId}`;
-    
-        let plusBtn = document.createElement("button");
-        plusBtn.innerText = "+";
-        plusBtn.classList.add("cart-btn");
-        plusBtn.onclick = function () { increaseCount(foodItemId); };
-    
-        // Replace existing button with new UI
-        container.innerHTML = "";
-        container.appendChild(minusBtn);
-        container.appendChild(countDisplay);
-        container.appendChild(plusBtn);
-
-        updateCart(foodItemId, 1);
-      }
-    
-    function decreaseCount(foodItemId) {
-        let countDisplay = document.getElementById(`itemCount-${foodItemId}`);
-        let count = parseInt(countDisplay.innerText);
-    
-        if (count > 1) {
-            countDisplay.innerText = count - 1;
-            updateCart(foodItemId, count - 1);
-        } else {
-            // Restore "Add to Cart" button when count reaches 0
-            document.getElementById(`cart-button-container-${foodItemId}`).innerHTML = 
-                `<button id="addToCart-${foodItemId}" class="add-to-cart" onclick="toggleCart(${foodItemId})">
-                    Add to Cart
-                </button>`;
-            updateCart(foodItemId, 0);
-        }
-    }
-    
-    function increaseCount(foodItemId) {
-        let countDisplay = document.getElementById(`itemCount-${foodItemId}`);
-        let count = parseInt(countDisplay.innerText);
-        countDisplay.innerText = count + 1;
-        updateCart(foodItemId, count + 1);
-    }
-
-    function updateCart(foodItemId, quantity) {
-      fetch('/cart/update', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ foodItemId: foodItemId, quantity: quantity })
-      })
-      .then(response => response.text())
-      .then(data => console.log("Session Cart Updated:", data))
-      .catch(error => console.error("Error updating cart:", error));
-    }
-    
-    </script>
-
+    <script src="/addToCart.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

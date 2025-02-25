@@ -1,5 +1,7 @@
 package com.kitchenconnect.kitchen.controller;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,8 @@ import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
+import jakarta.servlet.http.HttpSession;
+
 
 @Controller
 @RequestMapping("/")
@@ -25,12 +29,19 @@ public class HomeController {
     private FoodItemService foodItemService;
 
     @GetMapping
-    public String showHomePage(Model model) {
+    public String showHomePage(Model model, HttpSession session) {
         List<Kitchen> featuredKitchens = kitchenService.getFeaturedKitchens();
         List<FoodItem> featuredFoodItems = foodItemService.getFeaturedFoodItems();
+         // Retrieve cart from session
+        Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new HashMap<>();
+        }
 
         model.addAttribute("kitchens", featuredKitchens);
         model.addAttribute("foodItems", featuredFoodItems);
+        model.addAttribute("cartItems", cart);
+
         return "index";
     }
 
