@@ -2,6 +2,7 @@ package com.kitchenconnect.kitchen.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Table(name = "kitchens")
@@ -14,7 +15,10 @@ public class Kitchen {
 
     @OneToOne
     @JoinColumn(name = "chef_id", nullable = false, unique = true)
-    private Chef chef; // Assuming a Chef entity exists
+    private Chef chef; 
+
+    @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FoodItem> foodItems;
 
     @Column(name = "kitchen_name", length = 35, nullable = false)
     private String kitchenName;
@@ -141,5 +145,13 @@ public class Kitchen {
 
     public void setDeliveryFees(BigDecimal deliveryFees) {
         this.deliveryFees = deliveryFees;
+    }
+    
+    public List<FoodItem> getFoodItems() { 
+        return foodItems; 
+    }
+
+    public void setFoodItems(List<FoodItem> foodItems) { 
+        this.foodItems = foodItems; 
     }
 }

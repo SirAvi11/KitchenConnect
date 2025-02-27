@@ -91,153 +91,74 @@
         <div class="menu">
         <h3>Menu</h3>
          <div class="items">
-          <!-- Menu Item 1 -->
-          <div class="item">
+          <!-- Menu Items -->
+          <div class="item" th:each="foodItem : ${menuItems}">
            <div>
-            <img alt="Greek Salad" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/CZKJlADBTSBXlUy-vOkSGbKRoRJMW_B79fuAEQ2aaPs.jpg" width="300"/>
-            <h4>
-             Greek Salad
-            </h4>
-            <p>
-             Fresh cucumbers, tomatoes, olives, feta cheese with olive oil dressing.
-            </p>
+            <img th:alt="${foodItem.name}" class="card-img-top" th:src="@{'/images/food/' + ${foodItem.picture}}">
+            <h4 th:text="${foodItem.name}"></h4>
+            <p th:text="${foodItem.description}"></p>
            </div>
-           <div class="price-rating">
-            <div class="price">
-             <span>
-              ₹999
-             </span>
-             <span class="status">
-              Available
-             </span>
-            </div>
-            <div class="rating">
-             <i class="fas fa-star">
-             </i>
-             <span>
-              4.7
-             </span>
-             <span>
-              (89)
-             </span>
-            </div>
-           </div>
-           <button class="add-to-cart">
-            Add to Cart
-           </button>
-          </div>
-          <!-- Menu Item 2 -->
-          <div class="item">
-           <div>
-            <img alt="Homemade Hummus" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/_7DIHaX71t-eHm_WMvCTCgZQFAYGpCtn2IRyQnV2X8I.jpg" width="300"/>
-            <h4>
-             Homemade Hummus
-            </h4>
-            <p>
-             Creamy chickpea hummus with tahini, olive oil, and a touch of fresh pita bread.
-            </p>
-           </div>
-           <div class="price-rating">
-            <div class="price">
-             <span>
-              ₹699
-             </span>
-             <span class="status">
-              Available
-             </span>
-            </div>
-            <div class="rating">
-             <i class="fas fa-star">
-             </i>
-             <span>
-              4.7
-             </span>
-             <span>
-              (42)
-             </span>
-            </div>
-           </div>
-           <button class="add-to-cart">
-            Add to Cart
-           </button>
-          </div>
-          <!-- Menu Item 3 -->
-          <div class="item">
-           <div>
-            <img alt="Lamb Kebabs" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/0aQmxt9fJ_C-ZMD8Z-wI-Crs292Lvsx5Fv9FHT_90wM.jpg" width="300"/>
-            <h4>
-             Lamb Kebabs
-            </h4>
-            <p>
-             Grilled lamb kebabs served with rice, vegetables, and a side of tzatziki sauce.
-            </p>
-           </div>
-           <div class="price-rating">
-            <div class="price">
-             <span>
-              ₹1,999
-             </span>
-             <span class="status sold-out">
-              Sold Out
-             </span>
-            </div>
-            <div class="rating">
-             <i class="fas fa-star">
-             </i>
-             <span>
-              4.9
-             </span>
-             <span>
-              (56)
-             </span>
-            </div>
-           </div>
-           <button class="add-to-cart">
-            Add to Cart
-           </button>
-          </div>
-          <!-- Menu Item 3-->
-          <div class="item">
-            <div>
-             <img alt="Greek Salad" class="w-full h-40 object-cover rounded-lg" height="200" src="https://storage.googleapis.com/a1aa/image/CZKJlADBTSBXlUy-vOkSGbKRoRJMW_B79fuAEQ2aaPs.jpg" width="300"/>
-             <h4>
-              Greek Salad
-             </h4>
-             <p>
-              Fresh cucumbers, tomatoes, olives, feta cheese with olive oil dressing.
-             </p>
-            </div>
+           <div class="card-bottom-section">
             <div class="price-rating">
-             <div class="price">
-              <span>
-               ₹999
-              </span>
-              <span class="status">
-               Available
-              </span>
+              <div class="price">
+               <span th:text="'Rs ' + ${foodItem.price}"></span>
+               <span th:class="${foodItem.availability} ? 'status' : 'status sold-out'"
+                  th:text="${foodItem.availability} ? 'Available' : 'Sold Out'">
+                </span>
+              </div>
+              <div class="rating">
+               <i class="fas fa-star">
+               </i>
+               <span th:text="${foodItem.overallRating}"></span>
+               <span>
+                (<span th:text="${foodItem.ratingCount}"></span>)
+               </span>
+              </div>
              </div>
-             <div class="rating">
-              <i class="fas fa-star">
-              </i>
-              <span>
-               4.7
-              </span>
-              <span>
-               (89)
-              </span>
-             </div>
+             <div th:id="'cart-button-container-' + ${foodItem.id}">
+              <th:block th:if="${cartItems.containsKey(foodItem.id)}">
+                  <button class="cart-btn" th:onclick="'decreaseCount(' + ${foodItem.id} + ')'">-</button>
+                  <span th:id="'itemCount-' + ${foodItem.id}" class="count" th:text="${cartItems.get(foodItem.id)}"></span>
+                  <button class="cart-btn" th:onclick="'increaseCount(' + ${foodItem.id} + ')'">+</button>
+              </th:block>
+              <th:block th:unless="${cartItems.containsKey(foodItem.id)}">
+                  <button th:id="'addToCart-' + ${foodItem.id}" class="add-to-cart" th:onclick="'toggleCart(' + ${foodItem.id} + ')'">
+                      Add to Cart
+                  </button>
+              </th:block>
             </div>
-            <button class="add-to-cart">
-             Add to Cart
-            </button>
            </div>
+          </div>
          </div>
+        </div>
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="cartModalLabel">Cart Conflict</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelAddToCart()"></button>
+                  </div>
+                  <div class="modal-body">
+                      Your cart contains items from another kitchen. Do you want to clear the cart and add this item?
+                  </div>
+                  <div class="modal-footer"> 
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  onclick="cancelAddToCart()">Cancel</button>
+                      <button type="button" class="btn btn-success" id="confirmAdd" onclick="clearCartAndAddItem()">Add</button>
+                  </div>
+              </div>
+          </div>
         </div>
        </main>
 
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <script>
+      
+    </script>
+
+    <script src="/addToCart.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

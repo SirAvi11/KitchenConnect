@@ -1,9 +1,15 @@
 package com.kitchenconnect.kitchen.controller;
 
+import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
+import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
+import jakarta.servlet.http.HttpSession;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +24,9 @@ public class KitchenController {
     @Autowired
     private KitchenService kitchenService;
 
+    @Autowired
+    private FoodItemService foodItemService;
+
     @GetMapping
     public String showAllKitchens(Model model) {
         List<Kitchen> allKitchens = kitchenService.getAllKitchens();
@@ -27,7 +36,7 @@ public class KitchenController {
     }
 
     @GetMapping("/{id}")
-    public String showKitchenDetails(@PathVariable Long id, Model model) {
+    public String showKitchenDetails(@PathVariable Long id, Model model, HttpSession session) {
         Kitchen kitchen = kitchenService.getKitchenById(id);
 
         if (kitchen != null) {
@@ -35,9 +44,20 @@ public class KitchenController {
             String chefName = kitchen.getChef().getUser().getFirstname() + " " + kitchen.getChef().getUser().getLastname();
             Long chefId = kitchen.getChef().getChefId();
 
+            //Fetch Food items (menu)
+            List<FoodItem> menuItems = foodItemService.findByKitchenId(id);
+
+            // Retrieve cart from session
+            Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+            if (cart == null) {
+                cart = new HashMap<>();
+            }
+
             model.addAttribute("kitchen", kitchen);
             model.addAttribute("chefName", chefName); // Add chef's name to the model
             model.addAttribute("chefId", chefId); // Add chef's Id to the model
+            model.addAttribute("menuItems", menuItems); // Add menu items to model
+            model.addAttribute("cartItems", cart);
 
             return "kitchenpage";
         }

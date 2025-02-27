@@ -57,58 +57,35 @@
     <section class="container my-5 popular-dishes">
         <h2 class="font-weight-bold mb-4">Popular Dishes</h2>
         <div class="row">
-            <!-- Dish 1 -->
-            <div class="col-md-3 mb-4">
+            <!-- Dishes -->
+            <div th:each="foodItem : ${foodItems}" class="col-md-3 mb-4">
                 <div class="card shadow-sm">
-                    <img alt="Truffle Pasta" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/sCycru1tdDTbVZuO7-XycEIJEE6FbTeRahumc5DXuII.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Truffle Pasta</h5>
-                        <p class="card-text text-muted">By Chef Maria's Kitchen</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1399</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
-                        </div>
+                    <img th:alt="${foodItem.name}" class="card-img-top" th:src="@{'/images/food/' + ${foodItem.picture}}">
+                    <div class="rating-overlay">
+                        <i class="fas fa-star"></i><span th:text="${foodItem.overallRating}"></span>
                     </div>
-                </div>
-            </div>
-            <!-- Dish 2 -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <img alt="Premium Sushi Set" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/NOYzV-l3yV5xJa30RzhxiSjaabDPTvXZXPzwBUKq8w0.jpg">
                     <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Premium Sushi Set</h5>
-                        <p class="card-text text-muted">By Sushi Master Ken</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1899</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Dish 3 -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <img alt="Butter Chicken" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/RoZtZuehQR47oJ-Ymztg5nJlWI2nfCl4WyMHA1loCKE.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Butter Chicken</h5>
-                        <p class="card-text text-muted">By Spice Route</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1299</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Dish 4 -->
-            <div class="col-md-3 mb-4">
-                <div class="card shadow-sm">
-                    <img alt="Seafood Paella" class="card-img-top" src="https://storage.googleapis.com/a1aa/image/f76bXKSPYILgyAqB-M4sQcQmuqP4P3chGw7-uZQLGk4.jpg">
-                    <div class="card-body">
-                        <h5 class="card-title font-weight-bold">Seafood Paella</h5>
-                        <p class="card-text text-muted">By Chef Maria's Kitchen</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="price">₹1699</span>
-                            <button class="btn btn-warning text-white rounded-circle"><i class="fas fa-plus"></i></button>
+                        <h5 class="card-title font-weight-bold" th:text="${foodItem.name}"></h5>
+                        <p class="card-text text-muted">By <span th:text="${foodItem.kitchen.kitchenName}"></p>
+                        <div class="card-bottom-section">
+                            <div class="price">
+                                <span th:text="'Rs ' + ${foodItem.price}"></span>
+                                <span th:class="${foodItem.availability} ? 'status' : 'status sold-out'"
+                                    th:text="${foodItem.availability} ? 'Available' : 'Sold Out'">
+                                </span>
+                            </div>
+                            <div th:id="'cart-button-container-' + ${foodItem.id}">
+                                <th:block th:if="${cartItems.containsKey(foodItem.id)}">
+                                    <button class="cart-btn" th:onclick="'decreaseCount(' + ${foodItem.id} + ')'">-</button>
+                                    <span th:id="'itemCount-' + ${foodItem.id}" class="count" th:text="${cartItems.get(foodItem.id)}"></span>
+                                    <button class="cart-btn" th:onclick="'increaseCount(' + ${foodItem.id} + ')'">+</button>
+                                </th:block>
+                                <th:block th:unless="${cartItems.containsKey(foodItem.id)}">
+                                    <button th:id="'addToCart-' + ${foodItem.id}" class="add-to-cart" th:onclick="'toggleCart(' + ${foodItem.id} + ')'">
+                                        Add to Cart
+                                    </button>
+                                </th:block>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -146,17 +123,37 @@
             <div class="text-content">
                 <h2>Are You a Chef?</h2>
                 <p>Join our platform and start selling your specialties to hungry customers in your area.</p>
-                <button class="btn btn-register">Register as Chef</button>
+                <a th:href="@{/accounts}" class="btn btn-join-chef rounded-pill">Register as Chef</a>
             </div>
             <div class="image-content">
-                <img src="/images/ChefCooking.jfif" alt="Chef preparing food in kitchen">
+                <img src="/images/homepage/ChefCooking.jpg" alt="Chef preparing food in kitchen">
             </div>
         </div>
     </section>
 
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">Cart Conflict</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelAddToCart()"></button>
+                </div>
+                <div class="modal-body">
+                    Your cart contains items from another kitchen. Do you want to clear the cart and add this item?
+                </div>
+                <div class="modal-footer"> 
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  onclick="cancelAddToCart()">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmAdd" onclick="clearCartAndAddItem()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <script src="/addToCart.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

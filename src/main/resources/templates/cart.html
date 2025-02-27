@@ -16,9 +16,17 @@
     <!-- Main Content -->
     <main class="container main-content">
         <div class="row">
+            <!-- If the cart is empty -->
+            <div th:if="${#lists.isEmpty(foodItems)}" class="col-md-12 text-center empty-cart">
+                <i class="fas fa-shopping-cart fa-5x text-muted"></i>
+                <h2 class="mt-3">Your cart is empty!</h2>
+                <p>Browse our menu and add some delicious food.</p>
+                <a href="/kitchens" class="btn btn-warning mt-3">Go to Menu</a>
+            </div>
+
             <!-- Cart Items -->
-            <div class="col-md-8 cart-items">
-                <h1 class="h4 mb-4">Food Cart (3 items)</h1>
+            <div th:if="${not #lists.isEmpty(foodItems)}" class="col-md-8 cart-items">
+                <h1 class="h4 mb-4">Food Cart (<span id="totalItemsCount" th:text="${totalItems}"></span> items)</h1>
                 <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
                     <h5 class="mb-0 w-50">Item</h5>
                     <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
@@ -27,52 +35,28 @@
                     </div>
                 </div>
                 <div class="cart-item-container">
-                    <div class="item d-flex justify-content-between align-items-center">
+                    <div th:each="item : ${foodItems}" th:id="'item-' + ${item.id}" class="item d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center name w-50">
-                            <img src="https://storage.googleapis.com/a1aa/image/672O9XRWwqYPMwKiXOlGHVjDT5r7l6T4XTvKtjPR6VA.jpg" alt="Pizza" class="img-fluid me-3" style="width: 50px; height: 50px;">
-                            <span>Pizza</span>
+                            <img th:alt="${item.name}" th:src="@{'/images/food/' + ${item.picture}}" class="img-fluid me-3" style="width: 50px; height: 50px;">
+                            <span th:text="${item.name}"></span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-warning btn-sm">-</button>
-                                <span class="mx-2">1</span>
-                                <button class="btn btn-warning btn-sm">+</button>
+                                <button class="btn btn-warning btn-sm" th:onclick="'decreaseCount(' + ${item.id} + ')'">-</button>
+                                <span th:id="'itemCount-' + ${item.id}" class="mx-2" th:text="${cartQuantities[item.id] ?: 1}"></span>
+                                <button class="btn btn-warning btn-sm" th:onclick="'increaseCount(' + ${item.id} + ')'">+</button>
                             </div>
-                            <span>₹1125.00</span>
-                        </div>
-                    </div>
-                    <div class="item d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center name w-50">
-                            <img src="https://storage.googleapis.com/a1aa/image/672O9XRWwqYPMwKiXOlGHVjDT5r7l6T4XTvKtjPR6VA.jpg" alt="Pizza" class="img-fluid me-3" style="width: 50px; height: 50px;">
-                            <span>Pizza</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-warning btn-sm">-</button>
-                                <span class="mx-2">1</span>
-                                <button class="btn btn-warning btn-sm">+</button>
-                            </div>
-                            <span>₹725.00</span>
-                        </div>
-                    </div>
-                    <div class="item d-flex justify-content-between align-items-center">
-                        <div class="d-flex align-items-center name w-50">
-                            <img src="https://storage.googleapis.com/a1aa/image/672O9XRWwqYPMwKiXOlGHVjDT5r7l6T4XTvKtjPR6VA.jpg" alt="Pizza" class="img-fluid me-3" style="width: 50px; height: 50px;">
-                            <span>Pizza With Very Long Name To Test UI visually</span>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-center flex-row flex-grow-1">
-                            <div class="d-flex align-items-center">
-                                <button class="btn btn-warning btn-sm">-</button>
-                                <span class="mx-2">1</span>
-                                <button class="btn btn-warning btn-sm">+</button>
-                            </div>
-                            <span>₹925.00</span>
+                            <span th:id="'itemPrice-' + ${item.id}" 
+                                th:data-price="${item.price}" 
+                                th:text="'Rs ' + ${#numbers.formatDecimal(item.price * (cartQuantities[item.id] ?: 1), 1, 2)}">
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+
             <!-- Order Summary -->
-            <div class="col-md-4 order-summary">
+            <div th:if="${not #lists.isEmpty(foodItems)}" class="col-md-4 order-summary">
                 <h2 class="h5 mb-4">Order Summary</h2>
                 <div class="mb-4">
                     <h3 class="h6"><b>Delivery Time</b></h3>
@@ -122,7 +106,80 @@
     <!-- Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
+    <script>  
+      function decreaseCount(foodItemId) {
+          let countDisplay = document.getElementById(`itemCount-${foodItemId}`);
+          let count = parseInt(countDisplay.innerText);
+
+          if (count > 1) {
+              countDisplay.innerText = count - 1;
+              updateCart(foodItemId, count - 1);
+              updatePrice(foodItemId,count - 1);
+          } else {
+            let itemDiv = document.getElementById(`item-${foodItemId}`);
+            if (itemDiv) {
+                itemDiv.remove();
+                updateTotalItems();
+            }
+            updateCart(foodItemId, 0);
+          }
+      }
+      
+      function increaseCount(foodItemId) {
+          let countDisplay = document.getElementById(`itemCount-${foodItemId}`);
+          let count = parseInt(countDisplay.innerText);
+          countDisplay.innerText = count + 1;
+          updateCart(foodItemId, count + 1);
+          updatePrice(foodItemId,count + 1);
+      }
+
+      function updatePrice(foodItemId, count) {
+        let priceSpan = document.getElementById(`itemPrice-${foodItemId}`);
+        if (priceSpan) {
+            let pricePerItem = parseFloat(priceSpan.getAttribute('data-price'));
+            let newTotalPrice = (count * pricePerItem).toFixed(2);
+            priceSpan.textContent = 'Rs ' + newTotalPrice;
+        }
+    }
+
+      function updateTotalItems() {
+          let totalItemsDisplay = document.getElementById(`totalItemsCount`);
+          let totalItems = document.querySelectorAll('.cart-item-container .item').length;
+          totalItemsDisplay.innerText = totalItems;
+          
+                // If cart is empty, show empty cart message
+            if (totalItems === 0) {
+                document.querySelector(".row").innerHTML = 
+                    `<div class="col-md-12 text-center empty-cart">
+                <i class="fas fa-shopping-cart fa-5x text-muted"></i>
+                <h2 class="mt-3">Your cart is empty!</h2>
+                <p>Browse our menu and add some delicious food.</p>
+                <a href="/kitchens" class="btn btn-warning mt-3">Go to Menu</a>
+            </div>`;
+               let orderSummary = document.querySelector(".order-summary");
+               if(orderSummary){
+                orderSummary.style.display = "none";
+               }
+            }
+      }
+  
+      function updateCart(foodItemId, quantity) {
+        fetch('/cart/update', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ foodItemId: foodItemId, quantity: quantity })
+        })
+        .then(response => response.json())
+        .then(data => console.log("Session Cart Updated:", data.status))
+        .catch(error => console.error("Error updating cart:", error));
+      }
+    
+    </script>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script></body>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
 </html>
