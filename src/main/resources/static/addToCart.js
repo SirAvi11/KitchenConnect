@@ -1,13 +1,4 @@
 function toggleCart(foodItemId) {
-    let container = document.getElementById(`cart-button-container-${foodItemId}`);
-
-    // If item is not in the cart, add it
-    container.innerHTML = `
-        <button class="cart-btn" onclick="decreaseCount(${foodItemId})">-</button>
-        <span id="itemCount-${foodItemId}" class="count">1</span>
-        <button class="cart-btn" onclick="increaseCount(${foodItemId})">+</button>
-    `;
-
     updateCart(foodItemId, 1);
 }
 
@@ -37,12 +28,64 @@ function increaseCount(foodItemId) {
 }
 
 function updateCart(foodItemId, quantity) {
-    fetch('/cart/update', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    fetch("/cart/update", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify({ foodItemId: foodItemId, quantity: quantity })
     })
-    .then(response => response.text())
-    .then(data => console.log("Cart Updated:", data))
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "error") {
+            let cartModal = new bootstrap.Modal(document.getElementById("cartModal"));            
+            cartModal && cartModal.show();
+
+            // Store food item ID and quantity for later use when confirmed
+            document.getElementById("confirmAdd")?.setAttribute("onclick", `clearCartAndAddItem(${foodItemId}, ${quantity})`);
+        }else{
+            if(quantity != 0){
+                let container = document.getElementById(`cart-button-container-${foodItemId}`);
+
+                // If item is not in the cart, add it
+                container.innerHTML = `
+                    <button class="cart-btn" onclick="decreaseCount(${foodItemId})">-</button>
+                    <span id="itemCount-${foodItemId}" class="count">1</span>
+                    <button class="cart-btn" onclick="increaseCount(${foodItemId})">+</button>
+                `;
+            }
+        }
+    })
     .catch(error => console.error("Error updating cart:", error));
+}
+
+function clearCartAndAddItem(foodItemId, quantity) {
+    fetch("/cart/clear-cart", { method: "POST" })
+    .then(() => {
+       hideModal();
+
+        // Add the item to the now-empty cart
+        updateCart(foodItemId, quantity);
+        window.location.reload();
+    })
+    .catch(error => console.error("Error clearing cart:", error));
+  }
+
+  // Function for Cancel button to just close the modal and keep cart unchanged
+  function cancelAddToCart() {
+    // Hide modal correctly
+    hideModal();
+  }
+
+  function hideModal() {
+    let modal = document.getElementById("cartModal");
+    modal.classList.remove("show");
+    modal.style.display = "none";
+    document.body.classList.remove("modal-open");
+
+    // ✅ Remove Bootstrap modal backdrop
+    let modalBackdrop = document.querySelector(".modal-backdrop");
+    if (modalBackdrop) {
+        modalBackdrop.remove();
+    }
 }

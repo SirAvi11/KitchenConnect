@@ -46,7 +46,10 @@
                                 <span th:id="'itemCount-' + ${item.id}" class="mx-2" th:text="${cartQuantities[item.id] ?: 1}"></span>
                                 <button class="btn btn-warning btn-sm" th:onclick="'increaseCount(' + ${item.id} + ')'">+</button>
                             </div>
-                            <span th:text="'Rs ' + ${item.price}"></span>                        
+                            <span th:id="'itemPrice-' + ${item.id}" 
+                                th:data-price="${item.price}" 
+                                th:text="'Rs ' + ${#numbers.formatDecimal(item.price * (cartQuantities[item.id] ?: 1), 1, 2)}">
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -58,6 +61,20 @@
                 <div class="mb-4">
                     <h3 class="h6"><b>Delivery Time</b></h3>
                     <p>Estimated Delivery: 30-45 minutes</p>
+                </div>
+                <div class="mb-4">
+                    <h3 class="h6 d-flex justify-content-between align-items-center">
+                        <b>Delivery Address</b>
+                        <button class="btn btn-link p-0"><i class="fas fa-edit"></i></button>
+                    </h3>
+                    <p>123 Main Street, City, Country</p>
+                </div>
+                <div class="mb-4">
+                    <h3 class="h6 d-flex justify-content-between align-items-center">
+                        <b>Contact Information</b>
+                        <button class="btn btn-link p-0"><i class="fas fa-edit"></i></button>
+                    </h3>
+                    <p>Phone: +123 456 7890</p>
                 </div>
                 <div class="text-dark">
                     <div class="d-flex justify-content-between py-1">
@@ -97,6 +114,7 @@
           if (count > 1) {
               countDisplay.innerText = count - 1;
               updateCart(foodItemId, count - 1);
+              updatePrice(foodItemId,count - 1);
           } else {
             let itemDiv = document.getElementById(`item-${foodItemId}`);
             if (itemDiv) {
@@ -112,7 +130,17 @@
           let count = parseInt(countDisplay.innerText);
           countDisplay.innerText = count + 1;
           updateCart(foodItemId, count + 1);
+          updatePrice(foodItemId,count + 1);
       }
+
+      function updatePrice(foodItemId, count) {
+        let priceSpan = document.getElementById(`itemPrice-${foodItemId}`);
+        if (priceSpan) {
+            let pricePerItem = parseFloat(priceSpan.getAttribute('data-price'));
+            let newTotalPrice = (count * pricePerItem).toFixed(2);
+            priceSpan.textContent = 'Rs ' + newTotalPrice;
+        }
+    }
 
       function updateTotalItems() {
           let totalItemsDisplay = document.getElementById(`totalItemsCount`);
@@ -128,7 +156,10 @@
                 <p>Browse our menu and add some delicious food.</p>
                 <a href="/kitchens" class="btn btn-warning mt-3">Go to Menu</a>
             </div>`;
-                document.querySelector(".order-summary").style.display = "none";
+               let orderSummary = document.querySelector(".order-summary");
+               if(orderSummary){
+                orderSummary.style.display = "none";
+               }
             }
       }
   
@@ -140,12 +171,12 @@
             },
             body: JSON.stringify({ foodItemId: foodItemId, quantity: quantity })
         })
-        .then(response => response.text())
-        .then(data => console.log("Session Cart Updated:", data))
+        .then(response => response.json())
+        .then(data => console.log("Session Cart Updated:", data.status))
         .catch(error => console.error("Error updating cart:", error));
       }
-      
-      </script>
+    
+    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

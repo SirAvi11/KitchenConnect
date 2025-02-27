@@ -137,7 +137,7 @@ align-items: center;
 justify-content: space-between;
 }
 .price span {
-color: #f97316;
+color: #ff5722;
 font-weight: bold;
 }
 .price .status {
@@ -154,7 +154,7 @@ background-color: #fee2e2;
 color: #b91c1c;
 }
 .add-to-cart {
-background-color: #f97316;
+background-color: #ff5722;
 color: #ffffff;
 padding: 0.5rem 1rem;
 border-radius: 0.5rem;
@@ -170,7 +170,7 @@ margin:auto;
 }
 
 .cart-btn {
-    background-color: #ff9800;
+    background-color: #ff5722;
     color: white;
     border: none;
     padding: 4px 10px;

@@ -131,10 +131,32 @@
           </div>
          </div>
         </div>
+        <!-- Bootstrap Modal -->
+        <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="cartModalLabel">Cart Conflict</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelAddToCart()"></button>
+                  </div>
+                  <div class="modal-body">
+                      Your cart contains items from another kitchen. Do you want to clear the cart and add this item?
+                  </div>
+                  <div class="modal-footer"> 
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  onclick="cancelAddToCart()">Cancel</button>
+                      <button type="button" class="btn btn-success" id="confirmAdd" onclick="clearCartAndAddItem()">Add</button>
+                  </div>
+              </div>
+          </div>
+        </div>
        </main>
 
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+      
+    </script>
 
     <script src="/addToCart.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

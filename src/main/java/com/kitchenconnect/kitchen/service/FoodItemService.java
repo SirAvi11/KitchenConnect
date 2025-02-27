@@ -8,5 +8,6 @@ public interface FoodItemService {
     List<FoodItem> getFeaturedFoodItems();
     List<FoodItem> findByKitchenId(Long id);
     List<FoodItem> getFoodItemsByIds(List<Long> ids);
+    FoodItem getFoodItemById(Long id);
 }
 

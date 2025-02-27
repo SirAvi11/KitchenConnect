@@ -27,5 +27,10 @@ public class FoodItemServiceImpl implements FoodItemService {
     public List<FoodItem> getFoodItemsByIds(List<Long> foodItemIds) {
         return foodItemRepository.findAllById(foodItemIds);
     }
+
+    public FoodItem getFoodItemById(Long id){
+        return foodItemRepository.findById(id).orElse(null);
+    }
 }
+
 

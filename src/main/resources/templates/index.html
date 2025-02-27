@@ -123,13 +123,32 @@
             <div class="text-content">
                 <h2>Are You a Chef?</h2>
                 <p>Join our platform and start selling your specialties to hungry customers in your area.</p>
-                <button class="btn btn-register">Register as Chef</button>
+                <a th:href="@{/accounts}" class="btn btn-join-chef rounded-pill">Register as Chef</a>
             </div>
             <div class="image-content">
-                <img src="/images/ChefCooking.jfif" alt="Chef preparing food in kitchen">
+                <img src="/images/homepage/ChefCooking.jpg" alt="Chef preparing food in kitchen">
             </div>
         </div>
     </section>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">Cart Conflict</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="cancelAddToCart()"></button>
+                </div>
+                <div class="modal-body">
+                    Your cart contains items from another kitchen. Do you want to clear the cart and add this item?
+                </div>
+                <div class="modal-footer"> 
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"  onclick="cancelAddToCart()">Cancel</button>
+                    <button type="button" class="btn btn-success" id="confirmAdd" onclick="clearCartAndAddItem()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
