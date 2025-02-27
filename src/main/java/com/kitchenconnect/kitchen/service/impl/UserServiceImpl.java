@@ -43,26 +43,12 @@ public class UserServiceImpl implements UserService {
         return savedUser;
     }
 
-    public Optional<User> loginUser (String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            return user;
-        }
-        return Optional.empty();
-    }
-
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User loadUserByUsername(String username){
-            return null;
-        // Optional<User> user =  userRepository.findByUsername(username);
-
-        // if(user.isPresent()){
-        //     var userObj = user.get();
-        //     return User.builder().username(userObj.getUsername()).password(userObj.getPassword());
-        // }
+    public Optional<User> findByUsernameOrEmail(String username, String email) {
+        return userRepository.findByUsernameOrEmail(username, email);
     }
 
     

@@ -50,10 +50,13 @@ public class HomeController {
         return "orders";
     }
     
-    // Show the registration and login page
-    @GetMapping("/accounts")
-    public String showAccountsPage(Model model) {
-        model.addAttribute("user", new User()); // Ensure User class has the necessary fields
-        return "accounts"; // This should match the name of your HTML file without the .html extension
+    @GetMapping("/dashboard")
+    public String showChefDashboard(HttpSession session, Model model) {
+        // User loggedInUser = (User) session.getAttribute("loggedInUser");
+
+        // // 🔹 Add user details to the model for displaying on dashboard
+        // model.addAttribute("user", loggedInUser);
+    
+        return "chefDashboard"; //Return the chef's dashboard view
     }
 }

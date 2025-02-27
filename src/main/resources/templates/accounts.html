@@ -55,21 +55,19 @@
                 <button id="loginTab" class="btn btn-link tab-button active">Login</button>
                 <button id="registerTab" class="btn btn-link tab-button">Register</button>
             </div>
-            <div id="loginForm">
-                <form>
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter password">
-                    </div>
-                    <button type="submit" class="btn btn-orange btn-block">Login</button>
-                </form>
-            </div>
+            <form id="loginForm" th:action="@{/accounts/loginUser}" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input name="username" type="text" class="form-control" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input name="password" type="password" class="form-control" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-orange btn-block">Login</button>
+            </form>
             <div id="registerForm" class="d-none">
-                <form th:action="@{/register}" method="post" th:object="${user}">
+                <form th:action="@{/accounts/save}" method="post" th:object="${user}">
                     <div class="container">
                         <div class="row">
                             <!-- Left Column -->
@@ -110,10 +108,10 @@
                     </div>
                     <button type="submit" class="btn btn-orange btn-block">Register</button>
                 </form>
-                <div class="message" th:if="${registrationMessage}" th:text="${registrationMessage}"></div>
             </div>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
         </div>
-        
     </div>
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -122,19 +120,37 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             $(document).ready(function () {
+                function showTab(tab) {
+                    if (tab === "register") {
+                        $('#registerTab').addClass('active');
+                        $('#loginTab').removeClass('active');
+                        $('#registerForm').removeClass('d-none');
+                        $('#loginForm').addClass('d-none');
+                        history.pushState(null, '', '/accounts/register'); // Update URL
+                    } else {
+                        $('#loginTab').addClass('active');
+                        $('#registerTab').removeClass('active');
+                        $('#loginForm').removeClass('d-none');
+                        $('#registerForm').addClass('d-none');
+                        history.pushState(null, '', '/accounts/login'); // Update URL
+                    }
+                }
+        
+                // Handle tab click
                 $('#loginTab').on('click', function () {
-                    $(this).addClass('active');
-                    $('#registerTab').removeClass('active');
-                    $('#loginForm').removeClass('d-none');
-                    $('#registerForm').addClass('d-none');
+                    showTab("login");
                 });
-    
+        
                 $('#registerTab').on('click', function () {
-                    $(this).addClass('active');
-                    $('#loginTab').removeClass('active');
-                    $('#registerForm').removeClass('d-none');
-                    $('#loginForm').addClass('d-none');
+                    showTab("register");
                 });
+        
+                // Check URL on page load and show the correct tab
+                if (window.location.pathname === "/accounts/register") {
+                    showTab("register");
+                } else {
+                    showTab("login"); // Default to login
+                }
             });
         </script>
 </body>

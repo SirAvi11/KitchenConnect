@@ -4,7 +4,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import com.kitchenconnect.kitchen.entity.Chef;
+import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.service.ChefService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
