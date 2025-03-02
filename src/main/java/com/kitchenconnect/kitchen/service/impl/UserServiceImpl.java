@@ -26,25 +26,27 @@ public class UserServiceImpl implements UserService {
         this.chefRepository = chefRepository;
     }
 
-    public User registerUser (User user) {
+    public User saveUser (User user) {
         // Encode password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         // Save User in Database
         User savedUser = userRepository.save(user);
 
         // If User is a CHEF, also create a Chef entry
-        if ("CHEF".equalsIgnoreCase(user.getRole())) {
-            Chef chef = new Chef();
-            chef.setUser(savedUser); // Link Chef to User
-            chefRepository.save(chef); // Save in Chef Table
-        }
+        // if ("CHEF".equalsIgnoreCase(user.getRole())) {
+        //     Chef chef = new Chef();
+        //     chef.setUser(savedUser); // Link Chef to User
+        //     chefRepository.save(chef); // Save in Chef Table
+        // }
 
         return savedUser;
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Optional<User> getById(Long id) {
+        return userRepository.findById(id);
     }
 
     public Optional<User> findByUsernameOrEmail(String username, String email) {

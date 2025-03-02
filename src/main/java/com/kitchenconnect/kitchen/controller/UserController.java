@@ -1,21 +1,21 @@
 package com.kitchenconnect.kitchen.controller;
 
+import java.security.Principal;
 import java.util.Optional;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import com.kitchenconnect.kitchen.entity.Kitchen;
+
 import com.kitchenconnect.kitchen.entity.User;
+import com.kitchenconnect.kitchen.enums.UserRole;
 import com.kitchenconnect.kitchen.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +49,6 @@ public class UserController {
     
         // Fetch user by username or email
         Optional<User> existingUser = userService.findByUsernameOrEmail(username, username);
-    
         if (existingUser.isPresent() && passwordEncoder.matches(password, existingUser.get().getPassword())) {
     
             // Store user in session
@@ -69,10 +68,13 @@ public class UserController {
     // Show register tab
     @GetMapping("/register")
     public String showRegisterTab(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("activeTab", "register"); // Used in the frontend to set the correct tab
+        User user = new User();
+
+        model.addAttribute("user", user);
+        model.addAttribute("activeTab", "register"); 
         return "accounts"; 
     }
+
 
     @PostMapping("/save")
     public String registerUser(@ModelAttribute User user, RedirectAttributes redirectAttributes) {
@@ -91,7 +93,20 @@ public class UserController {
             }
     
             // Save user
-            userService.registerUser(user);
+            //Make user a foodlover by default;
+            user.setRole(UserRole.FOOD_LOVER);
+
+            // If the user is new or providing a new password, encode it
+            System.out.println("Registering user" + user.getPassword());
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                System.out.println("encoding");
+
+                user.setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+
+            System.out.println("after encoding user" + user.getPassword());
+
+            userService.saveUser(user);
             redirectAttributes.addFlashAttribute("successMessage", "Registration successful! Please log in.");
             
             return "redirect:/accounts/login"; // Redirect to login page
@@ -100,5 +115,35 @@ public class UserController {
             return "redirect:/accounts/register"; // Stay on register page
         }
     }
+
+    @PostMapping("/updatePersonalInformation")
+    public String updateUser(@ModelAttribute User updatedUser, RedirectAttributes redirectAttributes, HttpSession session) {
+        // Get the logged-in user from session
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+
+        if (sessionUser == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "No user is logged in.");
+            return "redirect:/accounts/profile"; // Redirect to profile
+        }
+
+        // Update only the allowed fields
+        sessionUser.setUsername(updatedUser.getUsername());
+        sessionUser.setFirstname(updatedUser.getFirstname());
+        sessionUser.setLastname(updatedUser.getLastname());
+        sessionUser.setEmail(updatedUser.getEmail());
+        sessionUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        sessionUser.setAddress(updatedUser.getAddress());
+
+        // Save the updated user
+        userService.saveUser(sessionUser);
+
+        // Update session with latest user info
+        session.setAttribute("loggedInUser", sessionUser);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Personal information updated successfully.");
+        return "redirect:/dashboard"; // Redirect to dashboard page
+    }
+
+
 
 }

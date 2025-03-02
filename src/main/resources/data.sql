@@ -1,17 +1,19 @@
 /* Populating users table */
-INSERT INTO users (id, email, first_name, last_name, password, role, user_name) VALUES
-(1, 'chef1@example.com', 'Vikas', 'Khanna', 'hashed_password1', 'chef', 'vikas_k'),
-(2, 'chef2@example.com', 'Sanjeev', 'Kapoor', 'hashed_password2', 'chef', 'sanjeev_k'),
-(3, 'foodlover1@example.com', 'Priya', 'Sharma', 'hashed_password3', 'food lover', 'priya_s'),
-(4, 'foodlover2@example.com', 'Rohan', 'Verma', 'hashed_password4', 'food lover', 'rohan_v'),
-(5, 'chef3@example.com', 'Ranveer', 'Brar', 'hashed_password5', 'chef', 'ranveer_b')
+INSERT INTO users (id, email, first_name, last_name, password, role, user_name, address, phone_number) VALUES
+(1, 'chef1@example.com', 'Vikas', 'Khanna', 'hashed_password1', 'CHEF', 'vikas_k', 'Abc Street', '1234567892' ),
+(2, 'chef2@example.com', 'Sanjeev', 'Kapoor', 'hashed_password2', 'CHEF', 'sanjeev_k', 'Abc Street', '1234567892'),
+(3, 'foodlover1@example.com', 'Priya', 'Sharma', 'hashed_password3', 'FOOD_LOVER', 'priya_s', 'Abc Street', '1234567892'),
+(4, 'foodlover2@example.com', 'Rohan', 'Verma', 'hashed_password4', 'FOOD_LOVER', 'rohan_v', 'Abc Street', '1234567892'),
+(5, 'chef3@example.com', 'Ranveer', 'Brar', 'hashed_password5', 'CHEF', 'ranveer_b', 'Abc Street', '1234567892')
 ON DUPLICATE KEY UPDATE 
 email = VALUES(email), 
 first_name = VALUES(first_name),
 last_name = VALUES(last_name),
 password = VALUES(password),
 role = VALUES(role),
-user_name = VALUES(user_name);
+user_name = VALUES(user_name),
+address = VALUES(address),
+phone_number = VALUES(phone_number);
 
 
 /* Populating chef table */

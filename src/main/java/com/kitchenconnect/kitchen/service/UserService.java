@@ -7,6 +7,7 @@ import com.kitchenconnect.kitchen.entity.User;
 
 public interface UserService {
     List<User> getAllUsers();
-    User registerUser (User user);
+    User saveUser (User user);
+    Optional<User> getById (Long id);
     Optional<User> findByUsernameOrEmail(String username, String email);
 }

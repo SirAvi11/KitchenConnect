@@ -43,11 +43,11 @@
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <img th:src="@{/images/default-profile.jpg}" 
                                  class="rounded-circle" width="30" height="30" alt="User Image">
-                            <span class="ml-2" th:text="${session.loggedInUser.username}">Username</span>
+                            <span class="ml-2" th:text="${session.loggedInUser.username}"></span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                            <a class="dropdown-item" th:href="@{/profile}">Profile</a>
-                            <a class="dropdown-item" th:href="@{/settings}">Settings</a>
+                            <a class="dropdown-item" th:href="@{/dashboard}">Manage Profile</a>
+                            <a class="dropdown-item" th:href="@{/kitchen-registration}">Become a Chef</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" th:href="@{/logout}">Logout</a>
                         </div>

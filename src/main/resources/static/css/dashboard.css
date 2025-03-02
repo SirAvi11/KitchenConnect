@@ -1,0 +1,58 @@
+body{
+    background-color: #f3f4f6;
+    font-family: 'Roboto', sans-serif;
+}
+.info-field, .info-input {
+    display: none;
+}
+.info-field.active, .info-input.active {
+    display: block;
+}
+#bio-input{
+    height: 200px;
+}
+
+.profile-card {
+    max-width: 400px;
+    margin: auto;
+    margin-top:0px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.profile-img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: relative;
+}
+.upload-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+.rating {
+    color: #ffc107;
+}
+.edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.dashboard-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+.dashboard-icon {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 50%;
+    margin-right: 15px;
+}

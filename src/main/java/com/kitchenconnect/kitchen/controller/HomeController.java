@@ -49,14 +49,20 @@ public class HomeController {
     public String orders() {
         return "orders";
     }
+
+    
     
     @GetMapping("/dashboard")
     public String showChefDashboard(HttpSession session, Model model) {
-        // User loggedInUser = (User) session.getAttribute("loggedInUser");
+        User loggedInUser = (User) session.getAttribute("loggedInUser");
 
-        // // 🔹 Add user details to the model for displaying on dashboard
-        // model.addAttribute("user", loggedInUser);
+        model.addAttribute("user", loggedInUser);
     
-        return "chefDashboard"; //Return the chef's dashboard view
+        return "dashboard"; //Return the chef's dashboard view
+    }
+
+    @GetMapping("/kitchen-registration")
+    public String showKitchenRegistration() {
+        return "kitchenRegistration";
     }
 }

@@ -46,7 +46,7 @@
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="position-absolute w-100 h-100 background-image d-none d-sm-block"></div>
-        <div class="position-relative bg-white bg-opacity-90 p-4 rounded-lg shadow-lg w-50 max-w-sm">
+        <div class="position-relative bg-white bg-opacity-90 p-4 rounded-lg shadow-lg w-50">
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-gray-800">Welcome to <span class="text-orange">KitchenConnect</span></h1>
                 <p class="text-gray-600 mt-2">Your gateway to delicious homemade meals from local kitchens</p>
@@ -84,24 +84,29 @@
                                     <label for="regLastname">Last name</label>
                                     <input th:field="*{lastname}" type="text" class="form-control" id="regLastname" placeholder="Enter last name" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="regEmail">Email</label>
+                                    <input th:field="*{email}" type="email" class="form-control" id="regEmail" placeholder="Enter email" required>
+                                </div>
                             </div>
                     
                             <!-- Right Column -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="regEmail">Email</label>
-                                    <input th:field="*{email}" type="email" class="form-control" id="regEmail" placeholder="Enter email" required>
-                                </div>
-                                <div class="form-group">
                                     <label for="regPassword">Password</label>
                                     <input th:field="*{password}" type="password" class="form-control" id="regPassword" placeholder="Enter password" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="block text-gray-700">I am a</label>
-                                    <select th:field="*{role}" class="w-full border rounded py-2 px-3" required>
-                                        <option value="chef">Chef</option>
-                                        <option value="food_lover">Food Lover</option>
-                                    </select>
+                                    <label for="regConfirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="regConfirmPassword" placeholder="Confirm password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regAddress">Address</label>
+                                    <input th:field="*{address}" type="text" class="form-control" id="regAddress" placeholder="Enter address" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPhone">Phone Number</label>
+                                    <input th:field="*{phoneNumber}" type="text" class="form-control" id="regPhone" placeholder="Phone Number" required>
                                 </div>
                             </div>
                         </div>
@@ -150,6 +155,15 @@
                     showTab("register");
                 } else {
                     showTab("login"); // Default to login
+                }
+            });
+
+            $('#registerForm').on('submit', function (e) {
+                let password = $('#regPassword').val();
+                let confirmPassword = $('#regConfirmPassword').val();
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match.');
                 }
             });
         </script>

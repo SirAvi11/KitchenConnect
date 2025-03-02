@@ -1,0 +1,146 @@
+body{
+  background-color: #f4f6fb;
+  font-family: 'Roboto', sans-serif;
+}
+
+.kitchenInfo{
+  min-height: calc(100vh - 55px); 
+}
+
+.mainContent{
+  height: calc(100vh - 55px);
+  overflow: auto;
+}
+.btn-orange {
+  background-color: #FFA500;
+  color: white;
+  float:right;
+}
+
+li:hover{
+  cursor: pointer;
+}
+
+:root {
+    --theme-color: #ff5722;
+}
+.active-tab {
+  border-left: 4px solid var(--theme-color);
+  padding-left: 1rem;
+}
+.theme-bg {
+  background-color: var(--theme-color);
+}
+.theme-text {
+  color: var(--theme-color);
+}
+.upload-area {
+  border: 2px dashed #007bff;
+  border-radius: 0.25rem;
+  padding: 2rem;
+  background-color: #e9f7fe;
+  text-align: center;
+  cursor: pointer;
+}
+.upload-area i {
+  font-size: 2rem;
+  color: #007bff;
+}
+.upload-area p {
+  margin: 0.5rem 0;
+}
+
+.image-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.image-wrapper {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+}
+.remove-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  color: gray;
+  border-radius: 50%;
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  border: none;
+}
+.image-container img {
+  border-radius: 0.25rem;
+}
+
+.search-container {
+  position: relative;
+}
+.search-container input {
+  padding-left: 2.5rem;
+}
+.search-container .fa-search {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #007bff;
+}
+.cuisine-button {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  border: none;
+}
+.cuisine-button.active {
+  background-color: #e7f3ff;
+  color: #007bff;
+}
+.cuisine-button.inactive {
+  background-color: #f8f9fa;
+  color: #6c757d;
+}
+.more-options {
+  display: none;
+}
+
+.day-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid #007bff;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+.day-pill input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+.day-pill.checked {
+  background-color: #e7f3ff;
+  color: #007bff;
+}
+.bg-blue-50 {
+  background-color: #f0f9ff;
+}
+.border-blue-300 {
+  border-color: #93c5fd;
+}
+.text-blue-500 {
+  color: #3b82f6;
+}
+.text-gray-500 {
+  color: #6b7280;
+}
+.text-gray-600 {
+  color: #4b5563;
+}
+.text-gray-700 {
+  color: #374151;
+}
