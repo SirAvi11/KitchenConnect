@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
+import com.kitchenconnect.kitchen.entity.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
@@ -62,7 +63,9 @@ public class HomeController {
     }
 
     @GetMapping("/kitchen-registration")
-    public String showKitchenRegistration() {
+    public String showKitchenRegistration(Model model) {
+        model.addAttribute("kitchenRequest", new KitchenRequest());
+
         return "kitchenRegistration";
     }
 }

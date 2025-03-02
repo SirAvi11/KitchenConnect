@@ -5,6 +5,8 @@ body{
 
 .kitchenInfo{
   min-height: calc(100vh - 55px); 
+  display: flex;
+  flex-direction: column;
 }
 
 .mainContent{
@@ -143,4 +145,8 @@ li:hover{
 }
 .text-gray-700 {
   color: #374151;
+}
+
+#next-btn{
+  align-self: end;
 }
