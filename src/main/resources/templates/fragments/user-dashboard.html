@@ -1,49 +1,8 @@
 <!--User Dashboard-->
 <div class="row" th:fragment="dashboard" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'FOOD_LOVER'}">
     <!-- Left Section -->
-            <div class="profile-card col-lg-3">
-                <h2 class="h5 font-weight-bold mb-4">
-                 Dashboard
-                </h2>
-                <ul class="list-unstyled">
-                 <li class="dashboard-item">
-                  <div class="dashboard-icon">
-                   <i class="fas fa-bell text-dark">
-                   </i>
-                  </div>
-                  <span>
-                   Personal Information
-                  </span>
-                 </li>
-                 <li class="dashboard-item">
-                  <div class="dashboard-icon">
-                   <i class="fas fa-utensils text-dark">
-                   </i>
-                  </div>
-                  <span>
-                   View Orders
-                  </span>
-                 </li>
-                 <li class="dashboard-item">
-                  <div class="dashboard-icon">
-                   <i class="fas fa-cogs text-dark">
-                   </i>
-                  </div>
-                  <span>
-                   Manage Kitchen
-                  </span>
-                 </li>
-                 <li class="dashboard-item">
-                  <div class="dashboard-icon">
-                   <i class="fas fa-handshake text-dark">
-                   </i>
-                  </div>
-                  <span>
-                   Partner contract
-                  </span>
-                 </li>
-                </ul>
-            </div>
+    <!-- Dashboard Navigation -->
+    <div  th:replace="~{fragments/dashboard-navigation :: dashboard-navigation}"></div>
     <!-- Right Section -->
         <div class="col-lg-9 mb-4">
             <div class="card shadow-sm">

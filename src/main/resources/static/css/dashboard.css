@@ -56,3 +56,30 @@ body{
     border-radius: 50%;
     margin-right: 15px;
 }
+
+li:hover{
+    cursor: pointer;
+}
+
+
+/*admin css*/
+.mainCard{
+    height: calc(100vh - 50px);
+    overflow: auto;
+}
+.accordion-button {
+    cursor: pointer;
+  }
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+  .accordion-button.expanded + .accordion-content {
+    max-height: 400px; /* Adjust as needed */
+  }
+
+.btn-orange {
+    background-color: #ff5722;
+    color: white;
+}

@@ -1,17 +1,9 @@
 package com.kitchenconnect.kitchen.controller;
 
-import com.kitchenconnect.kitchen.entity.FoodItem;
-import com.kitchenconnect.kitchen.entity.Kitchen;
-import com.kitchenconnect.kitchen.entity.KitchenRequest;
-import com.kitchenconnect.kitchen.service.FoodItemService;
-import com.kitchenconnect.kitchen.service.KitchenService;
-
-import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -26,9 +18,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.kitchenconnect.kitchen.entity.FoodItem;
+import com.kitchenconnect.kitchen.entity.Kitchen;
+import com.kitchenconnect.kitchen.entity.KitchenRequest;
+import com.kitchenconnect.kitchen.entity.KitchenStatusUpdateRequest;
+import com.kitchenconnect.kitchen.entity.User;
+import com.kitchenconnect.kitchen.enums.KitchenStatus;
+import com.kitchenconnect.kitchen.service.FoodItemService;
+import com.kitchenconnect.kitchen.service.KitchenService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/kitchens")
@@ -39,7 +45,7 @@ public class KitchenController {
     @Autowired
     private FoodItemService foodItemService;
 
-    private static final String IMAGE_DIR = "/uploads/directory/";
+    private static final String IMAGE_DIR = "/uploads/kitchenRequest/";
 
     @GetMapping
     public String showAllKitchens(Model model) {
@@ -47,6 +53,19 @@ public class KitchenController {
 
         model.addAttribute("kitchens", allKitchens);
         return "kitchens";
+    }
+
+    @GetMapping("/kitchen-registration")
+    public String showKitchenRegistration(Model model, HttpSession session) {
+        // Get the logged-in user from session
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        model.addAttribute("kitchenRequest", new KitchenRequest());
+
+        if(checkKitchenStatus(sessionUser)){
+            model.addAttribute("successMessage", "Your kitchen registration is under process. Please wait for approval.");
+        }
+
+        return "kitchenRegistration";
     }
 
     @GetMapping("/{id}")
@@ -81,49 +100,85 @@ public class KitchenController {
 
     @PostMapping("/submitKitchenForm")
     public String saveKitchenRequest(@ModelAttribute KitchenRequest kitchenRequest,
-                                    @RequestParam("menuImages") List<MultipartFile> menuImages
-                                    /* @RequestParam("kitchenImage") MultipartFile kitchenImage,
-                                    // @RequestParam("fssaiDocument") MultipartFile fssaiDocument,
-                                    // @RequestParam("panDocument") MultipartFile panDocument,
-                                    // @RequestParam("selectedCuisines") String selectedCuisines,
-                                    // @RequestParam("openDays") List<String> openDays*/) throws IOException {
+                                    @RequestParam("menuImages") List<MultipartFile> menuImages,
+                                    @RequestParam("kitchenImage") MultipartFile kitchenImage,
+                                    @RequestParam("fssaiDocument") MultipartFile fssaiDocument,
+                                    @RequestParam("panDocument") MultipartFile panDocument,
+                                    @RequestParam("selectedCuisines") String selectedCuisines,
+                                    @RequestParam("openDays") List<String> openDays,
+                                    RedirectAttributes redirectAttributes,
+                                    Model model,
+                                    HttpSession session) throws IOException {
 
-        // Process the cuisines as a comma-separated string
-        // kitchenRequest.setSelectedCuisines(Arrays.asList(selectedCuisines.split(",")));
-        // kitchenRequest.setOpenDays(openDays);
+        try{
+            // Get the logged-in user from session
+            User sessionUser = (User) session.getAttribute("loggedInUser");
 
-        // Save kitchen image and set its path
-        // if (!kitchenImage.isEmpty()) {
-        //     String kitchenImagePath = saveImageToDisk(kitchenImage);
-        //     kitchenRequest.setKitchenImagePath(kitchenImagePath);  // Ensure this method exists
-        // }
-
-        // Save menu images and set their paths
-        List<String> menuImagePaths = new ArrayList<>();
-        for (MultipartFile menuImage : menuImages) {
-            if (!menuImage.isEmpty()) {
-                String menuImagePath = saveImageToDisk(menuImage);
-                menuImagePaths.add(menuImagePath);
+            if (sessionUser == null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "No user is logged in.");
+                return "redirect:/kitchens/kitchen-registration"; // Redirect to registration
             }
+            //Process the cuisines as a comma-separated string
+            kitchenRequest.setSelectedCuisines(Arrays.asList(selectedCuisines.split(",")));
+            kitchenRequest.setOpenDays(openDays);
+            kitchenRequest.setUserId(sessionUser.getId());
+
+            //Save kitchen image and set its path
+            if (!kitchenImage.isEmpty()) {
+                String kitchenImagePath = saveImageToDisk(kitchenImage);
+                kitchenRequest.setKitchenImagePath(kitchenImagePath);  // Ensure this method exists
+            }
+
+            // Save menu images and set their paths
+            List<String> menuImagePaths = new ArrayList<>();
+            for (MultipartFile menuImage : menuImages) {
+                if (!menuImage.isEmpty()) {
+                    String menuImagePath = saveImageToDisk(menuImage);
+                    menuImagePaths.add(menuImagePath);
+                }
+            }
+            kitchenRequest.setMenuImagePaths(menuImagePaths);
+
+            //Save other documents (FSSAI, PAN) if needed
+            if (!fssaiDocument.isEmpty()) {
+                String fssaiDocPath = saveFileToDisk(fssaiDocument);
+                kitchenRequest.setFssaiDocumentPath(fssaiDocPath);  // Ensure this method exists
+            }
+
+            if (!panDocument.isEmpty()) {
+                String panDocPath = saveFileToDisk(panDocument);
+                kitchenRequest.setPanDocumentPath(panDocPath);  // Ensure this method exists
+            }
+
+            //Save the KitchenRequest in the database
+            kitchenService.saveKitchenRequest(kitchenRequest);
+
+            // Redirect with a success message
+            model.addAttribute("successMessage", "Your kitchen registration is under process. Please wait for approval.");
+
+            return "redirect:/kitchens/kitchen-registration";
+
+        }catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to submit kitchen request. Please try again.");
+
+            return "redirect:/kitchens/kitchen-registration"; // Redirect back to the form on failure
         }
-        kitchenRequest.setMenuImagePaths(menuImagePaths);
+    }
 
-        // Save other documents (FSSAI, PAN) if needed
-        // if (!fssaiDocument.isEmpty()) {
-        //     String fssaiDocPath = saveFileToDisk(fssaiDocument);
-        //     kitchenRequest.setFssaiDocument(fssaiDocPath);  // Ensure this method exists
-        // }
+    @PostMapping("/statusUpdate")
+    @ResponseBody
+    public Map<String, Object> updateKitchenStatus(@RequestBody KitchenStatusUpdateRequest kitchenRequest, HttpSession session) {
+        boolean updated = kitchenService.updateKitchenStatus(kitchenRequest.getKitchenId(), kitchenRequest.getIsApproved());
+        Map<String, Object> response = new HashMap<>();
 
-        // if (!panDocument.isEmpty()) {
-        //     String panDocPath = saveFileToDisk(panDocument);
-        //     kitchenRequest.setPanDocument(panDocPath);  // Ensure this method exists
-        // }
-
-        // Save the KitchenRequest in the database
-        //kitchenService.saveKitchenRequest(kitchenRequest);
-
-        //return "redirect:/kitchens/success"; // Redirect to a success page
-        return "redirect:/";
+        if(updated){
+            response.put("status", "success");
+            response.put("message", "kitchen/user/chef updated successfully.");
+        }else{
+            response.put("status", "failed");
+            response.put("message", "failed to update");
+        }
+        return response;
     }
 
     // Helper method to save images to disk
@@ -148,6 +203,16 @@ public class KitchenController {
         
         Files.write(path, file.getBytes());
         return path.toString(); // Return the file path
+    }
+
+    // Helper method to check kitchen status
+    private Boolean checkKitchenStatus(User sessionUser) {
+        
+        Kitchen kitchen = kitchenService.findKitchenByUser(sessionUser);
+        
+        boolean underVerification = kitchen != null && kitchen.getStatus() == KitchenStatus.UNDER_VERIFICATION;
+        
+        return underVerification;
     }
 }
 

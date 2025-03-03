@@ -1,15 +1,20 @@
 package com.kitchenconnect.kitchen.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-
+import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.UserRole;
+import com.kitchenconnect.kitchen.service.KitchenService;
 import com.kitchenconnect.kitchen.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -52,7 +57,7 @@ public class UserController {
         if (existingUser.isPresent() && passwordEncoder.matches(password, existingUser.get().getPassword())) {
     
             // Store user in session
-            session.setAttribute("loggedInUser", existingUser.get());
+            session.setAttribute("loggedInUser", existingUser.get());  
     
             // Redirect to dashboard
             return "redirect:/dashboard";
@@ -143,7 +148,6 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage", "Personal information updated successfully.");
         return "redirect:/dashboard"; // Redirect to dashboard page
     }
-
 
 
 }

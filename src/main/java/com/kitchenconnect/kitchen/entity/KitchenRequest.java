@@ -1,14 +1,18 @@
 package com.kitchenconnect.kitchen.entity;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public class KitchenRequest {
 
+    //User Id
+    private Long userId;
+
     // Kitchen Information
     private String kitchenName;
     private String kitchenDescription;
-    private String chefBiography;
 
     // Kitchen Address
     private String shopName;
@@ -26,7 +30,7 @@ public class KitchenRequest {
     private List<String> openDays;              // Selected open days
     private String openTime;                    // Kitchen opening time
     private String closeTime;                   // Kitchen closing time
-    private double deliveryFees;             
+    private BigDecimal deliveryFees;             
 
     // Kitchen Documents
     private String fssaiNumber;
@@ -44,6 +48,14 @@ public class KitchenRequest {
 
     // Getters and Setters
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public String getKitchenName() {
         return kitchenName;
     }
@@ -58,14 +70,6 @@ public class KitchenRequest {
 
     public void setKitchenDescription(String kitchenDescription) {
         this.kitchenDescription = kitchenDescription;
-    }
-
-    public String getChefBiography() {
-        return chefBiography;
-    }
-
-    public void setChefBiography(String chefBiography) {
-        this.chefBiography = chefBiography;
     }
 
     public String getShopName() {
@@ -192,7 +196,7 @@ public class KitchenRequest {
         return panDocumentPath;
     }
 
-    public void setPanDocument(String panDocumentPath) {
+    public void setPanDocumentPath(String panDocumentPath) {
         this.panDocumentPath = panDocumentPath;
     }
 
@@ -204,11 +208,11 @@ public class KitchenRequest {
         this.acceptTerms = acceptTerms;
     }
 
-    public double getDeliveryFees() {
+    public BigDecimal getDeliveryFees() {
         return deliveryFees;
     }
 
-    public void setDeliveryFees(double deliveryFees) {
+    public void setDeliveryFees(BigDecimal deliveryFees) {
         this.deliveryFees = deliveryFees;
     }
 

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
-import com.kitchenconnect.kitchen.entity.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.User;
+import com.kitchenconnect.kitchen.enums.UserRole;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
@@ -52,20 +52,35 @@ public class HomeController {
     }
 
     
-    
     @GetMapping("/dashboard")
     public String showChefDashboard(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
 
         model.addAttribute("user", loggedInUser);
-    
+        if (loggedInUser.getRole() == UserRole.ADMIN) {
+            Map<String, Object> kitchenData = getKitchenData();
+            model.addAttribute("kitchenData", kitchenData);
+        }
+        
         return "dashboard"; //Return the chef's dashboard view
     }
 
-    @GetMapping("/kitchen-registration")
-    public String showKitchenRegistration(Model model) {
-        model.addAttribute("kitchenRequest", new KitchenRequest());
+    private Map<String, Object> getKitchenData(){
+        Map<String, Object> kitchenData = new HashMap<>();
 
-        return "kitchenRegistration";
+        List<Kitchen> underVerificationKitchens = kitchenService.getKitchenUnderVerification();
+        List<Kitchen> activeKitchens = kitchenService.getActiveKitchens();
+        List<Kitchen> allKitchens = kitchenService.getAllKitchens();
+
+        kitchenData.put("underVerificationKitchens", underVerificationKitchens);
+        kitchenData.put("underVerificationCount", underVerificationKitchens.size());
+
+        kitchenData.put("activeKitchens", activeKitchens);
+        kitchenData.put("activeCount", activeKitchens.size());
+
+        kitchenData.put("allKitchens", allKitchens);
+        kitchenData.put("allCount", allKitchens.size());
+
+        return kitchenData;
     }
 }

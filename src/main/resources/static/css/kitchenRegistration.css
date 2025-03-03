@@ -147,6 +147,6 @@ li:hover{
   color: #374151;
 }
 
-#next-btn{
-  align-self: end;
+.navigationBtn{
+  gap:10px;
 }

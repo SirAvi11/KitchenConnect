@@ -76,7 +76,7 @@
                 <!-- Kitchen 1 -->
                 <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
                      <div class="card shadow-sm position-relative">
-                      <img th:alt="${kitchen.chef.user.firstname} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}"/>
+                      <img th:alt="${kitchen.kitchenName} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}"/>
                       <div class="rating-overlay">
                        <i class="fas fa-star">
                        </i>
@@ -84,7 +84,7 @@
                       </div>
                       <div class="card-body text-center">
                        <h5 class="card-title font-weight-bold text-black" th:text="${kitchen.kitchenName}"></h5>
-                       <p class="card-text text-muted" th:text="${kitchen.speciality}"></p>
+                       <p class="card-text text-muted" th:text="${kitchen.getSelectedCuisines()}"></p>
                        <div class="d-flex justify-content-between text-muted">
                         <div>
                             <i class="fas fa-clock"></i>

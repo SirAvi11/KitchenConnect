@@ -29,6 +29,70 @@
 
     <script>
 
+        // Function to activate the tab and show the corresponding content
+        function activateTab(target) {
+            const tabs = document.querySelectorAll(".tab-link");
+            const contents = document.querySelectorAll(".tab-content");
+            // Remove active-tab class and update icons for all tabs
+            tabs.forEach(t => {
+                t.classList.remove("active-tab");
+    
+                // Select the icon inside the tab
+                let icon = t.querySelector(".tab-icon");
+                if (icon) {
+                    icon.classList.remove("theme-text");
+                    icon.classList.add("text-muted");
+                }
+            });
+    
+            // Add active-tab class to the clicked tab
+            const activeTab = document.querySelector(`[data-tab="${target}"]`);
+            if (activeTab) {
+                activeTab.classList.add("active-tab");
+    
+                // Update icon of the active tab
+                let activeIcon = activeTab.querySelector(".tab-icon");
+                if (activeIcon) {
+                    activeIcon.classList.remove("text-muted");
+                    activeIcon.classList.add("theme-text");
+                }
+            }
+    
+            // Hide all content sections
+            contents.forEach(content => {
+                content.classList.remove("active-content");
+                content.classList.add("d-none");
+            });
+    
+            // Show the targeted content section
+            const activeContent = document.getElementById(target);
+            if (activeContent) {
+                activeContent.classList.remove("d-none");
+                activeContent.classList.add("active-content");
+    
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabs = document.querySelectorAll(".tab-link");
+            const tabsIcons = document.querySelectorAll(".tab-icon");
+
+            console.log("All tabs", tabs);
+            console.log("All tab icons", tabsIcons);
+        
+            // Event listener for clicking on tabs
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function () {
+                    event.preventDefault();
+                    let target = this.getAttribute("data-tab");
+                    const currentContent = document.querySelector(".tab-content.active-content");
+                    activateTab(target);
+                });
+            });
+        
+        });  
+
+
         function toggleEditBio() {
             event.preventDefault();
             const bioText = document.getElementById('bio-text');
@@ -74,5 +138,6 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>        
 </body>
 </html>

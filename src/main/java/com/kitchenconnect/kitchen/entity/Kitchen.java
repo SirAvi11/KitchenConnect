@@ -1,8 +1,13 @@
 package com.kitchenconnect.kitchen.entity;
 
 import jakarta.persistence.*;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.kitchenconnect.kitchen.enums.KitchenStatus;
 
 @Entity
 @Table(name = "kitchens")
@@ -14,8 +19,12 @@ public class Kitchen {
     private Long kitchenId;
 
     @OneToOne
-    @JoinColumn(name = "chef_id", nullable = false, unique = true)
-    private Chef chef; 
+    @JoinColumn(name = "user_id", nullable = false, unique = true) // Foreign key reference to User
+    private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private KitchenStatus status = KitchenStatus.UNDER_VERIFICATION;
 
     @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FoodItem> foodItems;
@@ -23,34 +32,81 @@ public class Kitchen {
     @Column(name = "kitchen_name", length = 35, nullable = false)
     private String kitchenName;
 
-    @Column(name = "kitchen_description", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String kitchenDescription;
 
-    @Column(name = "kitchen_image", columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String kitchenImage;
 
-    @Column(name = "speciality", nullable = false)
-    private String speciality;
+    @Column(nullable = false, precision = 3, scale = 1)
+    private BigDecimal overallRating = BigDecimal.ZERO;
 
-    @Column(name = "overall_rating", nullable = false, precision = 3, scale = 1)
-    private BigDecimal overallRating;
-
-    @Column(name = "total_ratings_count", nullable = false)
+    @Column(nullable = false)
     private int totalRatingsCount;
 
-    @Column(name = "min_delivery_time", nullable = false)
+    @Column(nullable = false)
     private int minDeliveryTime;
 
-    @Column(name = "max_delivery_time", nullable = false)
+    @Column(nullable = false)
     private int maxDeliveryTime;
 
-    @Column(name = "available_days", length = 100, nullable = false)
-    private String availableDays;
-
-    @Column(name = "delivery_fees", nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal deliveryFees;
 
-    // Getters and Setters
+    // Address fields
+    @Column(nullable = false)
+    private String shopName;
+
+    @Column
+    private String floor;
+
+    @Column(nullable = false)
+    private String area;
+
+    @Column(nullable = false)
+    private String city;
+
+    @Column(nullable = false, length = 15)
+    private String phoneNumber;
+
+    // Kitchen Menu & Operation Details
+    @Column(name = "menu_image_paths", columnDefinition = "TEXT")
+    private String menuImagePaths;
+
+    @ElementCollection
+    @CollectionTable(name = "kitchen_cuisines", joinColumns = @JoinColumn(name = "kitchen_id"))
+    @Column(name = "cuisine")
+    private List<String> selectedCuisines;
+
+    @Column(name = "open_days", columnDefinition = "TEXT")
+    private String openDays;
+
+    @Column(nullable = false)
+    private String openTime;
+
+    @Column(nullable = false)
+    private String closeTime;
+
+    // Kitchen Documents
+    @Column(unique = true, nullable = false)
+    private String fssaiNumber;
+
+    @Column(nullable = false)
+    private String fssaiExpiryDate;
+
+    @Column(columnDefinition = "TEXT")
+    private String fssaiDocumentPath;
+
+    @Column(unique = true, nullable = false)
+    private String panNumber;
+
+    @Column(columnDefinition = "TEXT")
+    private String panDocumentPath;
+
+    // Partner Contract
+    @Column(nullable = false)
+    private boolean acceptTerms;
+
     public Long getKitchenId() {
         return kitchenId;
     }
@@ -59,12 +115,28 @@ public class Kitchen {
         this.kitchenId = kitchenId;
     }
 
-    public Chef getChef() {
-        return chef;
+    public User getUser() {
+        return user;
     }
 
-    public void setChef(Chef chef) {
-        this.chef = chef;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public KitchenStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(KitchenStatus status) {
+        this.status = status;
+    }
+
+    public List<FoodItem> getFoodItems() {
+        return foodItems;
+    }
+
+    public void setFoodItems(List<FoodItem> foodItems) {
+        this.foodItems = foodItems;
     }
 
     public String getKitchenName() {
@@ -89,14 +161,6 @@ public class Kitchen {
 
     public void setKitchenImage(String kitchenImage) {
         this.kitchenImage = kitchenImage;
-    }
-
-    public String getSpeciality() {
-        return speciality;
-    }
-
-    public void setSpeciality(String speciality) {
-        this.speciality = speciality;
     }
 
     public BigDecimal getOverallRating() {
@@ -131,14 +195,6 @@ public class Kitchen {
         this.maxDeliveryTime = maxDeliveryTime;
     }
 
-    public String getAvailableDays() {
-        return availableDays;
-    }
-
-    public void setAvailableDays(String availableDays) {
-        this.availableDays = availableDays;
-    }
-
     public BigDecimal getDeliveryFees() {
         return deliveryFees;
     }
@@ -146,12 +202,133 @@ public class Kitchen {
     public void setDeliveryFees(BigDecimal deliveryFees) {
         this.deliveryFees = deliveryFees;
     }
-    
-    public List<FoodItem> getFoodItems() { 
-        return foodItems; 
+
+    public String getShopName() {
+        return shopName;
     }
 
-    public void setFoodItems(List<FoodItem> foodItems) { 
-        this.foodItems = foodItems; 
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getFloor() {
+        return floor;
+    }
+
+    public void setFloor(String floor) {
+        this.floor = floor;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public List<String> getMenuImagePaths() {
+        return menuImagePaths != null ? Arrays.asList(menuImagePaths.split(",")) : new ArrayList<>();
+    }
+
+
+    public void setMenuImagePaths(List<String> paths) {
+        this.menuImagePaths = String.join(",", paths);
+    }
+
+    public List<String> getSelectedCuisines() {
+        return selectedCuisines;
+    }
+
+    public void setSelectedCuisines(List<String> selectedCuisines) {
+        this.selectedCuisines = selectedCuisines;
+    }
+
+    public List<String> getOpenDays() {
+        return openDays != null ? Arrays.asList(openDays.split(",")) : new ArrayList<>();
+    }
+
+    public void setOpenDays(List<String> openDays) {
+        this.openDays = String.join(",", openDays);
+    }
+
+    public String getOpenTime() {
+        return openTime;
+    }
+
+    public void setOpenTime(String openTime) {
+        this.openTime = openTime;
+    }
+
+    public String getCloseTime() {
+        return closeTime;
+    }
+
+    public void setCloseTime(String closeTime) {
+        this.closeTime = closeTime;
+    }
+
+    public String getFssaiNumber() {
+        return fssaiNumber;
+    }
+
+    public void setFssaiNumber(String fssaiNumber) {
+        this.fssaiNumber = fssaiNumber;
+    }
+
+    public String getFssaiExpiryDate() {
+        return fssaiExpiryDate;
+    }
+
+    public void setFssaiExpiryDate(String fssaiExpiryDate) {
+        this.fssaiExpiryDate = fssaiExpiryDate;
+    }
+
+    public String getFssaiDocumentPath() {
+        return fssaiDocumentPath;
+    }
+
+    public void setFssaiDocumentPath(String fssaiDocumentPath) {
+        this.fssaiDocumentPath = fssaiDocumentPath;
+    }
+
+    public String getPanNumber() {
+        return panNumber;
+    }
+
+    public void setPanNumber(String panNumber) {
+        this.panNumber = panNumber;
+    }
+
+    public String getPanDocumentPath() {
+        return panDocumentPath;
+    }
+
+    public void setPanDocumentPath(String panDocumentPath) {
+        this.panDocumentPath = panDocumentPath;
+    }
+
+    public boolean isAcceptTerms() {
+        return acceptTerms;
+    }
+
+    public void setAcceptTerms(boolean acceptTerms) {
+        this.acceptTerms = acceptTerms;
     }
 }
