@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KitchenConnect</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/kitchenRegistration.css}">
+    <link rel="icon" type="image/png" th:href="@{/images/favicon_io/favicon-16x16.png}">
+</head>
+<body>
+    <!-- Include Header -->
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <main class="kitchenInfo container mt-4">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${successMessage == null}">
+            <form method="POST" enctype="multipart/form-data" th:action="@{/kitchens/submitKitchenForm}" th:object="${kitchenRequest}">
+                <div class="row">
+                    <aside class="col-lg-4 mb-4">
+                        <div class="bg-white shadow-sm rounded-lg p-4">
+                            <h2 class="h5 font-weight-bold mb-4">Complete your registration</h2>
+                            <ul class="list-unstyled">
+                                <li class="d-flex align-items-center active-tab mb-3 tab-link" data-tab="kitchen-info">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-bell tab-icon theme-text"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="h6 font-weight-bold text-dark mb-1">Kitchen information</h3>
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-center mb-3 tab-link"  data-tab="menu-details">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-utensils tab-icon"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="h6 font-weight-bold text-dark mb-1">Menu and operational details</h3>
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-center mb-3 tab-link"  data-tab="kitchen-documents">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-file-alt tab-icon"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="h6 font-weight-bold text-dark mb-1">Kitchen documents</h3>
+                                    </div>
+                                </li>
+                                <li class="d-flex align-items-center mb-3 tab-link" data-tab="partner-contract">
+                                    <div class="d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 40px; height: 40px;">
+                                        <i class="fas fa-file-signature tab-icon"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="h6 font-weight-bold text-dark mb-1">Partner contract</h3>
+                                    </div>
+                                </li>
+                            </ul>
+                            <div class="mt-4">
+                                <button class="btn theme-bg text-white w-100 d-flex justify-content-between align-items-center">
+                                    <span>Documents required for registration</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+                    </aside>
+                    <!--Kitchen Information Section-->
+                    <div class="mainContent col-lg-8 mb-4 tab-content active-content" id="kitchen-info">
+                        <h2 class="font-weight-bold mb-4">Kitchen Information</h2>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold text-dark" for="Kitchen-name">Kitchen name</label>
+                                <p class="text-muted small mb-2">Customers will see this name on KitchenConnect</p>
+                                <input th:field="*{kitchenName}" class="form-control" id="Kitchen-name" placeholder="Kitchen name*" type="text" />
+                            </div>
+                            <div class="form-group">
+                                <label class="font-weight-bold text-dark" for="kitchen-description">Kitchen Description</label>
+                                <textarea th:field="*{kitchenDescription}" id="kitchen-description" class="form-control" placeholder="Write about the your kitchen..." rows="5" ></textarea>
+                            </div>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-lg p-4">
+                            <h2 class="h4 font-weight-bold mb-4">Kitchen address details</h2>
+                            <p class="text-muted small mb-4">Address details are basis the Kitchen location mentioned above</p>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold text-dark" for="building-name">Shop/Building No.</label>
+                                    <input th:field="*{shopName}" id="building-name" class="form-control" placeholder="Shop name*" type="text" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold text-dark" for="building-floor">Floor/Tower</label>
+                                    <input th:field="*{floor}" id="building-floor" class="form-control" placeholder="Floor*" type="text" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold text-dark" for="area-name">Area/Sector/Locality</label>
+                                    <input th:field="*{area}" id="area-name" class="form-control" placeholder="Area/Sector/Locality*" type="text" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold text-dark" for="city-name">City</label>
+                                    <input th:field="*{city}" id="city-name" class="form-control" placeholder="City*" type="text" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold text-dark" for="owner-phone">Phone number</label>
+                                    <input th:field="*{phoneNumber}" id="owner-phone" class="form-control" placeholder="Phone number*" type="text" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Menu and Operational Details Section-->
+                    <div class="mainContent col-lg-8 mb-4 tab-content d-none" id="menu-details">
+                        <h2 class="font-weight-bold mb-4">Menu and other operational details</h2>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                Add menu images
+                            </h1>
+                            <p class="text-muted mb-4">
+                                These will be used to create your in-app menu for online ordering
+                            </p>
+                            <div class="upload-area mb-4" onclick="document.getElementById('menuFileInput').click()">
+                                <i class="fas fa-plus mb-2"></i>
+                                <p class="font-weight-bold text-primary">
+                                    Add more images
+                                </p>
+                                <p class="text-muted">
+                                    jpeg, png or jpg formats up-to 5MB
+                                </p>
+                                <input th:field="*{menuImages}" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple />
+                            </div>
+                            <div class="image-container" id="menu-images-container">
+                            </div>
+                            <a class="text-primary mt-1 d-block" href="#">
+                                Guidelines to upload menu images
+                            </a>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                Add restaurant profile image
+                            </h1>
+                            <p class="text-muted mb-4">
+                                This will be your restaurant’s profile picture on KitchenConnect — so use your best food shot!
+                            </p>
+                            <div class="upload-area mb-4" onclick="document.getElementById('kitchenFileInput').click()">
+                                <i class="fas fa-plus mb-2"></i>
+                                <p class="font-weight-bold text-primary">
+                                    Add kitchen image
+                                </p>
+                                <p class="text-muted">
+                                    jpeg, png or jpg formats up-to 5MB
+                                </p>
+                                <input th:field="*{kitchenImage}" type="file" id="kitchenFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'kitchen-image-container')" />
+                            </div>
+                            <div class="image-container" id="kitchen-image-container">
+                            </div>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                Select upto 3 cuisines
+                            </h1>
+                            <p class="text-muted mb-4">
+                                Your kitchen will appear in searches for these cuisines
+                            </p>
+                            <div class="search-container mb-4">
+                                <input type="text" class="form-control" placeholder="Search for cuisines">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button active" onclick="toggleSelection(this)">North Indian</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button active" onclick="toggleSelection(this)">Fast Food</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button active" onclick="toggleSelection(this)">Biryani</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Chinese</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">South Indian</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Pizza</button>
+                                </div>
+                            </div>
+                            <div class="more-options row mb-4">
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Italian</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Mexican</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Thai</button>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Japanese</button>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <a href="#" class="text-primary" style="text-decoration: underline;" id="show-more">Show more</a>
+                            </div>
+                            <!-- Hidden input to store selected cuisines -->
+                            <input type="hidden" th:field="*{selectedCuisines}" id="selectedCuisines" />
+                        </div>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                Kitchen delivery timings
+                            </h1>
+                            <p class="text-muted mb-4">
+                                Mark open days - Don't forget to uncheck your off-day
+                            </p>
+                            <div class="d-flex flex-wrap mb-3">
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Monday" name="openDays"checked>
+                                    <span>Monday</span>
+                                </label>
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Tuesday" name="openDays">
+                                    <span>Tuesday</span>
+                                </label>
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Wednesday" name="openDays">
+                                    <span>Wednesday</span>
+                                </label>
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Thursday" name="openDays">
+                                    <span>Thursday</span>
+                                </label>
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Friday" name="openDays">
+                                    <span>Friday</span>
+                                </label>
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Saturday" name="openDays">
+                                    <span>Saturday</span>
+                                </label>
+                                <label class="day-pill mr-2 mb-2">
+                                    <input type="checkbox" value="Sunday" name="openDays">
+                                    <span>Sunday</span>
+                                </label>
+                            </div>
+                            <h5 class="h5 font-weight-bold mb-3">
+                                Timings
+                            </h5>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <select class="form-control" th:field="*{openTime}">
+                                        <option value="Open time">Open time</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <select class="form-control" th:field="*{closeTime}">
+                                        <option value="Close time">Close time</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label class="font-weight-bold text-dark" for="delivery-fees">Approximate Delivery Fees</label>
+                                <input th:field="*{deliveryFees}" id="delivery-fees" class="form-control" placeholder="Delivery Fees" type="text" />
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Kitchen Documents Section-->
+                    <div class="mainContent col-lg-8 mb-4 tab-content d-none" id="kitchen-documents">
+                        <h2 class="font-weight-bold mb-4">Kitchen Documents</h2>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                FSSAI details
+                            </h1>
+                            <p class="text-muted mb-4">
+                                This is required to comply with regulations on food safety
+                            </p>
+                            <div class="bg-blue-50 p-3 rounded-lg mb-4">
+                                <h2 class="h6 font-weight-bold mb-2">FSSAI requirements</h2>
+                                <ul class="list-unstyled text-gray-700 mb-0">
+                                    <li class="mb-2">• The name on the FSSAI certificate should match either the restaurant's name or the name on the PAN card.</li>
+                                    <li>• The address on the FSSAI certificate should match the restaurant's address.</li>
+                                </ul>
+                            </div>
+                            <div class="form-row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold text-dark" for="fssai-number">FSSAI Number</label>
+                                    <input th:field="*{fssaiNumber}" id ="fssai-number" type="text" class="form-control" placeholder="FSSAI number*"* >
+                                </div>
+                                <div class="col">
+                                    <label class="font-weight-bold text-dark" for="expiry-date">Expiry date</label>
+                                    <input th:field="*{fssaiExpiryDate}" id="expiry-date" type="text" class="form-control" placeholder="Expiry date*" >
+                                </div>
+                            </div>
+                            <div class="upload-area mb-4" onclick="document.getElementById('fssaiUpload').click()">
+                                <i class="fas fa-plus mb-2"></i>
+                                <p class="font-weight-bold text-primary">
+                                    Upload your FSSAI license
+                                </p>
+                                <p class="text-muted">
+                                    jpeg, png or pdf formats up-to 5MB
+                                </p>
+                                <input th:field="*{fssaiDocument}" type="file" id="fssaiUpload" class="d-none" accept=".jpeg, .png, .pdf" onchange="previewImage(event, 'fssai-image-container')" />
+                            </div>
+                            <div class="image-container" id="fssai-image-container">
+                            </div>
+                        </div>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                PAN details
+                            </h1>
+                            <p class="text-muted mb-4">
+                                Enter the PAN details of the person or company who legally owns the restaurant
+                            </p>
+                            <div class="form-row mb-4">
+                                <div class="col">
+                                    <label class="font-weight-bold text-dark" for="pan-number">PAN Number</label>
+                                    <input th:field="*{panNumber}" id ="pan-number" type="text" class="form-control" placeholder="PAN number*"* >
+                                </div>
+                            </div>
+                            <div class="upload-area mb-4" onclick="document.getElementById('panUpload').click()">
+                                <i class="fas fa-plus mb-2"></i>
+                                <p class="font-weight-bold text-primary">
+                                    Upload your PAN
+                                </p>
+                                <p class="text-muted">
+                                    jpeg, png or pdf formats up-to 5MB
+                                </p>
+                                <input th:field="*{panDocument}" type="file" id="panUpload" class="d-none" accept=".jpeg, .png, .pdf" onchange="previewImage(event, 'pan-image-container')" />
+                            </div>
+                            <div class="image-container" id="pan-image-container">
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--Partner Contract Section-->
+                    <div class="mainContent col-lg-8 mb-4 tab-content d-none" id="partner-contract">
+                        <h2 class="font-weight-bold mb-4">Partner Contract</h2>
+                        <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+                            <h1 class="h4 font-weight-bold mb-3">
+                                Terms & Conditons
+                            </h1>
+                            <p class="text-muted mb-4">
+                                Please read and accept our terms and conditions before proceeding.
+                            </p>
+                            <div class="scrollable border p-3 mb-3 overflow-auto" style="max-height: 300px;">
+                                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> 
+                                <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                            </div>
+                            <div class="form-check">
+                                <input th:field="*{acceptTerms}" type="checkbox" class="form-check-input" id="acceptTerms">
+                                <label class="form-check-label" for="acceptTerms">I accept the terms and conditions</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="navigationBtn d-flex justify-content-end">
+                    <button id="prev-btn" class="btn btn-orange mt-3 mb-3 d-none" onclick="moveToPrevTab()">Previous</button>
+                    
+                    <button id="next-btn" class="btn btn-orange mt-3 mb-3" onclick="moveToNextTab()">Next</button>
+                    
+                    <button id="submit-btn" class="btn btn-orange mt-3 mb-3 d-none" type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    
+    <!-- Include Footer -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+
+    <script>
+
+        // Function to activate the tab and show the corresponding content
+        function activateTab(target) {
+            const tabs = document.querySelectorAll(".tab-link");
+            const contents = document.querySelectorAll(".tab-content");
+            // Remove active-tab class and update icons for all tabs
+            tabs.forEach(t => {
+                t.classList.remove("active-tab");
+    
+                // Select the icon inside the tab
+                let icon = t.querySelector(".tab-icon");
+                if (icon) {
+                    icon.classList.remove("theme-text");
+                    icon.classList.add("text-muted");
+                }
+            });
+    
+            // Add active-tab class to the clicked tab
+            const activeTab = document.querySelector(`[data-tab="${target}"]`);
+            if (activeTab) {
+                activeTab.classList.add("active-tab");
+    
+                // Update icon of the active tab
+                let activeIcon = activeTab.querySelector(".tab-icon");
+                if (activeIcon) {
+                    activeIcon.classList.remove("text-muted");
+                    activeIcon.classList.add("theme-text");
+                }
+            }
+    
+            // Hide all content sections
+            contents.forEach(content => {
+                content.classList.remove("active-content");
+                content.classList.add("d-none");
+            });
+    
+            // Show the targeted content section
+            const activeContent = document.getElementById(target);
+            if (activeContent) {
+                const nextBtn = document.getElementById("next-btn");
+                const submitBtn = document.getElementById("submit-btn");
+                const prevBtn = document.getElementById("prev-btn");
+
+                activeContent.classList.remove("d-none");
+                activeContent.classList.add("active-content");
+                let isFirst = activeContent.previousElementSibling;
+                let isLast = activeContent.nextElementSibling;
+                if(!isFirst || !isFirst.classList.contains("tab-content")){
+                    //First tab selected
+                    if(prevBtn){
+                        prevBtn.classList.add("d-none");
+                    }
+                }else{
+                    prevBtn.classList.remove("d-none");
+                }   
+                if(!isLast || !isLast.classList.contains("tab-content")){
+                    //Last tab selected
+                    if(nextBtn && submitBtn){
+                        nextBtn.classList.add("d-none");
+                        submitBtn.classList.remove("d-none");
+                    }
+                }else{
+                    submitBtn.classList.add("d-none");
+                    nextBtn.classList.remove("d-none");
+                }
+
+            }
+        }
+
+        function moveToPrevTab(){
+            event.preventDefault();
+            // Get the parent tab content of the current button
+            const currentContent = document.querySelector(".tab-content.active-content");
+
+            let nextContent = currentContent.previousElementSibling;
+
+            // If there is no next content, return (last tab)
+            if (!nextContent || !nextContent.classList.contains("tab-content")) {
+                return; // Prevents clicking next on the last tab
+            }
+
+            // Get the target tab of the next content
+            const prevBtn = document.getElementById("prev-btn");
+            if(prevBtn){
+                prevBtn.classList.remove("d-none");
+            }
+            let target = nextContent.getAttribute("id");
+            activateTab(target); // Activate the next tab
+        }
+
+        function moveToNextTab(){
+            event.preventDefault();
+            // Get the parent tab content of the current button
+            const currentContent = document.querySelector(".tab-content.active-content");
+
+            const isValid = validateForm(currentContent.getAttribute("id"));
+
+            if(true){
+                let nextContent = currentContent.nextElementSibling;
+
+                // If there is no next content, return (last tab)
+                if (!nextContent || !nextContent.classList.contains("tab-content")) {
+                    return; // Prevents clicking next on the last tab
+                }
+
+                // Get the target tab of the next content
+                const prevBtn = document.getElementById("prev-btn");
+                if(prevBtn){
+                    prevBtn.classList.remove("d-none");
+                }
+                let target = nextContent.getAttribute("id");
+                activateTab(target); // Activate the next tab
+            }
+        }
+
+        document.querySelectorAll('.day-pill').forEach(label => {
+            const checkbox = label.querySelector('input[type="checkbox"]');
+            if (checkbox.checked) {
+                label.classList.add('checked');
+            }
+            label.addEventListener('click', () => {
+                checkbox.checked = !checkbox.checked;
+                label.classList.toggle('checked', checkbox.checked);
+                validateCheckboxes();
+            });
+        });
+
+        function validateCheckboxes() {
+            const checkboxes = document.querySelectorAll('.day-pill input[type="checkbox"]');
+            const checkedCount = Array.from(checkboxes).filter(checkbox => checkbox.checked).length;
+            if (checkedCount === 0) {
+                checkboxes.forEach(checkbox => {
+                    checkbox.required = true;
+                });
+            } else {
+                checkboxes.forEach(checkbox => {
+                    checkbox.required = false;
+                });
+            }
+        }
+
+        document.getElementById('show-more').addEventListener('click', function(event) {
+            event.preventDefault();
+            var moreOptions = document.querySelector('.more-options');
+            if (moreOptions.style.display === 'none' || moreOptions.style.display === '') {
+                moreOptions.style.display = 'flex';
+                this.textContent = 'Show less';
+            } else {
+                moreOptions.style.display = 'none';
+                this.textContent = 'Show more';
+            }
+        });
+
+        function toggleSelection(button) {
+            event.preventDefault();
+            var selectedButtons = document.querySelectorAll('.cuisine-button.active');
+            if (button.classList.contains('active')) {
+                button.classList.remove('active');
+                button.classList.add('inactive');
+            } else if (selectedButtons.length < 3) {
+                button.classList.remove('inactive');
+                button.classList.add('active');
+            }
+            document.getElementById('selectedCuisines').value = selectedCuisines.join(',');
+
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabs = document.querySelectorAll(".tab-link");
+            const tabsIcons = document.querySelectorAll(".tab-icon");
+        
+            // Event listener for clicking on tabs
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function () {
+                    event.preventDefault();
+                    let target = this.getAttribute("data-tab");
+                    const currentContent = document.querySelector(".tab-content.active-content");
+                    const isValid = validateForm(currentContent.getAttribute("id"));
+                    if(true){
+                        activateTab(target);
+                    }
+                });
+            });
+        
+        });  
+
+        function previewImage(event, containerId, maxImages = 1, imgWidth = 200, imgHeight = 150) {
+            const file = event.target.files[0];
+            const imageContainer = document.getElementById(containerId);
+        
+            if (!file) return;
+        
+            // Check if we need to limit the number of images (for menu images)
+            if (maxImages > 1 && imageContainer.children.length >= maxImages) {
+                alert(`You can only upload a maximum of ${maxImages} images.`);
+                return;
+            }
+        
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (maxImages === 1) imageContainer.innerHTML = ''; // Replace image for single-image containers
+        
+                // Create a new div to wrap the image and remove button
+                const imageWrapper = document.createElement('div');
+                imageWrapper.classList.add('image-wrapper');
+        
+                // Create image element
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = "Uploaded image preview";
+                img.width = imgWidth;
+                img.height = imgHeight;
+        
+                // Create remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.classList.add('remove-btn');
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.onclick = function () {
+                    imageContainer.removeChild(imageWrapper);
+                };
+        
+                // Append elements to wrapper
+                imageWrapper.appendChild(img);
+                imageWrapper.appendChild(removeBtn);
+        
+                // Append wrapper to container
+                imageContainer.appendChild(imageWrapper);
+            };
+        
+            reader.readAsDataURL(file);
+        }
+
+        function validateForm(containerId) {
+            // Get the container element by ID
+            const container = document.getElementById(containerId);
+            
+            if (!container) {
+                console.error('Container with the given ID not found!');
+                return false; // Container not found
+            }
+        
+            // Get all input fields, textareas, and select elements within the container
+            const inputs = container.querySelectorAll('input, textarea, select');
+            
+            let isValid = true;
+        
+            // Loop through each input, textarea, or select element to validate
+            inputs.forEach(input => {
+                // Check if the field is required and if it's empty
+                if (input.hasAttribute('required') && input.value.trim() === '') {
+                    // If required and empty, add an error message (or style)
+                    isValid = false;
+                    input.classList.add('is-invalid'); // Example of marking the field as invalid
+                } else {
+                    // Remove any invalid class if the field is valid
+                    input.classList.remove('is-invalid');
+                }        
+            });
+        
+            return isValid;
+        }
+        
+    </script>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

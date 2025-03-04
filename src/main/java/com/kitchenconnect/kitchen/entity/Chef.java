@@ -10,12 +10,13 @@ public class Chef {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chefId;
 
-    @OneToOne(mappedBy = "chef", cascade = CascadeType.ALL)
-    private Kitchen kitchen;
-
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true) // Foreign key reference to User
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "kitchen_id", nullable = false, unique = true) // Foreign key reference to Kitchen
+    private Kitchen kitchen;
 
     @Column(columnDefinition = "TEXT")
     private String chefProfilePicture;
@@ -27,13 +28,6 @@ public class Chef {
     private String favouriteDishes;
 
     // Getters and Setters
-    public Long getChefId() {
-        return chefId;
-    }
-
-    public void setChefId(Long chefId) {
-        this.chefId = chefId;
-    }
 
     public Kitchen getKitchen() {
         return kitchen;
@@ -41,6 +35,14 @@ public class Chef {
 
     public void setKitchen(Kitchen kitchen) {
         this.kitchen = kitchen;
+    }
+    
+    public Long getChefId() {
+        return chefId;
+    }
+
+    public void setChefId(Long chefId) {
+        this.chefId = chefId;
     }
 
     public String getChefProfilePicture() {

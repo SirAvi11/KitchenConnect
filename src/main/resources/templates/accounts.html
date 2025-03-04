@@ -46,7 +46,7 @@
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="d-flex align-items-center justify-content-center vh-100">
         <div class="position-absolute w-100 h-100 background-image d-none d-sm-block"></div>
-        <div class="position-relative bg-white bg-opacity-90 p-4 rounded-lg shadow-lg w-50 max-w-sm">
+        <div class="position-relative bg-white bg-opacity-90 p-4 rounded-lg shadow-lg w-50">
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-bold text-gray-800">Welcome to <span class="text-orange">KitchenConnect</span></h1>
                 <p class="text-gray-600 mt-2">Your gateway to delicious homemade meals from local kitchens</p>
@@ -55,21 +55,19 @@
                 <button id="loginTab" class="btn btn-link tab-button active">Login</button>
                 <button id="registerTab" class="btn btn-link tab-button">Register</button>
             </div>
-            <div id="loginForm">
-                <form>
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter password">
-                    </div>
-                    <button type="submit" class="btn btn-orange btn-block">Login</button>
-                </form>
-            </div>
+            <form id="loginForm" th:action="@{/accounts/loginUser}" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input name="username" type="text" class="form-control" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input name="password" type="password" class="form-control" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-orange btn-block">Login</button>
+            </form>
             <div id="registerForm" class="d-none">
-                <form th:action="@{/register}" method="post" th:object="${user}">
+                <form th:action="@{/accounts/save}" method="post" th:object="${user}">
                     <div class="container">
                         <div class="row">
                             <!-- Left Column -->
@@ -86,34 +84,39 @@
                                     <label for="regLastname">Last name</label>
                                     <input th:field="*{lastname}" type="text" class="form-control" id="regLastname" placeholder="Enter last name" required>
                                 </div>
+                                <div class="form-group">
+                                    <label for="regEmail">Email</label>
+                                    <input th:field="*{email}" type="email" class="form-control" id="regEmail" placeholder="Enter email" required>
+                                </div>
                             </div>
                     
                             <!-- Right Column -->
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="regEmail">Email</label>
-                                    <input th:field="*{email}" type="email" class="form-control" id="regEmail" placeholder="Enter email" required>
-                                </div>
-                                <div class="form-group">
                                     <label for="regPassword">Password</label>
                                     <input th:field="*{password}" type="password" class="form-control" id="regPassword" placeholder="Enter password" required>
                                 </div>
                                 <div class="form-group">
-                                    <label class="block text-gray-700">I am a</label>
-                                    <select th:field="*{role}" class="w-full border rounded py-2 px-3" required>
-                                        <option value="chef">Chef</option>
-                                        <option value="food_lover">Food Lover</option>
-                                    </select>
+                                    <label for="regConfirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="regConfirmPassword" placeholder="Confirm password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regAddress">Address</label>
+                                    <input th:field="*{address}" type="text" class="form-control" id="regAddress" placeholder="Enter address" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="regPhone">Phone Number</label>
+                                    <input th:field="*{phoneNumber}" type="text" class="form-control" id="regPhone" placeholder="Phone Number" required>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-orange btn-block">Register</button>
                 </form>
-                <div class="message" th:if="${registrationMessage}" th:text="${registrationMessage}"></div>
             </div>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
         </div>
-        
     </div>
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -122,19 +125,46 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             $(document).ready(function () {
+                function showTab(tab) {
+                    if (tab === "register") {
+                        $('#registerTab').addClass('active');
+                        $('#loginTab').removeClass('active');
+                        $('#registerForm').removeClass('d-none');
+                        $('#loginForm').addClass('d-none');
+                        history.pushState(null, '', '/accounts/register'); // Update URL
+                    } else {
+                        $('#loginTab').addClass('active');
+                        $('#registerTab').removeClass('active');
+                        $('#loginForm').removeClass('d-none');
+                        $('#registerForm').addClass('d-none');
+                        history.pushState(null, '', '/accounts/login'); // Update URL
+                    }
+                }
+        
+                // Handle tab click
                 $('#loginTab').on('click', function () {
-                    $(this).addClass('active');
-                    $('#registerTab').removeClass('active');
-                    $('#loginForm').removeClass('d-none');
-                    $('#registerForm').addClass('d-none');
+                    showTab("login");
                 });
-    
+        
                 $('#registerTab').on('click', function () {
-                    $(this).addClass('active');
-                    $('#loginTab').removeClass('active');
-                    $('#registerForm').removeClass('d-none');
-                    $('#loginForm').addClass('d-none');
+                    showTab("register");
                 });
+        
+                // Check URL on page load and show the correct tab
+                if (window.location.pathname === "/accounts/register") {
+                    showTab("register");
+                } else {
+                    showTab("login"); // Default to login
+                }
+            });
+
+            $('#registerForm').on('submit', function (e) {
+                let password = $('#regPassword').val();
+                let confirmPassword = $('#regConfirmPassword').val();
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    alert('Passwords do not match.');
+                }
             });
         </script>
 </body>

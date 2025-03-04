@@ -1,12 +1,7 @@
 package com.kitchenconnect.kitchen.entity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+
+import com.kitchenconnect.kitchen.enums.UserRole;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -15,22 +10,38 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Chef chef;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Kitchen kitchen;
 
     @Column(name="user_name", nullable = false)
     private String username;
+
     @Column(name="password", nullable = false)
     private String password;
+
     @Column(name="first_name", nullable = false)
     private String firstname;
+
     @Column(name="last_name", nullable = false)
     private String lastname;
+
     @Column(name="email", nullable = false)
     private String email;
-    @Column(name="role", nullable = false)
-    private String role;
 
+    @Column(name="address", nullable = false)
+    private String address;
+
+    @Column(name="phone_number", nullable = false, length = 20)
+    private String phoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name="role", nullable = false)
+    private UserRole role;
+
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -52,12 +63,6 @@ public class User {
     public String getFirstname() {
         return firstname;
     }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getEmail() {
-        return email;
-    }
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
@@ -67,11 +72,28 @@ public class User {
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
-    public String getRole() {
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+    public UserRole getRole() {
         return role;
     }
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
-
 }

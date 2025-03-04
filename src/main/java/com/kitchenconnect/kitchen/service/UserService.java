@@ -6,8 +6,8 @@ import java.util.Optional;
 import com.kitchenconnect.kitchen.entity.User;
 
 public interface UserService {
-    User loadUserByUsername(String username);
     List<User> getAllUsers();
-    User registerUser (User user);
-    Optional<User> loginUser (String username, String password);
+    User saveUser (User user);
+    Optional<User> getById (Long id);
+    Optional<User> findByUsernameOrEmail(String username, String email);
 }

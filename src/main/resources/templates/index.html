@@ -19,7 +19,7 @@
             <p>Order directly from professional chefs in your area</p>
             <div>
                 <a th:href="@{/kitchens}" class="btn btn-order-now">Order Now</a>
-                <a th:href="@{/accounts}" class="btn btn-join-chef">Join as Chef</a>
+                <a th:href="@{/accounts/register}" class="btn btn-join-chef">Join as Chef</a>
             </div>
         </div>
     </section>
@@ -32,13 +32,13 @@
             <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
                 <a th:href="@{'/kitchens/' + ${kitchen.kitchenId}}" class="text-decoration-none">
                     <div class="card shadow-sm position-relative">
-                        <img th:alt="${kitchen.chef.user.firstname} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}">
+                        <img th:alt="${kitchen.kitchenName} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}">
                         <div class="rating-overlay">
                             <i class="fas fa-star"></i> <span th:text="${kitchen.overallRating}"></span>
                         </div>
                         <div class="card-body">
                             <h5  th:text="${kitchen.kitchenName}" class="card-title font-weight-bold"></h5>
-                            <p th:text="${kitchen.speciality}" class="card-text text-muted"></p>
+                            <p th:text="${kitchen.getSelectedCuisines()}" class="card-text text-muted"></p>
                             <div class="d-flex justify-content-between text-muted">
                                 <div>
                                     <i class="fas fa-clock"></i>

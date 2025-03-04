@@ -14,9 +14,24 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // Allow all requests without authentication
+                .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/accounts/dashboard").authenticated() // Require authentication
+                .anyRequest().permitAll() // Allow all other URLs
             )
-            .csrf().disable(); // Disable CSRF protection if not needed (be cautious with this)
+            .formLogin(form -> form
+            .loginPage("/accounts/login") // Custom login page
+            .loginProcessingUrl("/loginUser") // This should match the login form action
+            .defaultSuccessUrl("/dashboard", true) // Default redirect after login
+            .permitAll()
+             )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/") // Redirect to home after logout
+                .invalidateHttpSession(true) // Invalidate session
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            .csrf().disable(); // Disable CSRF if not needed (use with caution)
 
         return http.build();
     }

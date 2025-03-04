@@ -26,43 +26,31 @@ public class UserServiceImpl implements UserService {
         this.chefRepository = chefRepository;
     }
 
-    public User registerUser (User user) {
+    public User saveUser (User user) {
         // Encode password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         // Save User in Database
         User savedUser = userRepository.save(user);
 
         // If User is a CHEF, also create a Chef entry
-        if ("CHEF".equalsIgnoreCase(user.getRole())) {
-            Chef chef = new Chef();
-            chef.setUser(savedUser); // Link Chef to User
-            chefRepository.save(chef); // Save in Chef Table
-        }
+        // if ("CHEF".equalsIgnoreCase(user.getRole())) {
+        //     Chef chef = new Chef();
+        //     chef.setUser(savedUser); // Link Chef to User
+        //     chefRepository.save(chef); // Save in Chef Table
+        // }
 
         return savedUser;
-    }
-
-    public Optional<User> loginUser (String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            return user;
-        }
-        return Optional.empty();
     }
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    public User loadUserByUsername(String username){
-            return null;
-        // Optional<User> user =  userRepository.findByUsername(username);
+    public Optional<User> getById(Long id) {
+        return userRepository.findById(id);
+    }
 
-        // if(user.isPresent()){
-        //     var userObj = user.get();
-        //     return User.builder().username(userObj.getUsername()).password(userObj.getPassword());
-        // }
+    public Optional<User> findByUsernameOrEmail(String username, String email) {
+        return userRepository.findByUsernameOrEmail(username, email);
     }
 
     
