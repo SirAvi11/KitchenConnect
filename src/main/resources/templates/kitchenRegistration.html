@@ -129,7 +129,7 @@
                                 <p class="text-muted">
                                     jpeg, png or jpg formats up-to 5MB
                                 </p>
-                                <input th:field="*{menuImages}" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple />
+                                <input th:field="*{menuImages}" name="menuImages" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple />
                             </div>
                             <div class="image-container" id="menu-images-container">
                             </div>

@@ -19,7 +19,7 @@
         <!-- Restaurant Profile and About My Kitchen Combined -->
         <div class="card">
          <div class="flex flex-col items-center">
-          <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="200" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}" width="300"/>
+          <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="200" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImagePath}}" width="300"/>
           <h2 th:text="${kitchen.kitchenName}"></h2>
           <p>
            Specialty: <span th:text="${kitchen.speciality}"></span>

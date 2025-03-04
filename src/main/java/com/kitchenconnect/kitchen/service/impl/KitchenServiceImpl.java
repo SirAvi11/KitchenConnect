@@ -59,7 +59,7 @@ public class KitchenServiceImpl implements KitchenService {
         kitchen.setStatus(KitchenStatus.UNDER_VERIFICATION);
         kitchen.setKitchenName(kitchenRequest.getKitchenName());
         kitchen.setKitchenDescription(kitchenRequest.getKitchenDescription());
-        kitchen.setKitchenImage(kitchenRequest.getKitchenImagePath());
+        kitchen.setKitchenImagePath(kitchenRequest.getKitchenImagePath());
         kitchen.setOverallRating(BigDecimal.ZERO);  // Default rating
         kitchen.setTotalRatingsCount(0);
         kitchen.setMinDeliveryTime(20);

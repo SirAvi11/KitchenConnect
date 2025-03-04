@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.User;
@@ -53,16 +55,17 @@ public class HomeController {
 
     
     @GetMapping("/dashboard")
-    public String showChefDashboard(HttpSession session, Model model) {
+    public String showDashboard(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
 
         model.addAttribute("user", loggedInUser);
         if (loggedInUser.getRole() == UserRole.ADMIN) {
             Map<String, Object> kitchenData = getKitchenData();
             model.addAttribute("kitchenData", kitchenData);
+
         }
         
-        return "dashboard"; //Return the chef's dashboard view
+        return "dashboard"; //Return the dashboard view
     }
 
     private Map<String, Object> getKitchenData(){

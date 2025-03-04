@@ -116,7 +116,13 @@
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
                                                 <!-- Left Button -->
-                                                <button id="view-documents-btn" class="btn btn-orange" th:onclick="'viewDocuments(' + ${kitchen.kitchenId} + ')'">View Documents</button>
+                                                <button id="view-documents-btn" 
+                                                        class="btn btn-orange"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#documentModal"
+                                                        th:onclick="'handleViewDocument(' + ${kitchen.kitchenId} + ')'">                                                       
+                                                        View Documents
+                                                </button>
                                                 <!-- Right Buttons -->
                                                 <div>
                                                     <button id="reject-btn" class="btn btn-danger me-2" th:onclick="'updateKitchenStatus(' + ${kitchen.kitchenId} + ', false)'">Reject</button>
@@ -277,4 +283,23 @@
                 </div>
             </div>
         </div>
+
+        <!--View Documents Modal-->
+        <div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="documentModalLabel">Documents</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Inserted Dynamically using JS -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
 </div>

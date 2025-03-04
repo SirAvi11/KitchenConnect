@@ -36,7 +36,7 @@ public class Kitchen {
     private String kitchenDescription;
 
     @Column(columnDefinition = "TEXT")
-    private String kitchenImage;
+    private String kitchenImagePath;
 
     @Column(nullable = false, precision = 3, scale = 1)
     private BigDecimal overallRating = BigDecimal.ZERO;
@@ -155,12 +155,12 @@ public class Kitchen {
         this.kitchenDescription = kitchenDescription;
     }
 
-    public String getKitchenImage() {
-        return kitchenImage;
+    public String getKitchenImagePath() {
+        return kitchenImagePath;
     }
 
-    public void setKitchenImage(String kitchenImage) {
-        this.kitchenImage = kitchenImage;
+    public void setKitchenImagePath(String kitchenImagePath) {
+        this.kitchenImagePath = kitchenImagePath;
     }
 
     public BigDecimal getOverallRating() {

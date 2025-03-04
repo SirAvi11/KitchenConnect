@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +26,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kitchenconnect.kitchen.entity.Chef;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.KitchenStatusUpdateRequest;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
+import com.kitchenconnect.kitchen.service.ChefService;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
@@ -43,9 +46,12 @@ public class KitchenController {
     private KitchenService kitchenService;
 
     @Autowired
+    private ChefService chefService;
+
+    @Autowired
     private FoodItemService foodItemService;
 
-    private static final String IMAGE_DIR = "/uploads/kitchenRequest/";
+    private static final String UPLOAD_DIR = "src/main/resources/static/uploads/kitchenRequest/";
 
     @GetMapping
     public String showAllKitchens(Model model) {
@@ -74,8 +80,8 @@ public class KitchenController {
 
         if (kitchen != null) {
             // Fetch the chef's name from the associated Chef entity
-            String chefName = kitchen.getChef().getUser().getFirstname() + " " + kitchen.getChef().getUser().getLastname();
-            Long chefId = kitchen.getChef().getChefId();
+            String chefName = kitchen.getUser().getFirstname() + " " + kitchen.getUser().getLastname();
+            Chef chef = chefService.getChefByKitchenId(kitchen.getKitchenId());
 
             //Fetch Food items (menu)
             List<FoodItem> menuItems = foodItemService.findByKitchenId(id);
@@ -88,7 +94,7 @@ public class KitchenController {
 
             model.addAttribute("kitchen", kitchen);
             model.addAttribute("chefName", chefName); // Add chef's name to the model
-            model.addAttribute("chefId", chefId); // Add chef's Id to the model
+            model.addAttribute("chefId", chef.getChefId()); // Add chef's Id to the model
             model.addAttribute("menuItems", menuItems); // Add menu items to model
             model.addAttribute("cartItems", cart);
 
@@ -125,15 +131,15 @@ public class KitchenController {
 
             //Save kitchen image and set its path
             if (!kitchenImage.isEmpty()) {
-                String kitchenImagePath = saveImageToDisk(kitchenImage);
+                String kitchenImagePath = saveToDisk(kitchenImage, sessionUser.getId());
                 kitchenRequest.setKitchenImagePath(kitchenImagePath);  // Ensure this method exists
             }
-
+            System.out.println("Number of uploaded images: " + menuImages.size());
             // Save menu images and set their paths
             List<String> menuImagePaths = new ArrayList<>();
             for (MultipartFile menuImage : menuImages) {
                 if (!menuImage.isEmpty()) {
-                    String menuImagePath = saveImageToDisk(menuImage);
+                    String menuImagePath = saveToDisk(menuImage, sessionUser.getId());
                     menuImagePaths.add(menuImagePath);
                 }
             }
@@ -141,12 +147,12 @@ public class KitchenController {
 
             //Save other documents (FSSAI, PAN) if needed
             if (!fssaiDocument.isEmpty()) {
-                String fssaiDocPath = saveFileToDisk(fssaiDocument);
+                String fssaiDocPath = saveToDisk(fssaiDocument, sessionUser.getId());
                 kitchenRequest.setFssaiDocumentPath(fssaiDocPath);  // Ensure this method exists
             }
 
             if (!panDocument.isEmpty()) {
-                String panDocPath = saveFileToDisk(panDocument);
+                String panDocPath = saveToDisk(panDocument, sessionUser.getId());
                 kitchenRequest.setPanDocumentPath(panDocPath);  // Ensure this method exists
             }
 
@@ -181,28 +187,51 @@ public class KitchenController {
         return response;
     }
 
-    // Helper method to save images to disk
-    private String saveImageToDisk(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-        Path path = Paths.get(IMAGE_DIR + fileName);
-        
-        // Ensure the directory exists, otherwise create it
-        Files.createDirectories(path.getParent());
-        
-        Files.write(path, file.getBytes());
-        return path.toString(); // Return the file path
+    @PostMapping("/getKitchenDocuments")
+    public ResponseEntity<Map<String, Object>> getKitchenDocuments(@RequestBody Map<String, Object> request) {
+        // Extract kitchenId as Integer
+        Integer kitchenIdInteger = (Integer) request.get("kitchenId");
+
+        // Convert Integer to Long
+        Long kitchenId = kitchenIdInteger != null ? Long.valueOf(kitchenIdInteger) : null;
+
+        Kitchen kitchen = kitchenService.getKitchenById(kitchenId);
+        Map<String, Object> documents = new HashMap<>();
+
+        if(kitchen != null){
+            documents.put("kitchenImagePath", kitchen.getKitchenImagePath().replace("\\", "/"));
+            documents.put("menuImagePaths", kitchen.getMenuImagePaths());
+            documents.put("fssaiDocumentPath", kitchen.getFssaiDocumentPath().replace("\\", "/"));
+            documents.put("panDocumentPath", kitchen.getPanDocumentPath().replace("\\", "/"));
+        }
+
+        // Prepare the response
+        if (documents != null && !documents.isEmpty()) {
+            return ResponseEntity.ok(Map.of("status", "success", "documents", documents));
+        } else {
+            return ResponseEntity.ok(Map.of("status", "failure", "message", "No documents found"));
+        }
     }
 
-    // Helper method to save documents to disk
-    private String saveFileToDisk(MultipartFile file) throws IOException {
-        String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
-        Path path = Paths.get(IMAGE_DIR + fileName);
+    // Helper method to save images to disk
+    private String saveToDisk(MultipartFile file, Long userId) throws IOException {
 
+        // Ensure kitchenId is valid
+        if (file.isEmpty() || userId == null) {
+            throw new IllegalArgumentException("Invalid file or kitchenId");
+        }
+
+        String kitchenFolder = UPLOAD_DIR + userId + "/";
+
+        String fileName = UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        Path path = Paths.get(kitchenFolder + fileName);
+        
         // Ensure the directory exists, otherwise create it
         Files.createDirectories(path.getParent());
         
         Files.write(path, file.getBytes());
-        return path.toString(); // Return the file path
+        String returnPath = "/kitchenRequest/" + userId + "/" + fileName;
+        return returnPath; // Return the file path
     }
 
     // Helper method to check kitchen status
