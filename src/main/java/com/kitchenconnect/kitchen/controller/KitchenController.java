@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -230,7 +232,7 @@ public class KitchenController {
         Files.createDirectories(path.getParent());
         
         Files.write(path, file.getBytes());
-        String returnPath = "/kitchenRequest/" + userId + "/" + fileName;
+        String returnPath = "/uploads/kitchenRequest/" + userId + "/" + fileName;
         return returnPath; // Return the file path
     }
 

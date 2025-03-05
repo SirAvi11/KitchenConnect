@@ -54,18 +54,13 @@ function updateDocumentModal(documents) {
 
     // Create a div for each document type and append it to the modal body
     if (documents.kitchenImagePath) {
-        const pathParts = documents.kitchenImagePath.split('kitchenRequest/');
-        if (pathParts.length > 1) {
-            const kitchenIdAndImage = pathParts[1]; // This contains the kitchen ID and image filename
-    
-            let kitchenImageDiv = document.createElement("div");
-            kitchenImageDiv.className = "document-item";
-            kitchenImageDiv.innerHTML = `
-                <h5>Kitchen Image</h5>
-                <img src="/uploads${documents.kitchenImagePath}" alt="Kitchen Image" style="max-width: 300px; height: 200px;">
-            `;
-            modalBody.appendChild(kitchenImageDiv);
-        }
+        let kitchenImageDiv = document.createElement("div");
+        kitchenImageDiv.className = "document-item";
+        kitchenImageDiv.innerHTML = `
+            <h5>Kitchen Image</h5>
+            <img src="${documents.kitchenImagePath}" alt="Kitchen Image" style="max-width: 300px; height: 200px;">
+        `;
+        modalBody.appendChild(kitchenImageDiv);
     }
 
     if (documents.menuImagePaths && documents.menuImagePaths.length > 0) {
@@ -75,7 +70,7 @@ function updateDocumentModal(documents) {
         
         documents.menuImagePaths.forEach(path => {
             let img = document.createElement("img");
-            img.src = "/uploads"+path;
+            img.src = path;
             img.alt = "Menu Image";
             img.style.maxWidth = "300px";
             img.style.height = "200px";
@@ -108,3 +103,21 @@ function updateDocumentModal(documents) {
     // Optionally, show the modal if it's not already visible
     $('#documentModal').modal('show'); // Assuming you're using Bootstrap for the modal
 }     
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".accordion-button").forEach(button => {
+        button.addEventListener("click", function () {
+            let icon = this.querySelector("i");
+
+            setTimeout(() => { // Ensure Bootstrap toggles `aria-expanded` first
+                if (this.getAttribute("aria-expanded") === "true") {
+                    icon.classList.remove("fa-plus");
+                    icon.classList.add("fa-minus");
+                } else {
+                    icon.classList.remove("fa-minus");
+                    icon.classList.add("fa-plus");
+                }
+            }, 5);
+        });
+    });
+});

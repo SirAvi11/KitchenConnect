@@ -94,6 +94,7 @@ public class KitchenServiceImpl implements KitchenService {
         if (retrievedKitchen.isPresent()) {
             Kitchen kitchen = retrievedKitchen.get();
             kitchen.setStatus(isApproved ? KitchenStatus.APPROVED : KitchenStatus.REJECTED);
+            kitchen.getUser().setFirstLogin(true);
             if(isApproved){
                 kitchen.getUser().setRole(UserRole.CHEF);
                 Chef chef = new Chef();
@@ -102,8 +103,8 @@ public class KitchenServiceImpl implements KitchenService {
                 chef.setKitchen(kitchen);
                 chef.setUser(kitchen.getUser());
                 chefRepository.save(chef);
-                userRepository.save(kitchen.getUser());
             }
+            userRepository.save(kitchen.getUser());
             kitchenRepository.save(kitchen);
             return true;
         }

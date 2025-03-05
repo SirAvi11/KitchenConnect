@@ -1,5 +1,7 @@
-<!--User Dashboard-->
+<!--CHEF Dashboard-->
 <div class="row" th:fragment="dashboard" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}">
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
     <!-- Left Section -->
     <!-- Dashboard Navigation -->
     <div  th:replace="~{fragments/dashboard-navigation :: dashboard-navigation}"></div>
