@@ -51,6 +51,7 @@ public class KitchenServiceImpl implements KitchenService {
     }
 
     public void saveKitchenRequest(KitchenRequest kitchenRequest) {
+        System.out.println("\n----------------Value of user id is ------------------\n" + kitchenRequest.getUserId());
         User user = userRepository.findById(kitchenRequest.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 

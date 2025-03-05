@@ -251,14 +251,13 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <select class="form-control" th:field="*{openTime}">
-                                        <option value="Open time">Open time</option>
-                                        <option th:each="time : ${timeSlots}" th:value="${time}" th:text="${time}"></option>
+                                        <select id="openTime" class="form-control" name="openTime"></select>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <select class="form-control" th:field="*{closeTime}">
                                         <option value="Close time">Close time</option>
-                                        <option th:each="time : ${timeSlots}" th:value="${time}" th:text="${time}"></option>
+                                        <select id="closeTime" class="form-control" name="closeTime"></select>
                                     </select>
                                 </div>
                             </div>
@@ -644,6 +643,48 @@
         
             return isValid;
         }
+
+        // Function to generate time slots in 30-minute intervals
+        function generateTimeSlots() {
+            let timeSlots = [];
+            let startTime = 0; // 00:00 in minutes
+            let endTime = 23 * 60 + 30; // 23:30 in minutes
+
+            while (startTime <= endTime) {
+                let hours = Math.floor(startTime / 60);
+                let minutes = startTime % 60;
+                let formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+                timeSlots.push(formattedTime);
+                startTime += 30; // Increment by 30 minutes
+            }
+
+            return timeSlots;
+        }
+
+        // Function to populate select fields
+        function populateTimeFields() {
+            let timeSlots = generateTimeSlots();
+            let openTimeSelect = document.getElementById("openTime");
+            let closeTimeSelect = document.getElementById("closeTime");
+
+            // Clear existing options
+            openTimeSelect.innerHTML = "";
+            closeTimeSelect.innerHTML = "";
+
+            // Append the default option
+            openTimeSelect.appendChild(new Option("Open Time", ""));
+            closeTimeSelect.appendChild(new Option("Close Time", ""));
+
+            // Populate options
+            timeSlots.forEach(time => {
+                openTimeSelect.appendChild(new Option(time, time));
+                closeTimeSelect.appendChild(new Option(time, time));
+            });
+        }
+
+        // Call function on page load
+        window.onload = populateTimeFields;
+
         
     </script>
     

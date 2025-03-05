@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -162,7 +160,7 @@ public class KitchenController {
             kitchenService.saveKitchenRequest(kitchenRequest);
 
             // Redirect with a success message
-            model.addAttribute("successMessage", "Your kitchen registration is under process. Please wait for approval.");
+            redirectAttributes.addFlashAttribute("successMessage", "Your kitchen registration is under process. Please wait for approval.");
 
             return "redirect:/kitchens/kitchen-registration";
 
