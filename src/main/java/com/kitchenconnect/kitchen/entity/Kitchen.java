@@ -35,7 +35,7 @@ public class Kitchen {
     @Column(columnDefinition = "TEXT")
     private String kitchenDescription;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "kitchen_image_path")
     private String kitchenImagePath;
 
     @Column(nullable = false, precision = 3, scale = 1)
