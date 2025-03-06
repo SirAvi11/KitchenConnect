@@ -59,8 +59,9 @@ public class KitchenServiceImpl implements KitchenService {
 
         Kitchen kitchen = existingKitchen != null ? existingKitchen : new Kitchen();
 
-        if (existingKitchen != null) {
-            kitchen.setKitchenId(existingKitchen.getKitchenId()); // Ensures update instead of insert
+        if (existingKitchen != null && existingKitchen.getStatus() == KitchenStatus.REJECTED) {
+            kitchen.setKitchenId(existingKitchen.getKitchenId()); 
+            //update kitchen here
         }
 
         kitchen.setUser(user);
