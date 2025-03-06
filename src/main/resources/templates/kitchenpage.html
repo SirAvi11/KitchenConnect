@@ -22,7 +22,7 @@
           <img alt="Restaurant" class="h-48 w-64 rounded-lg object-cover" height="200" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImagePath}}" width="300"/>
           <h2 th:text="${kitchen.kitchenName}"></h2>
           <p>
-           Specialty: <span th:text="${kitchen.speciality}"></span>
+           Specialty: <span th:text="${kitchen.selectedCuisines}"></span>
           </p>
           <div class="rating">
             <i class="fas fa-star"></i>
@@ -71,7 +71,7 @@
                Available Days
               </p>
             </div>
-            <p th:text="${kitchen.availableDays}"></p>
+            <p th:text="${kitchen.openDays}"></p>
            </div>
            <div class="detail">
             <div>
@@ -87,11 +87,11 @@
           </div>
          </div>
         </div>
-        <!-- Menu -->
+        <!-- Menu 
         <div class="menu">
         <h3>Menu</h3>
          <div class="items">
-          <!-- Menu Items -->
+          
           <div class="item" th:each="foodItem : ${menuItems}">
            <div>
             <img th:alt="${foodItem.name}" class="card-img-top" th:src="@{'/images/food/' + ${foodItem.picture}}">
@@ -130,7 +130,7 @@
            </div>
           </div>
          </div>
-        </div>
+        </div>-->
         <!-- Bootstrap Modal -->
         <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
           <div class="modal-dialog">

@@ -1,0 +1,94 @@
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="kitchen-section"
+  id="manage-kitchen"
+>
+<link rel="stylesheet" th:href="@{/css/manage-kitchen-section.css}">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="innerCard">
+        <div class="flex flex-col items-center">
+          <img
+            alt="Restaurant"
+            class="h-48 w-64 rounded-lg object-cover"
+            height="200"
+            th:src="${kitchen.kitchenImagePath != null} ? ${kitchen.kitchenImagePath} : @{/images/kitchens/Vikas-kitchen.jpg}"
+            width="300"
+          />
+          <h2 th:text="${kitchen.kitchenName}"></h2>
+          <p>Specialty: 
+              <span th:each="cuisine, iterStat : ${kitchen.selectedCuisines}">
+                  <span th:text="${cuisine}"></span>
+                  <span th:if="${!iterStat.last}">, </span>
+              </span>
+          </p>
+          <div class="rating">
+            <i class="fas fa-star"></i>
+            <span th:text="${#numbers.formatDecimal(kitchen.overallRating, 1, 2)}"></span>
+            <span
+              >(<span th:text="${kitchen.totalRatingsCount}"></span>
+              reviews)</span
+            >
+          </div>
+        </div>
+        <div class="info">
+          <h3>About Our Kitchen</h3>
+          <p th:text="${kitchen.kitchenDescription}"></p>
+          <div class="details">
+            <div class="detail">
+              <div>
+                <p>
+                  <i class="fas fa-utensils"></i>
+                </p>
+                <p>Managed By</p>
+              </div>
+              <p>
+                <a
+                  href="#"
+                  class="text-decoration-none"
+                  >Chef <span th:text="${session.loggedInUser.firstname}"></span
+                ></a>
+              </p>
+            </div>
+            <div class="detail">
+              <div>
+                <p>
+                  <i class="fas fa-clock"></i>
+                </p>
+                <p>Delivered In</p>
+              </div>
+              <p>
+                <span
+                  th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"
+                ></span>
+              </p>
+            </div>
+            <div class="detail">
+              <div>
+                <p>
+                  <i class="fas fa-calendar-check"></i>
+                </p>
+                <p>Available Days</p>
+              </div>
+              <p>
+                  <span th:each="day, iterStat : ${kitchen.openDays}">
+                      <span th:text="${day}"></span>
+                      <span th:if="${!iterStat.last}">, </span>
+                  </span>
+              </p>
+            </div>
+            <div class="detail">
+              <div>
+                <p>
+                  <i class="fas fa-money-bill-wave"></i>
+                </p>
+                <p>Delivery Fees</p>
+              </div>
+              <p th:text="'Rs ' + ${#numbers.formatDecimal(kitchen.deliveryFees, 0, 0)}"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

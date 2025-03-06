@@ -1,0 +1,17 @@
+<!--CHEF Dashboard-->
+<div class="row" th:fragment="dashboard" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}">
+    <!-- Left Section -->
+    <!-- Dashboard Navigation -->
+    <div  th:replace="~{fragments/dashboard-navigation :: dashboard-navigation}"></div>
+    <!-- Right Section -->
+
+        <!-- Load Personal Information Section -->
+        <div  th:replace="~{fragments/personal-information :: personal-information}"></div>
+
+        <!--Load View Orders Section-->
+
+        <!--Load Manage Kitchen Section-->
+        <div  th:replace="~{Chef/manage-kitchen-section :: kitchen-section}"></div>
+    </div>
+    <script src="/js/manage-kitchen-section.js"></script>
+</div>

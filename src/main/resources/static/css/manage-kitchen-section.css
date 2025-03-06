@@ -1,0 +1,63 @@
+
+.rating i{
+    color: #ffc107;
+}
+.innerCard {
+background-color: #ffffff;
+border-radius: 0.5rem;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+display: flex;
+flex-direction:row;
+gap: 2.5rem;
+}
+.innerCard img {
+border-radius: 0.5rem;
+object-fit: cover;
+margin-bottom: 20px;
+}
+
+.innerCard .info h2 {
+font-size: 2rem;
+font-weight: bold;
+margin-top: 1.5rem;
+}
+.innerCard .info p {
+color: #4b5563;
+margin-top: 0.5rem;
+}
+.innerCard .info .rating {
+display: flex;
+align-items: center;
+margin-top: 1rem;
+}
+.innerCard .info .rating i {
+color: #fbbf24;
+}
+.innerCard .info .rating span {
+margin-left: 0.25rem;
+color: #1f2937;
+}
+.innerCard .info .rating span:last-child {
+color: #6b7280;
+}
+.innerCard .info .details {
+display: flex;
+gap: 1.5rem;
+margin-top: 1.5rem;
+}
+.innerCard .info .details .detail {
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+align-items: center;
+background-color: #fef3c7;
+padding: 1.5rem;
+border-radius: 0.5rem;
+text-align: center;
+}
+.innerCard .info .details .detail p {
+color: #4b5563;
+}
+.innerCard .info .details .detail p:last-child {
+font-weight: bold;
+}

@@ -47,7 +47,7 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                             <a class="dropdown-item" th:href="@{/dashboard}">Manage Profile</a>
-                            <a class="dropdown-item" th:href="@{/kitchens/kitchen-registration}">Become a Chef</a>
+                            <a class="dropdown-item" th:href="@{/kitchens/kitchen-registration}"  th:if="${session.loggedInUser.getRole().name() == 'FOOD_LOVER'}">Become a Chef</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item text-danger" th:href="@{/logout}">Logout</a>
                         </div>

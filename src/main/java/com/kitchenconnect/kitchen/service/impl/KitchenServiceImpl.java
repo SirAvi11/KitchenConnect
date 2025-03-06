@@ -18,6 +18,8 @@ import com.kitchenconnect.kitchen.repository.KitchenRepository;
 import com.kitchenconnect.kitchen.repository.UserRepository;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class KitchenServiceImpl implements KitchenService {
@@ -50,52 +52,93 @@ public class KitchenServiceImpl implements KitchenService {
         return kitchenRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void saveKitchenRequest(KitchenRequest kitchenRequest) {
         System.out.println("\n----------------Value of user id is ------------------\n" + kitchenRequest.getUserId());
+
+        // Fetch the user by ID
         User user = userRepository.findById(kitchenRequest.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        
+
+        // Check if a kitchen already exists for the user
         Kitchen existingKitchen = findKitchenByUser(user);
-        System.out.println("Exising kitchen id is " + existingKitchen.getKitchenId());
 
-        Kitchen kitchen = existingKitchen != null ? existingKitchen : new Kitchen();
+        Kitchen kitchen;
+        if (existingKitchen != null) {
+            // If the kitchen exists, update it
+            System.out.println("Updating existing kitchen ID: " + existingKitchen.getKitchenId());
+            kitchen = existingKitchen;
 
-        if (existingKitchen != null && existingKitchen.getStatus() == KitchenStatus.REJECTED) {
-            kitchen.setKitchenId(existingKitchen.getKitchenId()); 
-            //update kitchen here
+            if (existingKitchen.getStatus() == KitchenStatus.REJECTED) {
+                System.out.println("Resetting kitchen status: ");
+                kitchen.setStatus(KitchenStatus.UNDER_VERIFICATION);  // Reset status if rejected
+            }
+        } else {
+            // If no kitchen exists, create a new one
+            System.out.println("Creating a new kitchen");
+            kitchen = new Kitchen();
+            kitchen.setUser(user);
+            kitchen.setOverallRating(BigDecimal.ZERO);  // Default rating
+            kitchen.setTotalRatingsCount(0);
+            kitchen.setMinDeliveryTime(20);
+            kitchen.setMaxDeliveryTime(40);
+            kitchen.setOpenTime("12:00");
+            kitchen.setCloseTime("14:00");
+            kitchen.setStatus(KitchenStatus.UNDER_VERIFICATION);
         }
 
-        kitchen.setUser(user);
-        kitchen.setStatus(KitchenStatus.UNDER_VERIFICATION);
+        // Update or set fields
         kitchen.setKitchenName(kitchenRequest.getKitchenName());
         kitchen.setKitchenDescription(kitchenRequest.getKitchenDescription());
-        kitchen.setKitchenImagePath(kitchenRequest.getKitchenImagePath());
-        kitchen.setOverallRating(BigDecimal.ZERO);  // Default rating
-        kitchen.setTotalRatingsCount(0);
-        kitchen.setMinDeliveryTime(20);
-        kitchen.setMaxDeliveryTime(40);
+
+        if (kitchenRequest.getKitchenImagePath() != null) {
+            kitchen.setKitchenImagePath(kitchenRequest.getKitchenImagePath());
+        }
+
         kitchen.setDeliveryFees(kitchenRequest.getDeliveryFees());
         kitchen.setShopName(kitchenRequest.getShopName());
         kitchen.setFloor(kitchenRequest.getFloor());
         kitchen.setArea(kitchenRequest.getArea());
         kitchen.setCity(kitchenRequest.getCity());
         kitchen.setPhoneNumber(kitchenRequest.getPhoneNumber());
-        kitchen.setMenuImagePaths(kitchenRequest.getMenuImagePaths());
-        kitchen.setSelectedCuisines(kitchenRequest.getSelectedCuisines());
-        kitchen.setOpenDays(kitchenRequest.getOpenDays());
-        kitchen.setOpenTime("12:00");
-        kitchen.setCloseTime("14:00");
+
+        if (!kitchenRequest.getMenuImagePaths().isEmpty()) {
+            kitchen.setMenuImagePaths(kitchenRequest.getMenuImagePaths());
+        }
+
+        if (!kitchenRequest.getSelectedCuisines().isEmpty()) {
+            kitchen.setSelectedCuisines(kitchenRequest.getSelectedCuisines());
+        }
+
+        if (!kitchenRequest.getOpenDays().isEmpty()) {
+            kitchen.setOpenDays(kitchenRequest.getOpenDays());
+        }
+
         kitchen.setFssaiNumber(kitchenRequest.getFssaiNumber());
         kitchen.setFssaiExpiryDate(kitchenRequest.getFssaiExpiryDate());
-        kitchen.setFssaiDocumentPath(kitchenRequest.getFssaiDocumentPath());
+
+        if (kitchenRequest.getFssaiDocumentPath() != null) {
+            kitchen.setFssaiDocumentPath(kitchenRequest.getFssaiDocumentPath());
+        }
+
         kitchen.setPanNumber(kitchenRequest.getPanNumber());
-        kitchen.setPanDocumentPath(kitchenRequest.getPanDocumentPath());
+
+        if (kitchenRequest.getPanDocumentPath() != null) {
+            kitchen.setPanDocumentPath(kitchenRequest.getPanDocumentPath());
+        }
+
         kitchen.setAcceptTerms(kitchenRequest.isAcceptTerms());
 
-        Kitchen savedKitchen = kitchenRepository.save(kitchen);
-        System.out.println("Saved Kitchen ID: " + savedKitchen.getKitchenId());
-
+        // Save the kitchen (insert or update)
+        try {
+            Kitchen savedKitchen = kitchenRepository.save(kitchen);
+            System.out.println("Saved/Updated Kitchen ID: " + savedKitchen.getKitchenId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e; // Re-throw the exception to see it in the logs
+        }
     }
+
 
     public Kitchen findKitchenByUser(User user) {
         return kitchenRepository.findByUser(user);

@@ -69,14 +69,14 @@ public class HomeController {
         model.addAttribute("user", loggedInUser);
     
         // If the user is an ADMIN, add kitchen data
-        if (loggedInUser.getRole() == UserRole.ADMIN) {
+        if (loggedInUser.getRole() == UserRole.ADMIN ) {
             model.addAttribute("kitchenData", getKitchenData());
         }
+
+        Kitchen userKitchen = kitchenService.findKitchenByUser(loggedInUser);
     
         // Show success or error message on first login after approval/rejection
         if (loggedInUser.getFirstLogin() && loggedInUser.getRole() != UserRole.ADMIN) {
-            Kitchen userKitchen = kitchenService.findKitchenByUser(loggedInUser);
-    
             if (userKitchen != null) {
                 switch (userKitchen.getStatus()) {
                     case APPROVED -> model.addAttribute("successMessage", "🎉 Congratulations! Your kitchen application was approved.");
@@ -88,6 +88,12 @@ public class HomeController {
                 loggedInUser.setFirstLogin(false);
                 userService.saveUser(loggedInUser);
             }
+        }
+
+        if(loggedInUser.getRole() == UserRole.CHEF && userKitchen != null){
+            // Add kitchen data to the model in case of approval
+            model.addAttribute("kitchen", userKitchen);
+
         }
     
         return "dashboard";

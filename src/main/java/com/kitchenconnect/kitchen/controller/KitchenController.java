@@ -116,7 +116,7 @@ public class KitchenController {
                                     Model model,
                                     HttpSession session) throws IOException {
 
-        try{
+        try {
             // Get the logged-in user from session
             User sessionUser = (User) session.getAttribute("loggedInUser");
 
@@ -124,17 +124,18 @@ public class KitchenController {
                 redirectAttributes.addFlashAttribute("errorMessage", "No user is logged in.");
                 return "redirect:/kitchens/kitchen-registration"; // Redirect to registration
             }
-            //Process the cuisines as a comma-separated string
+
+            // Process the cuisines as a comma-separated string
             kitchenRequest.setSelectedCuisines(Arrays.asList(selectedCuisines.split(",")));
             kitchenRequest.setOpenDays(openDays);
             kitchenRequest.setUserId(sessionUser.getId());
 
-            //Save kitchen image and set its path
+            // Save kitchen image and set its path
             if (!kitchenImage.isEmpty()) {
                 String kitchenImagePath = saveToDisk(kitchenImage, sessionUser.getId());
-                kitchenRequest.setKitchenImagePath(kitchenImagePath);  // Ensure this method exists
+                kitchenRequest.setKitchenImagePath(kitchenImagePath);
             }
-            System.out.println("Number of uploaded images: " + menuImages.size());
+
             // Save menu images and set their paths
             List<String> menuImagePaths = new ArrayList<>();
             for (MultipartFile menuImage : menuImages) {
@@ -145,31 +146,28 @@ public class KitchenController {
             }
             kitchenRequest.setMenuImagePaths(menuImagePaths);
 
-            //Save other documents (FSSAI, PAN) if needed
+            // Save other documents (FSSAI, PAN) if needed
             if (!fssaiDocument.isEmpty()) {
                 String fssaiDocPath = saveToDisk(fssaiDocument, sessionUser.getId());
-                kitchenRequest.setFssaiDocumentPath(fssaiDocPath);  // Ensure this method exists
+                kitchenRequest.setFssaiDocumentPath(fssaiDocPath);
             }
 
             if (!panDocument.isEmpty()) {
                 String panDocPath = saveToDisk(panDocument, sessionUser.getId());
-                kitchenRequest.setPanDocumentPath(panDocPath);  // Ensure this method exists
+                kitchenRequest.setPanDocumentPath(panDocPath);
             }
 
-            //Save the KitchenRequest in the database
+            // Save or update the KitchenRequest in the database
             kitchenService.saveKitchenRequest(kitchenRequest);
-
-            // Redirect with a success message
-            redirectAttributes.addFlashAttribute("successMessage", "Your kitchen registration is under process. Please wait for approval.");
 
             return "redirect:/kitchens/kitchen-registration";
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             model.addAttribute("errorMessage", "Failed to submit kitchen request. Please try again.");
-
             return "redirect:/kitchens/kitchen-registration"; // Redirect back to the form on failure
         }
     }
+
 
     @PostMapping("/statusUpdate")
     @ResponseBody
