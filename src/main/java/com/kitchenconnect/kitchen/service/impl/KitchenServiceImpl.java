@@ -53,8 +53,16 @@ public class KitchenServiceImpl implements KitchenService {
     public void saveKitchenRequest(KitchenRequest kitchenRequest) {
         User user = userRepository.findById(kitchenRequest.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        
+        Kitchen existingKitchen = findKitchenByUser(user);
+        System.out.println("Exising kitchen id is " + existingKitchen.getKitchenId());
 
-        Kitchen kitchen = new Kitchen();
+        Kitchen kitchen = existingKitchen != null ? existingKitchen : new Kitchen();
+
+        if (existingKitchen != null) {
+            kitchen.setKitchenId(existingKitchen.getKitchenId()); // Ensures update instead of insert
+        }
+
         kitchen.setUser(user);
         kitchen.setStatus(KitchenStatus.UNDER_VERIFICATION);
         kitchen.setKitchenName(kitchenRequest.getKitchenName());
@@ -82,7 +90,9 @@ public class KitchenServiceImpl implements KitchenService {
         kitchen.setPanDocumentPath(kitchenRequest.getPanDocumentPath());
         kitchen.setAcceptTerms(kitchenRequest.isAcceptTerms());
 
-        kitchenRepository.save(kitchen);
+        Kitchen savedKitchen = kitchenRepository.save(kitchen);
+        System.out.println("Saved Kitchen ID: " + savedKitchen.getKitchenId());
+
     }
 
     public Kitchen findKitchenByUser(User user) {

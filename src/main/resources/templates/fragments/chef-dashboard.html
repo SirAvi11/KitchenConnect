@@ -1,7 +1,5 @@
 <!--CHEF Dashboard-->
 <div class="row" th:fragment="dashboard" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}">
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
     <!-- Left Section -->
     <!-- Dashboard Navigation -->
     <div  th:replace="~{fragments/dashboard-navigation :: dashboard-navigation}"></div>
@@ -15,34 +13,34 @@
                         <button id="save-info-button" class="btn btn-warning text-white d-none" onclick="toggleEditInfo()"><i class="fas fa-save"></i></button>
                     </div>
                     <div class="mt-3">
-                        <label class="text-secondary">Name</label>
-                        <p class="info-field bg-light p-2 rounded active">Chef John Doe</p>
-                        <input class="info-input form-control border rounded mt-1" type="text" value="Chef John Doe"/>
+                        <label class="text-secondary">Username</label>
+                        <p class="info-field bg-light p-2 rounded active"  th:text="${user.username}"></p>
+                        <input class="info-input form-control border rounded mt-1" type="text"  th:value="${user.username}"/>
                     </div>
                     <div class="mt-3">
-                        <label class="text-secondary">Username</label>
-                        <p class="info-field bg-light p-2 rounded active">chefjohndoe</p>
-                        <input class="info-input form-control border rounded mt-1" type="text" value="chefjohndoe"/>
+                        <label class="text-secondary">Name</label>
+                        <p class="info-field bg-light p-2 rounded active" th:text="${user.firstname}"></p>
+                        <input class="info-input form-control border rounded mt-1" type="text" th:value="${user.firstname}"/>
                     </div>
                     <div class="mt-3">
                         <label class="text-secondary">Last Name</label>
-                        <p class="info-field bg-light p-2 rounded active">Doe</p>
-                        <input class="info-input form-control border rounded mt-1" type="text" value="Doe"/>
+                        <p class="info-field bg-light p-2 rounded active" th:text="${user.lastname}"></p>
+                        <input class="info-input form-control border rounded mt-1" type="text" th:value="${user.lastname}"/>
                     </div>
                     <div class="mt-3">
                         <label class="text-secondary">Email</label>
-                        <p class="info-field bg-light p-2 rounded active">chefjohndoe@example.com</p>
-                        <input class="info-input form-control border rounded mt-1" type="email" value="chefjohndoe@example.com"/>
+                        <p class="info-field bg-light p-2 rounded active" th:text="${user.email}"></p>
+                        <input class="info-input form-control border rounded mt-1" type="email" th:value="${user.email}"/>
                     </div>
                     <div class="mt-3">
                         <label class="text-secondary">Phone Number</label>
-                        <p class="info-field bg-light p-2 rounded active">+1234567890</p>
-                        <input class="info-input form-control border rounded mt-1" type="tel" value="+1234567890"/>
+                        <p class="info-field bg-light p-2 rounded active" th:text="${user.phoneNumber}"></p>
+                        <input class="info-input form-control border rounded mt-1" type="tel" th:value="${user.phoneNumber}"/>
                     </div>
                     <div class="mt-3">
                         <label class="text-secondary">Address</label>
-                        <p class="info-field bg-light p-2 rounded active">123 Culinary Street, Food City, FC 12345</p>
-                        <input class="info-input form-control border rounded mt-1" type="text" value="123 Culinary Street, Food City, FC 12345"/>
+                        <p class="info-field bg-light p-2 rounded active" th:text="${user.address}"></p>
+                        <input class="info-input form-control border rounded mt-1" type="text" th:value="${user.address}"/>
                     </div>
                 </div>
             </div>
