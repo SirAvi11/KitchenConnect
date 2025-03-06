@@ -14,6 +14,9 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="container py-4">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
         <!-- Load Admin's Dashboard -->
         <div  th:replace="~{fragments/admin-dashboard :: dashboard}"></div>
         

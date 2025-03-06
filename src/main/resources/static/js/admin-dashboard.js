@@ -7,8 +7,15 @@ function updateKitchenStatus(kitchenId,isApproved) {
         body: JSON.stringify({ kitchenId: kitchenId, isApproved: Boolean(isApproved)})
     })
     .then(response => response.json())
-    .then(data => console.log("Session Kitchen Updated:", data.status))
-    .catch(error => console.error("Error updating cart:", error));
+    .then(data => {
+        if(data.status == "success"){
+            console.log("Session Kitchen Updated:", data.status)
+            document.getElementById(`kitchen-card-${kitchenId}`).remove(); 
+        }else {
+            console.error("Failed to update kitchen status");
+        }
+    })
+    .catch(error => console.error("Error updating:", error));
 }
 
 function handleViewDocument(kitchenId) {
@@ -85,7 +92,7 @@ function updateDocumentModal(documents) {
         fssaiDiv.className = "document-item";
         fssaiDiv.innerHTML = `
             <h5>FSSAI Document</h5>
-            <a href="/uploads${documents.fssaiDocumentPath}" target="_blank">View FSSAI Document</a>
+            <a href="${documents.fssaiDocumentPath}" target="_blank">View FSSAI Document</a>
         `;
         modalBody.appendChild(fssaiDiv);
     }
@@ -95,7 +102,7 @@ function updateDocumentModal(documents) {
         panDiv.className = "document-item";
         panDiv.innerHTML = `
             <h5>PAN Document</h5>
-            <a href="/uploads${documents.panDocumentPath}" target="_blank">View PAN Document</a>
+            <a href="${documents.panDocumentPath}" target="_blank">View PAN Document</a>
         `;
         modalBody.appendChild(panDiv);
     }
