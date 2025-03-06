@@ -77,7 +77,7 @@
                               <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
                                 <div class="card-body">
                                     <div class="list-group">
-                                        <div th:each="kitchen : ${kitchenData.underVerificationKitchens}" class="list-group-item mb-1">
+                                        <div th:id="'kitchen-card-' + ${kitchen.kitchenId}" th:each="kitchen : ${kitchenData.underVerificationKitchens}" class="list-group-item mb-1" id="">
                                             <h5 class="mb-1" th:text="${kitchen.kitchenName}"></h5>
                                             <div class="row">
                                                 <!-- First Column -->
