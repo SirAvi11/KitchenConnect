@@ -6,7 +6,12 @@
 <link rel="stylesheet" th:href="@{/css/manage-kitchen-section.css}">
   <div class="card shadow-sm">
     <div class="card-body">
-      <div class="innerCard">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h4 class="h4 font-weight-bold">Kitchen Information</h4>
+        <button id="edit-info-button" class="btn btn-warning text-white" onclick="toggleEditInfo()"><i class="fas fa-edit"></i></button>
+        <button id="save-info-button" class="btn btn-warning text-white d-none" onclick="toggleEditInfo()"><i class="fas fa-save"></i></button>
+      </div>
+      <div class="innerCard mb-3">
         <div class="flex flex-col items-center">
           <img
             alt="Restaurant"
@@ -15,13 +20,6 @@
             th:src="${kitchen.kitchenImagePath != null} ? ${kitchen.kitchenImagePath} : @{/images/kitchens/Vikas-kitchen.jpg}"
             width="300"
           />
-          <h2 th:text="${kitchen.kitchenName}"></h2>
-          <p>Specialty: 
-              <span th:each="cuisine, iterStat : ${kitchen.selectedCuisines}">
-                  <span th:text="${cuisine}"></span>
-                  <span th:if="${!iterStat.last}">, </span>
-              </span>
-          </p>
           <div class="rating">
             <i class="fas fa-star"></i>
             <span th:text="${#numbers.formatDecimal(kitchen.overallRating, 1, 2)}"></span>
@@ -31,64 +29,211 @@
             >
           </div>
         </div>
-        <div class="info">
-          <h3>About Our Kitchen</h3>
-          <p th:text="${kitchen.kitchenDescription}"></p>
-          <div class="details">
-            <div class="detail">
-              <div>
-                <p>
-                  <i class="fas fa-utensils"></i>
-                </p>
-                <p>Managed By</p>
-              </div>
-              <p>
-                <a
-                  href="#"
-                  class="text-decoration-none"
-                  >Chef <span th:text="${session.loggedInUser.firstname}"></span
-                ></a>
-              </p>
-            </div>
-            <div class="detail">
-              <div>
-                <p>
-                  <i class="fas fa-clock"></i>
-                </p>
-                <p>Delivered In</p>
-              </div>
-              <p>
-                <span
-                  th:text="${kitchen.minDeliveryTime} + '-' + ${kitchen.maxDeliveryTime} + ' mins'"
-                ></span>
-              </p>
-            </div>
-            <div class="detail">
-              <div>
-                <p>
-                  <i class="fas fa-calendar-check"></i>
-                </p>
-                <p>Available Days</p>
-              </div>
-              <p>
-                  <span th:each="day, iterStat : ${kitchen.openDays}">
-                      <span th:text="${day}"></span>
-                      <span th:if="${!iterStat.last}">, </span>
-                  </span>
-              </p>
-            </div>
-            <div class="detail">
-              <div>
-                <p>
-                  <i class="fas fa-money-bill-wave"></i>
-                </p>
-                <p>Delivery Fees</p>
-              </div>
-              <p th:text="'Rs ' + ${#numbers.formatDecimal(kitchen.deliveryFees, 0, 0)}"></p>
-            </div>
+        <div class="info d-flex flex-column flex-grow-1">
+          <h3>About Your Kitchen</h3>
+          <div class="bg-light p-3 rounded flex-grow-1">
+            <p th:text="${kitchen.kitchenDescription}"></p>
           </div>
         </div>
       </div>
+      <div class="container p-0">
+        <div class="row">
+            <!-- First Column -->
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label class="text-secondary">Kitchen Name</label>
+                    <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.kitchenName}"></p>
+                    <input class="info-input form-control border rounded mt-1" placeholder="Enter Kitchen Name" type="text"  th:value="${kitchen.kitchenName}"/>
+                </div>
+                <!-- Cuisines Dropdown -->
+                <div class="mb-3">
+                  <label class="text-secondary">Specialities</label>
+                  <p class="info-field bg-light p-2 rounded active">
+                    <span th:each="cuisine, iterStat : ${kitchen.selectedCuisines}">
+                      <span th:text="${cuisine}"></span>
+                      <span th:if="${!iterStat.last}">, </span>
+                    </span>
+                  </p>
+                  <div class="info-input form-control border rounded mt-1 h-auto">
+                      <!-- Cuisines Dropdown -->
+                      <div class="dropdown">
+                          <button class="btn dropdown-toggle w-100 text-left" type="button" id="cuisineDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Select Cuisines (Max 3)
+                          </button>
+                          <div class="dropdown-menu w-100" aria-labelledby="cuisineDropdownButton">
+                              <div class="px-3 py-2">
+                                  <div class="form-check">
+                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="North Indian" id="northIndian">
+                                      <label class="form-check-label" for="northIndian">North Indian</label>
+                                  </div>
+                                  <div class="form-check">
+                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="Fast Food" id="fastFood">
+                                      <label class="form-check-label" for="fastFood">Fast Food</label>
+                                  </div>
+                                  <div class="form-check">
+                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="Biryani" id="biryani">
+                                      <label class="form-check-label" for="biryani">Biryani</label>
+                                  </div>
+                                  <div class="form-check">
+                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="Chinese" id="chinese">
+                                      <label class="form-check-label" for="chinese">Chinese</label>
+                                  </div>
+                                  <div class="form-check">
+                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="South Indian" id="southIndian">
+                                      <label class="form-check-label" for="southIndian">South Indian</label>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Hidden input to store selected cuisines -->
+                      <input type="hidden" id="selectedCuisines" name="selectedCuisines" />
+                  </div>
+                </div>   
+                <!-- Open Days Dropdown -->
+                <div class="mb-3">
+                  <label class="text-secondary">Open Days</label>
+                  <p class="info-field bg-light p-2 rounded active">
+                    <span th:each="day, iterStat : ${kitchen.openDays}">
+                      <span th:text="${day}"></span>
+                      <span th:if="${!iterStat.last}">, </span>
+                    </span>
+                  </p>
+                  <div class="info-input form-control border rounded mt-1 h-auto">
+                    <!-- Open Days Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle w-100 text-left" type="button" id="openDaysDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select Open Days
+                        </button>
+                        <div class="dropdown-menu w-100" aria-labelledby="openDaysDropdownButton">
+                            <div class="px-3 py-2">
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Monday" id="monday">
+                                    <label class="form-check-label" for="monday">Monday</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Tuesday" id="tuesday">
+                                    <label class="form-check-label" for="tuesday">Tuesday</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Wednesday" id="wednesday">
+                                    <label class="form-check-label" for="wednesday">Wednesday</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Thursday" id="thursday">
+                                    <label class="form-check-label" for="thursday">Thursday</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Friday" id="friday">
+                                    <label class="form-check-label" for="friday">Friday</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Saturday" id="saturday">
+                                    <label class="form-check-label" for="saturday">Saturday</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input day-checkbox" type="checkbox" value="Sunday" id="sunday">
+                                    <label class="form-check-label" for="sunday">Sunday</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Hidden input to store selected open days -->
+                    <input type="hidden" id="selectedOpenDays" name="selectedOpenDays" />
+                  </div>
+                </div>
+            </div>
+    
+            <!-- Second Column -->
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label class="text-secondary">Delivery Fees</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.deliveryFees}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter delivery fees" type="text"  th:value="${kitchen.deliveryFees}"/>
+              </div> 
+              <div class="mb-3">
+                <label class="text-secondary">Phone Number</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.phoneNumber}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter Phone Number" type="text"  th:value="${kitchen.phoneNumber}"/>
+              </div> 
+              <div class="mb-3">
+                <label class="text-secondary">Shop Name</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.shopName}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter Shop Name" type="text"  th:value="${kitchen.shopName}"/>
+              </div>  
+              <div class="mb-3">
+                <label class="text-secondary">Floor</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.floor}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter Floor Number" type="text"  th:value="${kitchen.floor}"/>
+              </div> 
+              <div class="mb-3">
+                <label class="text-secondary">Area</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.area}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter Area" type="text"  th:value="${kitchen.area}"/>
+              </div>
+              <div class="mb-3">
+                <label class="text-secondary">City</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.city}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter City" type="text"  th:value="${kitchen.city}"/>
+              </div>
+            </div>
+        </div>
+    </div>
     </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Cuisines Dropdown Logic
+      const cuisineCheckboxes = document.querySelectorAll('.cuisine-checkbox');
+      const selectedCuisinesInput = document.getElementById('selectedCuisines');
+      const cuisineDropdownButton = document.getElementById('cuisineDropdownButton');
+
+      cuisineCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', function () {
+              const selectedOptions = Array.from(cuisineCheckboxes)
+                  .filter(cb => cb.checked)
+                  .map(cb => cb.value);
+
+              // Ensure maximum of 3 selections
+              if (selectedOptions.length > 3) {
+                  alert('You can select a maximum of 3 cuisines.');
+                  this.checked = false; // Uncheck the last selected option
+                  return;
+              }
+
+              // Update the hidden input with selected cuisines
+              selectedCuisinesInput.value = selectedOptions.join(',');
+
+              // Update the dropdown button text
+              if (selectedOptions.length > 0) {
+                  cuisineDropdownButton.textContent = selectedOptions.join(', ');
+              } else {
+                  cuisineDropdownButton.textContent = 'Select Cuisines (Max 3)';
+              }
+          });
+      });
+
+      // Open Days Dropdown Logic
+      const dayCheckboxes = document.querySelectorAll('.day-checkbox');
+      const selectedOpenDaysInput = document.getElementById('selectedOpenDays');
+      const openDaysDropdownButton = document.getElementById('openDaysDropdownButton');
+
+      dayCheckboxes.forEach(checkbox => {
+          checkbox.addEventListener('change', function () {
+              const selectedOptions = Array.from(dayCheckboxes)
+                  .filter(cb => cb.checked)
+                  .map(cb => cb.value);
+
+              // Update the hidden input with selected open days
+              selectedOpenDaysInput.value = selectedOptions.join(',');
+
+              // Update the dropdown button text
+              if (selectedOptions.length > 0) {
+                  openDaysDropdownButton.textContent = selectedOptions.join(', ');
+              } else {
+                  openDaysDropdownButton.textContent = 'Select Open Days';
+              }
+          });
+      });
+    });
+  </script>
 </div>
