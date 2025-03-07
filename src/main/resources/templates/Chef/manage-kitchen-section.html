@@ -40,136 +40,136 @@
         <div class="row">
             <!-- First Column -->
             <div class="col-md-6">
+                <!--Kitchen Status-->
+                <div class="mb-3">
+                  <label class="text-secondary">Kitchen Status</label>
+                  <p class="p-2 rounded active font-weight-bolder"  th:text="${kitchen.status}"></p>
+                </div>
+                <!--Kitchen Name-->
                 <div class="mb-3">
                     <label class="text-secondary">Kitchen Name</label>
                     <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.kitchenName}"></p>
                     <input class="info-input form-control border rounded mt-1" placeholder="Enter Kitchen Name" type="text"  th:value="${kitchen.kitchenName}"/>
                 </div>
-                <!-- Cuisines Dropdown -->
+                 <!-- Cuisines Dropdown -->
                 <div class="mb-3">
                   <label class="text-secondary">Specialities</label>
-                  <p class="info-field bg-light p-2 rounded active">
-                    <span th:each="cuisine, iterStat : ${kitchen.selectedCuisines}">
-                      <span th:text="${cuisine}"></span>
-                      <span th:if="${!iterStat.last}">, </span>
-                    </span>
-                  </p>
+                  <p class="info-field bg-light p-2 rounded active" th:text="${kitchen.selectedCuisines}"></p>
                   <div class="info-input form-control border rounded mt-1 h-auto">
                       <!-- Cuisines Dropdown -->
                       <div class="dropdown">
                           <button class="btn dropdown-toggle w-100 text-left" type="button" id="cuisineDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               Select Cuisines (Max 3)
                           </button>
-                          <div class="dropdown-menu w-100" aria-labelledby="cuisineDropdownButton">
-                              <div class="px-3 py-2">
-                                  <div class="form-check">
-                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="North Indian" id="northIndian">
-                                      <label class="form-check-label" for="northIndian">North Indian</label>
-                                  </div>
-                                  <div class="form-check">
-                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="Fast Food" id="fastFood">
-                                      <label class="form-check-label" for="fastFood">Fast Food</label>
-                                  </div>
-                                  <div class="form-check">
-                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="Biryani" id="biryani">
-                                      <label class="form-check-label" for="biryani">Biryani</label>
-                                  </div>
-                                  <div class="form-check">
-                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="Chinese" id="chinese">
-                                      <label class="form-check-label" for="chinese">Chinese</label>
-                                  </div>
-                                  <div class="form-check">
-                                      <input class="form-check-input cuisine-checkbox" type="checkbox" value="South Indian" id="southIndian">
-                                      <label class="form-check-label" for="southIndian">South Indian</label>
-                                  </div>
-                              </div>
+                          <div class="dropdown-menu w-100" id="cuisineDropdownMenu" aria-labelledby="cuisineDropdownButton">
+                              <!-- Cuisine options will be populated here dynamically -->
                           </div>
                       </div>
                       <!-- Hidden input to store selected cuisines -->
                       <input type="hidden" id="selectedCuisines" name="selectedCuisines" />
                   </div>
-                </div>   
+                </div>
                 <!-- Open Days Dropdown -->
                 <div class="mb-3">
-                  <label class="text-secondary">Open Days</label>
-                  <p class="info-field bg-light p-2 rounded active">
-                    <span th:each="day, iterStat : ${kitchen.openDays}">
-                      <span th:text="${day}"></span>
-                      <span th:if="${!iterStat.last}">, </span>
-                    </span>
-                  </p>
-                  <div class="info-input form-control border rounded mt-1 h-auto">
-                    <!-- Open Days Dropdown -->
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle w-100 text-left" type="button" id="openDaysDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Select Open Days
-                        </button>
-                        <div class="dropdown-menu w-100" aria-labelledby="openDaysDropdownButton">
-                            <div class="px-3 py-2">
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Monday" id="monday">
-                                    <label class="form-check-label" for="monday">Monday</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Tuesday" id="tuesday">
-                                    <label class="form-check-label" for="tuesday">Tuesday</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Wednesday" id="wednesday">
-                                    <label class="form-check-label" for="wednesday">Wednesday</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Thursday" id="thursday">
-                                    <label class="form-check-label" for="thursday">Thursday</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Friday" id="friday">
-                                    <label class="form-check-label" for="friday">Friday</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Saturday" id="saturday">
-                                    <label class="form-check-label" for="saturday">Saturday</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input day-checkbox" type="checkbox" value="Sunday" id="sunday">
-                                    <label class="form-check-label" for="sunday">Sunday</label>
-                                </div>
+                    <label class="text-secondary">Open Days</label>
+                    <p class="info-field bg-light p-2 rounded active" th:text="${kitchen.openDays}"></p>
+                    <div class="info-input form-control border rounded mt-1 h-auto">
+                        <!-- Open Days Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 text-left" type="button" id="openDaysDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Open Days
+                            </button>
+                            <div class="dropdown-menu w-100" id="openDaysDropdownMenu" aria-labelledby="openDaysDropdownButton">
+                                <!-- Open days options will be populated here dynamically -->
                             </div>
                         </div>
+                        <!-- Hidden input to store selected open days -->
+                        <input type="hidden" id="selectedOpenDays" name="selectedOpenDays" />
                     </div>
-                    <!-- Hidden input to store selected open days -->
-                    <input type="hidden" id="selectedOpenDays" name="selectedOpenDays" />
+                </div>
+                <!-- Open Time Dropdown -->
+                <div class="mb-3">
+                  <label class="text-secondary">Open Time</label>
+                  <p class="info-field bg-light p-2 rounded active" th:text="${kitchen.openTime}"></p>
+                  <div class="info-input form-control border rounded mt-1 h-auto">
+                      <!-- Open Time Dropdown -->
+                      <div class="dropdown">
+                          <button class="btn dropdown-toggle w-100 text-left" type="button" id="openTimeDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              Select Open Time
+                          </button>
+                          <div class="dropdown-menu w-100" id="openTimeDropdownMenu" aria-labelledby="openTimeDropdownButton">
+                              <!-- Open time options will be populated here dynamically -->
+                          </div>
+                      </div>
+                      <!-- Hidden input to store selected open time -->
+                      <input type="hidden" id="selectedOpenTime" name="selectedOpenTime" />
                   </div>
                 </div>
+                <!-- Close Time Dropdown -->
+                <div class="mb-3">
+                    <label class="text-secondary">Close Time</label>
+                    <p class="info-field bg-light p-2 rounded active" th:text="${kitchen.closeTime}"></p>
+                    <div class="info-input form-control border rounded mt-1 h-auto">
+                        <!-- Close Time Dropdown -->
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle w-100 text-left" type="button" id="closeTimeDropdownButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select Close Time
+                            </button>
+                            <div class="dropdown-menu w-100" id="closeTimeDropdownMenu" aria-labelledby="closeTimeDropdownButton">
+                                <!-- Close time options will be populated here dynamically -->
+                            </div>
+                        </div>
+                        <!-- Hidden input to store selected close time -->
+                        <input type="hidden" id="selectedCloseTime" name="selectedCloseTime" />
+                    </div>
+                </div>
+                <!--Phone Number-->
+                <div class="mb-3">
+                  <label class="text-secondary">Phone Number</label>
+                  <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.phoneNumber}"></p>
+                  <input class="info-input form-control border rounded mt-1" placeholder="Enter Phone Number" type="text"  th:value="${kitchen.phoneNumber}"/>
+                </div> 
             </div>
     
             <!-- Second Column -->
             <div class="col-md-6">
+              <!--Delivery Fees-->
               <div class="mb-3">
                 <label class="text-secondary">Delivery Fees</label>
                 <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.deliveryFees}"></p>
                 <input class="info-input form-control border rounded mt-1" placeholder="Enter delivery fees" type="text"  th:value="${kitchen.deliveryFees}"/>
               </div> 
+              <!--Minimum Delivery Time-->
               <div class="mb-3">
-                <label class="text-secondary">Phone Number</label>
-                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.phoneNumber}"></p>
-                <input class="info-input form-control border rounded mt-1" placeholder="Enter Phone Number" type="text"  th:value="${kitchen.phoneNumber}"/>
+                <label class="text-secondary">Minimum Delivery Time</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.minDeliveryTime}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter minimum delivery time - mins" type="text"  th:value="${kitchen.minDeliveryTime}"/>
               </div> 
+              <!--Maximum Delivery Time-->
+              <div class="mb-3">
+                <label class="text-secondary">Maximum Delivery Time</label>
+                <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.maxDeliveryTime}"></p>
+                <input class="info-input form-control border rounded mt-1" placeholder="Enter minimum delivery time - max" type="text"  th:value="${kitchen.maxDeliveryTime}"/>
+              </div> 
+              <!--Shop Name-->
               <div class="mb-3">
                 <label class="text-secondary">Shop Name</label>
                 <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.shopName}"></p>
                 <input class="info-input form-control border rounded mt-1" placeholder="Enter Shop Name" type="text"  th:value="${kitchen.shopName}"/>
               </div>  
+              <!--Floor-->
               <div class="mb-3">
                 <label class="text-secondary">Floor</label>
                 <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.floor}"></p>
                 <input class="info-input form-control border rounded mt-1" placeholder="Enter Floor Number" type="text"  th:value="${kitchen.floor}"/>
               </div> 
+              <!--Area-->
               <div class="mb-3">
                 <label class="text-secondary">Area</label>
                 <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.area}"></p>
                 <input class="info-input form-control border rounded mt-1" placeholder="Enter Area" type="text"  th:value="${kitchen.area}"/>
               </div>
+              <!--City-->
               <div class="mb-3">
                 <label class="text-secondary">City</label>
                 <p class="info-field bg-light p-2 rounded active"  th:text="${kitchen.city}"></p>
@@ -182,6 +182,47 @@
   </div>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // Sample data for cuisines and open days
+      const cuisines = ["North Indian", "Fast Food", "Biryani", "Chinese", "South Indian"];
+      const openDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+      // Function to generate time options in 30-minute intervals
+      function generateTimeOptions() {
+        const times = [];
+        for (let hour = 0; hour < 24; hour++) {
+            for (let minute of [0, 30]) {
+                const time = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+                times.push(time);
+            }
+        }
+        return times;
+      }
+
+      const timeOptions = generateTimeOptions()
+
+      // Function to populate dropdown options
+      function populateDropdown(containerId, options, checkboxClass) {
+          const container = document.getElementById(containerId);
+          container.innerHTML = options.map(option => `
+              <div class="form-check">
+                  <input class="form-check-input ${checkboxClass}" type="checkbox" value="${option}" id="${option.toLowerCase()}">
+                  <label class="form-check-label" for="${option.toLowerCase()}">${option}</label>
+              </div>
+          `).join('');
+      }
+
+      // Populate cuisines dropdown
+      populateDropdown('cuisineDropdownMenu', cuisines, 'cuisine-checkbox');
+
+      // Populate open days dropdown
+      populateDropdown('openDaysDropdownMenu', openDays, 'day-checkbox');
+
+      // Populate open time dropdown
+      populateDropdown('openTimeDropdownMenu', timeOptions, 'open-time-checkbox', true);
+
+      // Populate close time dropdown
+      populateDropdown('closeTimeDropdownMenu', timeOptions, 'close-time-checkbox', true);
+
       // Cuisines Dropdown Logic
       const cuisineCheckboxes = document.querySelectorAll('.cuisine-checkbox');
       const selectedCuisinesInput = document.getElementById('selectedCuisines');
@@ -232,6 +273,40 @@
               } else {
                   openDaysDropdownButton.textContent = 'Select Open Days';
               }
+          });
+      });
+
+      // Open Time Dropdown Logic
+      const openTimeRadios = document.querySelectorAll('.open-time-checkbox');
+      const selectedOpenTimeInput = document.getElementById('selectedOpenTime');
+      const openTimeDropdownButton = document.getElementById('openTimeDropdownButton');
+
+      openTimeRadios.forEach(radio => {
+          radio.addEventListener('change', function () {
+              const selectedOption = this.value;
+
+              // Update the hidden input with selected open time
+              selectedOpenTimeInput.value = selectedOption;
+
+              // Update the dropdown button text
+              openTimeDropdownButton.textContent = selectedOption;
+          });
+      });
+
+      // Close Time Dropdown Logic
+      const closeTimeRadios = document.querySelectorAll('.close-time-checkbox');
+      const selectedCloseTimeInput = document.getElementById('selectedCloseTime');
+      const closeTimeDropdownButton = document.getElementById('closeTimeDropdownButton');
+
+      closeTimeRadios.forEach(radio => {
+          radio.addEventListener('change', function () {
+              const selectedOption = this.value;
+
+              // Update the hidden input with selected close time
+              selectedCloseTimeInput.value = selectedOption;
+
+              // Update the dropdown button text
+              closeTimeDropdownButton.textContent = selectedOption;
           });
       });
     });
