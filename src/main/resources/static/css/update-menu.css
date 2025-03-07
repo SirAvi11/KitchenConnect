@@ -1,0 +1,44 @@
+.input-btn{
+    height:50px;
+    gap:20px;
+    width:70%;
+}
+
+.food-item-template{
+    gap:5px;
+    margin-bottom:10px;
+}
+
+.food-info{
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.food-options{
+    gap:10px;
+}
+
+.food-image-wrapper{
+    border: 2px dashed #007bff;
+    border-radius: 0.25rem;
+    padding: 3.2rem 2.5rem;
+    background-color: #e9f7fe;
+    text-align: center;
+    cursor: pointer;
+    align-self:start;
+}
+
+.food-image-wrapper i {
+    color: #007bff;
+}
+
+.dish-name{
+    width:100%;
+}
+
+.dish-description{
+    width: 100%;
+}
+

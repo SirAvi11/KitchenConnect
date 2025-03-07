@@ -54,7 +54,12 @@
                  <!-- Cuisines Dropdown -->
                 <div class="mb-3">
                   <label class="text-secondary">Specialities</label>
-                  <p class="info-field bg-light p-2 rounded active" th:text="${kitchen.selectedCuisines}"></p>
+                  <p class="info-field bg-light p-2 rounded active">
+                    <span th:each="cuisine, iterStat : ${kitchen.selectedCuisines}">
+                      <span th:text="${cuisine}"></span>
+                      <span th:if="${!iterStat.last}">, </span>
+                    </span>
+                  </p>
                   <div class="info-input form-control border rounded mt-1 h-auto">
                       <!-- Cuisines Dropdown -->
                       <div class="dropdown">

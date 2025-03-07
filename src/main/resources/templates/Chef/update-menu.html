@@ -1,0 +1,107 @@
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="update-menu"
+  id="manage-menu"
+>
+    <link rel="stylesheet" th:href="@{/css/update-menu.css}">
+    <h2 class="font-weight-bold mb-4">Menu Details</h2>
+    <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+        <div class="input-section mb-3">
+            <label class="text-secondary" for="categoryInput">Category Name</label>
+            <div class="input-btn d-flex align-items-center justify-content-center">
+                <input type="text" id="categoryInput" class="form-control" placeholder="Add New Category">
+                <button class="btn btn-primary" id="addCategoryBtn">Add</button>
+            </div>
+        </div>
+        <div id="categoriesContainer"></div>
+    </div>
+    <script>
+        document.getElementById('addCategoryBtn').addEventListener('click', function() {
+            const categoryName = document.getElementById('categoryInput').value;
+            if (categoryName) {
+                const categoryCount = 1; // Initialize count
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'card mt-3';
+                categoryCard.innerHTML = `
+                    <div class="card-header">
+                        ${categoryName} (${categoryCount})
+                        <button class="btn btn-danger btn-sm float-right remove-category">-</button>
+                    </div>
+                    <div class="card-body">
+                        <button class="btn btn-success add-food-item mb-2">Add Item +</button>
+                        <div class="food-item-template d-flex align-items-center p-3 border rounded shadow-sm">
+                            <!-- Image Upload (Left Side) -->
+                            <div class="food-image-wrapper flex-shrink-0">
+                                <i class="fas fa-plus mb-2"></i>
+                                <p>
+                                    Upload Image
+                                </p>
+                                <input type="file" class="form-control-file d-none" id="foodImageUpload">
+                            </div>
+        
+                            <!-- Food Details (Right Side) -->
+                            <div class="food-details flex-grow-1 d-flex flex-column justify-content-between ms-3">
+                                <!-- Name & Description -->
+                                <div class="food-info d-flex">
+                                    <div class="dish-name">
+                                        <label class="text-secondary" for="categoryInput">Dish Name</label>
+                                        <input type="text" class="form-control food-name me-2" placeholder="Enter Dish Name">
+                                    </div>
+                                    <div class="dish-description">
+                                        <label class="text-secondary" for="categoryInput">Description</label>
+                                        <textarea class="form-control food-description" placeholder="Enter Dish Description"></textarea>
+                                    </div>
+                                </div>
+        
+                                <!-- Price & Veg/Non-Veg -->
+                                <div class="food-options d-flex align-items-center mt-2">
+                                    <div class="price">
+                                        <label class="text-secondary" for="price">Price</label>
+                                        <input type="number" id="price" class="form-control w-50" placeholder="Price">
+                                    </div>
+                                    <div class="veg-nonveg-section">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg">
+                                            <label class="form-check-label text-success" for="veg">Veg</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg">
+                                            <label class="form-check-label text-danger" for="nonVeg">Non-Veg</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <!-- Remove Button (Right Side) -->
+                            <button class="btn btn-danger ms-3 remove-food-item">-</button>
+                        </div>
+        
+                        <div class="food-items-container"></div>
+                    </div>
+                `;
+                document.getElementById('categoriesContainer').appendChild(categoryCard);
+                document.getElementById('categoryInput').value = '';
+        
+                // Add event listener for adding food items
+                categoryCard.querySelector('.add-food-item').addEventListener('click', function() {
+                    const foodItemTemplate = categoryCard.querySelector('.food-item-template');
+                    const foodItemClone = foodItemTemplate.cloneNode(true);
+                    foodItemClone.style.display = 'block';
+                    categoryCard.querySelector('.food-items-container').appendChild(foodItemClone);
+                });
+        
+                // Add event listener for removing category
+                categoryCard.querySelector('.remove-category').addEventListener('click', function() {
+                    categoryCard.remove();
+                });
+        
+                // Add event listener for removing food items
+                categoryCard.querySelector('.food-items-container').addEventListener('click', function(e) {
+                    if (e.target.classList.contains('remove-food-item')) {
+                        e.target.closest('.food-item-template').remove();
+                    }
+                });
+            }
+        });
+    </script>
+</div>
