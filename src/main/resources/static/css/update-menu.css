@@ -5,8 +5,16 @@
 }
 
 .food-item-template{
-    gap:5px;
-    margin-bottom:10px;
+    flex-direction:column;
+}
+
+.inner-menu-content{
+    gap:10px;
+    width: 100%;
+}
+
+.action-buttons{
+    align-self:end;
 }
 
 .food-info{

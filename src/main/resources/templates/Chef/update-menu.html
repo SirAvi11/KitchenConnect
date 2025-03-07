@@ -12,96 +12,211 @@
                 <input type="text" id="categoryInput" class="form-control" placeholder="Add New Category">
                 <button class="btn btn-primary" id="addCategoryBtn">Add</button>
             </div>
-        </div>
-        <div id="categoriesContainer"></div>
-    </div>
-    <script>
-        document.getElementById('addCategoryBtn').addEventListener('click', function() {
-            const categoryName = document.getElementById('categoryInput').value;
-            if (categoryName) {
-                const categoryCount = 1; // Initialize count
-                const categoryCard = document.createElement('div');
-                categoryCard.className = 'card mt-3';
-                categoryCard.innerHTML = `
-                    <div class="card-header">
-                        ${categoryName} (${categoryCount})
-                        <button class="btn btn-danger btn-sm float-right remove-category">-</button>
-                    </div>
+            <div class="accordion" id="categoriesContainer">
+                <!-- Existing Accordion Item (Example) -->
+                <div class="card">
+                  <div class="card-header" id="headingOne">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link text-warning font-weight-bold accordion-button d-flex justify-content-between w-100 align-items-center" 
+                            type="button" 
+                            data-toggle="collapse" 
+                            data-target="#collapseOne" 
+                            aria-expanded="true" 
+                            aria-controls="collapseOne">
+                        
+                            <span class="d-flex align-items-center">
+                                Rice (5)
+                            </span>
+                    
+                            <i class="icon fas fa-plus"></i>
+                        </button>
+                    </h2>
+                  </div>
+                  <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#categoriesContainer">
                     <div class="card-body">
                         <button class="btn btn-success add-food-item mb-2">Add Item +</button>
-                        <div class="food-item-template d-flex align-items-center p-3 border rounded shadow-sm">
-                            <!-- Image Upload (Left Side) -->
-                            <div class="food-image-wrapper flex-shrink-0">
-                                <i class="fas fa-plus mb-2"></i>
-                                <p>
-                                    Upload Image
-                                </p>
-                                <input type="file" class="form-control-file d-none" id="foodImageUpload">
-                            </div>
-        
-                            <!-- Food Details (Right Side) -->
-                            <div class="food-details flex-grow-1 d-flex flex-column justify-content-between ms-3">
-                                <!-- Name & Description -->
-                                <div class="food-info d-flex">
-                                    <div class="dish-name">
-                                        <label class="text-secondary" for="categoryInput">Dish Name</label>
-                                        <input type="text" class="form-control food-name me-2" placeholder="Enter Dish Name">
-                                    </div>
-                                    <div class="dish-description">
-                                        <label class="text-secondary" for="categoryInput">Description</label>
-                                        <textarea class="form-control food-description" placeholder="Enter Dish Description"></textarea>
-                                    </div>
-                                </div>
-        
-                                <!-- Price & Veg/Non-Veg -->
-                                <div class="food-options d-flex align-items-center mt-2">
-                                    <div class="price">
-                                        <label class="text-secondary" for="price">Price</label>
-                                        <input type="number" id="price" class="form-control w-50" placeholder="Price">
-                                    </div>
-                                    <div class="veg-nonveg-section">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg">
-                                            <label class="form-check-label text-success" for="veg">Veg</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg">
-                                            <label class="form-check-label text-danger" for="nonVeg">Non-Veg</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-        
-                            <!-- Remove Button (Right Side) -->
-                            <button class="btn btn-danger ms-3 remove-food-item">-</button>
-                        </div>
-        
+                        <!-- Food Items Container -->
                         <div class="food-items-container"></div>
-                    </div>
-                `;
-                document.getElementById('categoriesContainer').appendChild(categoryCard);
-                document.getElementById('categoryInput').value = '';
+                    </div>            
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Define the food item template
+            const foodItemTemplate = `
+                <div class="food-item-template d-flex align-items-center p-3 border rounded shadow-sm">
+                            <div class="action-buttons">
+                                <!-- Edit and save button -->
+                                <button id="edit-info-button" class="btn btn-warning text-white" onclick="toggleEditInfo()"><i class="fas fa-edit"></i></button>
+                                <button id="save-info-button" class="btn btn-warning text-white d-none" onclick="toggleEditInfo()"><i class="fas fa-save"></i></button>
+                            </div>
+                            <div class="inner-menu-content d-flex align-items-center">
+                                <!-- Image Upload (Left Side) -->
+                                <div class="food-image-wrapper flex-shrink-0">
+                                    <i class="fas fa-plus mb-2"></i>
+                                    <p>
+                                        Upload Image
+                                    </p>
+                                    <input type="file" class="form-control-file d-none" id="foodImageUpload">
+                                </div>
         
-                // Add event listener for adding food items
-                categoryCard.querySelector('.add-food-item').addEventListener('click', function() {
-                    const foodItemTemplate = categoryCard.querySelector('.food-item-template');
-                    const foodItemClone = foodItemTemplate.cloneNode(true);
-                    foodItemClone.style.display = 'block';
-                    categoryCard.querySelector('.food-items-container').appendChild(foodItemClone);
-                });
+                                <!-- Food Details (Right Side) -->
+                                <div class="food-details flex-grow-1 d-flex flex-column justify-content-between ms-3">
+                                    <!-- Name & Description -->
+                                    <div class="food-info d-flex">
+                                        <div class="dish-name">
+                                            <label class="text-secondary" for="categoryInput">Dish Name</label>
+                                            <p class="info-field bg-light p-2 rounded active"  th:text="Dish Name">Dish Name</p>
+                                            <input type="text" class="info-input form-control border rounded mt-1 food-name" placeholder="Enter Dish Name">
+                                        </div>
+                                        <div class="dish-description">
+                                            <label class="text-secondary" for="categoryInput">Description</label>
+                                            <p class="info-field bg-light p-2 rounded active"  th:text="Dish Name">Description</p>
+                                            <textarea class="info-input form-control border rounded mt-1  food-description" placeholder="Enter Dish Description"></textarea>
+                                        </div>
+                                    </div>
+            
+                                    <!-- Price & Veg/Non-Veg -->
+                                    <div class="food-options d-flex justify-content-between mt-2">
+                                        <div class="price">
+                                            <label class="text-secondary" for="price">Price</label>
+                                            <p class="info-field bg-light p-2 rounded active"  th:text="Dish Name">Description</p>
+                                            <input type="number" id="price" class="info-input form-control border rounded mt-1 w-50" placeholder="Price">
+                                        </div>
+                                        <div class="veg-nonveg-section d-flex flex-column">
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg">
+                                                <label class="form-check-label text-success" for="veg">Veg</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg">
+                                                <label class="form-check-label text-danger" for="nonVeg">Non-Veg</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
         
-                // Add event listener for removing category
-                categoryCard.querySelector('.remove-category').addEventListener('click', function() {
-                    categoryCard.remove();
-                });
-        
-                // Add event listener for removing food items
-                categoryCard.querySelector('.food-items-container').addEventListener('click', function(e) {
-                    if (e.target.classList.contains('remove-food-item')) {
-                        e.target.closest('.food-item-template').remove();
-                    }
+                                <!-- Remove Button (Right Side) -->
+                                <button class="btn btn-danger ms-3 remove-food-item">-</button>
+                            </div>
+                        </div>
+            `;
+
+            // Function to set up event listeners for "Add Item +" button
+            function setupAddFoodItemButton(button) {
+                button.addEventListener('click', function () {
+                    const foodItemsContainer = button.closest('.card-body').querySelector('.food-items-container');
+
+                    // Create a new food item from the template
+                    const newFoodItem = document.createElement('div');
+                    newFoodItem.innerHTML = foodItemTemplate;
+
+                    // Append the new food item to the container
+                    foodItemsContainer.appendChild(newFoodItem);
+
+                    // Add event listener to the remove button
+                    const removeButton = newFoodItem.querySelector('.remove-food-item');
+                    removeButton.addEventListener('click', function () {
+                        foodItemsContainer.removeChild(newFoodItem);
+                    });
+
+                    // Add event listener to the image upload input
+                    const foodImageUpload = newFoodItem.querySelector('.food-image-upload');
+                    const foodImageWrapper = newFoodItem.querySelector('.food-image-wrapper');
+
+                    foodImageUpload.addEventListener('change', function (event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                foodImageWrapper.innerHTML = `<img src="${e.target.result}" alt="Food Image" class="img-fluid">`;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
                 });
             }
+
+            // Set up event listeners for existing "Add Item +" buttons
+            const existingAddFoodItemButtons = document.querySelectorAll('.add-food-item');
+            existingAddFoodItemButtons.forEach(setupAddFoodItemButton);
+
+            // Add Category
+            const addCategoryBtn = document.getElementById('addCategoryBtn');
+            const categoryInput = document.getElementById('categoryInput');
+            const categoriesContainer = document.getElementById('categoriesContainer');
+
+            addCategoryBtn.addEventListener('click', function () {
+                const categoryName = categoryInput.value.trim();
+
+                if (categoryName) {
+                    // Create a new accordion item
+                    const newAccordionItem = document.createElement('div');
+                    newAccordionItem.classList.add('card');
+
+                    // Generate a unique ID for the new accordion item
+                    const uniqueId = `heading${Date.now()}`;
+                    const collapseId = `collapse${Date.now()}`;
+
+                    // Populate the new accordion item
+                    newAccordionItem.innerHTML = `
+                        <div class="card-header" id="${uniqueId}">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link text-warning font-weight-bold accordion-button d-flex justify-content-between w-100 align-items-center" 
+                                    type="button" 
+                                    data-toggle="collapse" 
+                                    data-target="#${collapseId}" 
+                                    aria-expanded="true" 
+                                    aria-controls="${collapseId}">
+                                
+                                    <span class="d-flex align-items-center">
+                                        ${categoryName} (0)
+                                    </span>
+                            
+                                    <i class="icon fas fa-plus"></i>
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="${collapseId}" class="collapse" aria-labelledby="${uniqueId}" data-parent="#categoriesContainer">
+                            <div class="card-body">
+                                <button class="btn btn-success add-food-item mb-2">Add Item +</button>
+                                <div class="food-items-container"></div>
+                            </div>            
+                        </div>
+                    `;
+
+                    // Insert the new accordion item at the top of the container
+                    categoriesContainer.prepend(newAccordionItem);
+
+                    // Clear the input field
+                    categoryInput.value = '';
+
+                    // Set up event listeners for the new "Add Item +" button
+                    const newAddFoodItemButton = newAccordionItem.querySelector('.add-food-item');
+                    setupAddFoodItemButton(newAddFoodItemButton);
+                } else {
+                    alert('Please enter a category name.');
+                }
+            });
+
+            document.querySelectorAll(".accordion-button").forEach(button => {
+                button.addEventListener("click", function () {
+                    let icon = this.querySelector("i");
+        
+                    setTimeout(() => { // Ensure Bootstrap toggles `aria-expanded` first
+                        if (this.getAttribute("aria-expanded") === "true") {
+                            icon.classList.remove("fa-plus");
+                            icon.classList.add("fa-minus");
+                        } else {
+                            icon.classList.remove("fa-minus");
+                            icon.classList.add("fa-plus");
+                        }
+                    }, 5);
+                });
+            });
         });
     </script>
 </div>
