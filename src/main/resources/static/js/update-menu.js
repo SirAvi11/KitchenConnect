@@ -1,3 +1,158 @@
+// Function to create a new category
+async function createNewCategory(categoryName) {
+    const payload = {
+        name: categoryName,
+    };
+
+    try {
+        const response = await fetch('/category', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to create category.');
+        }
+
+        const data = await response.json();
+        return data; // Return the created category
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to create category. Please try again.');
+        return null;
+    }
+}
+
+// Function to update a category
+async function updateCategory(categoryId, updatedCategory) {
+    const payload = {
+        id : categoryId,
+        name: updatedCategory
+    };
+
+    try {
+        const response = await fetch(`/category/${categoryId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update category.');
+        }
+
+        const data = await response.json();
+        return data; // Return the updated category
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to update category. Please try again.');
+        return null;
+    }
+}
+
+// Function to delete a category
+async function deleteCategory(categoryId) {
+    try {
+        const response = await fetch(`/category/${categoryId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete category.');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to delete category. Please try again.');
+    }
+}
+
+
+//function to delete accordion category
+function deleteAccordion(button,categoryId) {
+    // Get the accordion item to be deleted
+    const accordionItem = button.closest('.card-header').parentElement;
+
+    // Show the confirmation modal
+    const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+    confirmationModal.show();
+
+    // Handle the "Yes" button click
+    document.getElementById('confirmDeleteButton').onclick = async function () {
+        // Perform the delete operation
+        const isDeleted = await deleteCategory(categoryId);
+
+        if(isDeleted){
+            accordionItem.remove();
+            confirmationModal.hide();
+        }else{
+            alert("Delete Operation Failed!")
+        }
+    };
+
+    // Handle the "Cancel" button click
+    document.getElementById('cancelDeleteButton').onclick = function () {
+        confirmationModal.hide(); // Simply close the modal
+    };
+}
+
+// Function to toggle between edit and save modes
+async function toggleHeaderName(button, categoryId) {
+    const cardHeader = button.closest('.card-header');
+    const accordionButton = cardHeader.querySelector('.accordion-button');
+    const categoryNameSpan = accordionButton.querySelector('.flex-grow-1');
+    const editButton = cardHeader.querySelector('#edit-info-button');
+    const saveButton = cardHeader.querySelector('#save-info-button');
+
+    if (editButton.classList.contains('d-none')) {
+        // Currently in Save mode, switch back to Edit mode
+        const inputField = accordionButton.querySelector('input');
+        const newCategoryName = inputField.value.trim();
+
+        if (newCategoryName) {
+            const result = await updateCategory(categoryId, newCategoryName);
+            if(result){
+                // Update the UI with the new category name
+                categoryNameSpan.textContent = `${newCategoryName} (${categoryNameSpan.textContent.split('(')[1]}`;
+            } else{
+                alert('Failed to update category name. Please try again.');
+            }
+
+        }
+
+        // Revert to Edit mode
+        editButton.classList.remove('d-none');
+        saveButton.classList.add('d-none');
+        categoryNameSpan.style.display = 'inline'; // Show the category name
+        inputField.remove(); // Remove the input field
+    } else {
+        // Currently in Edit mode, switch to Save mode
+        const currentCategoryName = categoryNameSpan.textContent.split('(')[0].trim();
+
+        // Create an input field for editing
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.placeholder = 'Enter new category name';
+        inputField.value = currentCategoryName;
+        inputField.classList.add('form-control', 'w-50');
+
+        // Hide the category name and show the input field
+        categoryNameSpan.style.display = 'none';
+        accordionButton.appendChild(inputField);
+
+        // Toggle buttons
+        editButton.classList.add('d-none');
+        saveButton.classList.remove('d-none');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Define the food item template
     const foodItemTemplate = `
@@ -121,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const categoryInput = document.getElementById('categoryInput');
     const categoriesContainer = document.getElementById('categoriesContainer');
 
-    addCategoryBtn.addEventListener('click', function () {
+    addCategoryBtn.addEventListener('click', async function () {
         const categoryName = categoryInput.value.trim();
 
         if (categoryName) {
@@ -131,59 +286,65 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Create a new accordion item
-            const newAccordionItem = document.createElement('div');
-            newAccordionItem.classList.add('card');
+            // Save the category to the database
+            const result = await createNewCategory(categoryName);
+            if(result.status == "success"){
+                // Create a new accordion item
+                const newAccordionItem = document.createElement('div');
+                newAccordionItem.classList.add('card');
 
-            // Generate a unique ID for the new accordion item
-            const uniqueId = `heading${Date.now()}`;
-            const collapseId = `collapse${Date.now()}`;
+                // Generate a unique ID for the new accordion item
+                const uniqueId = `category-${result.id}`;
+                const collapseId = `collapse-${result.id}`;
 
-            // Populate the new accordion item
-            newAccordionItem.innerHTML = `
-                <div class="card-header" id="${uniqueId}">
-                    <h2 class="mb-0 d-flex">
-                        <button class="btn btn-link text-warning font-weight-bold accordion-button d-flex justify-content-between w-100 align-items-center" 
-                            type="button" 
-                            data-toggle="collapse" 
-                            data-target="#${collapseId}" 
-                            aria-expanded="true" 
-                            aria-controls="${collapseId}">
-                        
-                            <span class="d-flex align-items-center justify-content-between w-100">
-                                <i class="fas fa-arrow-down me-2"></i>
-                                <span class="flex-grow-1 text-center">${categoryName} (0)</span>
-                            </span>
-                    
-                            <button class="btn btn-danger btn-sm delete-accordion" onclick="deleteAccordion(this)">
-                                <i class="fas fa-minus"></i>
+                // Populate the new accordion item
+                newAccordionItem.innerHTML = `
+                    <div class="card-header" id="${uniqueId}">
+                        <h2 class="mb-0 d-flex outer-header">
+                            <button class="btn btn-link text-warning font-weight-bold accordion-button d-flex justify-content-start w-100 align-items-center" 
+                                type="button" 
+                                data-toggle="collapse" 
+                                data-target="#${collapseId}" 
+                                aria-expanded="true" 
+                                aria-controls="${collapseId}">
+                            
+                                <span class="d-flex align-items-center justify-content-between header-icon-name">
+                                    <i class="fas fa-arrow-down me-2"></i>
+                                    <span class="flex-grow-1 text-center">${categoryName} (0)</span>
+                                </span>
                             </button>
-                        </button>
-                    </h2>
-                </div>
-                <div id="${collapseId}" class="collapse" aria-labelledby="${uniqueId}" data-parent="#categoriesContainer">
-                    <div class="card-body">
-                        <button class="btn btn-success add-food-item mb-2">Add Item +</button>
-                        <div class="food-items-container"></div>
-                    </div>            
-                </div>
-            `;
+                            <div class="header-buttons">
+                                <button id="edit-info-button" class="btn btn-warning text-white" onclick="toggleHeaderName(this, ${result.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button id="save-info-button" class="btn btn-warning text-white d-none" onclick="toggleHeaderName(this, ${result.id})">
+                                    <i class="fas fa-save"></i>
+                                </button>
+                                <button class="btn btn-danger btn-sm delete-accordion" onclick="deleteAccordion(this, ${result.id})">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </h2>
+                    </div>
+                    <div id="${collapseId}" class="collapse" aria-labelledby="${uniqueId}" data-parent="#categoriesContainer">
+                        <div class="card-body">
+                            <button class="btn btn-success add-food-item mb-2">Add Item +</button>
+                            <div class="food-items-container"></div>
+                        </div>            
+                    </div>
+                `;
 
-            // Insert the new accordion item at the top of the container
-            categoriesContainer.prepend(newAccordionItem);
+                // Insert the new accordion item at the top of the container
+                categoriesContainer.prepend(newAccordionItem);
 
-            // Clear the input field
-            categoryInput.value = '';
+                // Attach event listener to the new "Add Item +" button
+                const addFoodItemButton = newAccordionItem.querySelector('.add-food-item');
+                setupAddFoodItemButton(addFoodItemButton);
 
-            // Set up event listeners for the new "Add Item +" button
-            const newAddFoodItemButton = newAccordionItem.querySelector('.add-food-item');
-            setupAddFoodItemButton(newAddFoodItemButton);
+                // Clear the input field
+                categoryInput.value = '';
+            }
 
-            // Set up event listener for the delete accordion button
-            const deleteAccordionButton = newAccordionItem.querySelector('.delete-accordion');
-            deleteAccordionButton.addEventListener('click', function () {
-                categoriesContainer.removeChild(newAccordionItem);
-            });
         } else {
             alert('Please enter a category name.');
         }
@@ -202,10 +363,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     });
+    
+    //Event listnener for existing 'Add Item +' buttons
+    document.querySelectorAll(".add-food-item").forEach(button =>{
+        setupAddFoodItemButton(button);
+    })
 
-    // Function to delete an accordion section
-    function deleteAccordion(button) {
-        const accordionItem = button.closest('.card');
-        accordionItem.remove();
-    }
 });

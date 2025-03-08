@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kitchenconnect.kitchen.entity.Category;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
 import com.kitchenconnect.kitchen.enums.UserRole;
+import com.kitchenconnect.kitchen.service.CategoryService;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 import com.kitchenconnect.kitchen.service.UserService;
@@ -33,7 +35,11 @@ public class HomeController {
     @Autowired
     private FoodItemService foodItemService;
 
-    @Autowired UserService userService;
+    @Autowired 
+    private UserService userService;
+
+    @Autowired 
+    private CategoryService categoryService;
 
     @GetMapping
     public String showHomePage(Model model, HttpSession session) {
@@ -90,9 +96,12 @@ public class HomeController {
             }
         }
 
-        if(loggedInUser.getRole() == UserRole.CHEF && userKitchen != null){
+        if(loggedInUser.getRole() == UserRole.CHEF && userKitchen.getStatus() == KitchenStatus.APPROVED){
             // Add kitchen data to the model in case of approval
             model.addAttribute("kitchen", userKitchen);
+            List<Category> categories = categoryService.getCategoriesByKitchen(userKitchen.getKitchenId());
+            
+            session.setAttribute("categories", categories);
 
         }
     

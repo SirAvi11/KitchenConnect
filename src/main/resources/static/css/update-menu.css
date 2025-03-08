@@ -17,6 +17,23 @@
     align-self:end;
 }
 
+.outer-header{
+    gap:5px;
+}
+
+.header-icon-name{
+    gap:30px;
+}
+
+.header-buttons{
+    display: flex;
+    gap: 5px;
+}
+
+.btn-link{
+    gap:30px;
+}
+
 .food-info{
     flex-direction: column;
     gap: 5px;
