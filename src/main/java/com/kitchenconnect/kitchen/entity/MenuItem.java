@@ -1,5 +1,7 @@
 package com.kitchenconnect.kitchen.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +27,7 @@ public class MenuItem {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonBackReference // Prevents circular reference
     private Category category;
 
     public Long getId() {

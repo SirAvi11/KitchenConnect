@@ -3,6 +3,8 @@ package com.kitchenconnect.kitchen.entity;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Category {
     @Id
@@ -17,6 +19,7 @@ public class Category {
     private Kitchen kitchen;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Prevents circular reference
     private List<MenuItem> menuItems;
 
     @Transient // This field is not persisted in the database

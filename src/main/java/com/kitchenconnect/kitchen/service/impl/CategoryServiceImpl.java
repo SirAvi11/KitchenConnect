@@ -43,4 +43,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
         return false; // Entity does not exist    
     }
+
+    public Category getCategoryById(Long categoryId){
+        return categoryRepository.findById(categoryId).orElse(null);
+    }
 }

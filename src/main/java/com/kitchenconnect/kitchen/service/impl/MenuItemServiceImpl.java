@@ -33,7 +33,16 @@ public class MenuItemServiceImpl implements MenuItemService {
         return menuItemRepository.save(menuItem);
     }
 
-    public void deleteMenuItem(Long id) {
-        menuItemRepository.deleteById(id);
+    public boolean deleteMenuItem(Long id) {
+
+        if (menuItemRepository.existsById(id)) {
+            menuItemRepository.deleteById(id);
+            return true; // Deletion successful
+        }
+        return false; // Entity does not exist  
+    }
+
+    public MenuItem getMenuItemById(Long id){
+        return menuItemRepository.findById(id).orElse(null);
     }
 }

@@ -9,5 +9,6 @@ public interface MenuItemService {
     List<MenuItem> getMenuItemsByCategory(Long categoryId);
     MenuItem createMenuItem(MenuItem menuItem);
     MenuItem updateMenuItem(Long id, MenuItem updatedMenuItem);
-    void deleteMenuItem(Long id);
+    boolean deleteMenuItem(Long id);
+    MenuItem getMenuItemById(Long id);
 }

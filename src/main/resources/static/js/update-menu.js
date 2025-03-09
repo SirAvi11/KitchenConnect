@@ -1,3 +1,90 @@
+function removeMenuItem(menuItemId){
+    const foodItemsContainerId = `food-item-template-${menuItemId}`;
+    const foodItemsContainer = document.getElementById(foodItemsContainerId);
+
+     // Show the confirmation modal
+     const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+     confirmationModal.show();
+ 
+     // Handle the "Yes" button click
+     document.getElementById('confirmDeleteButton').onclick = async function () {
+        // Perform the delete operation
+        const isDeleted = await deleteFoodItem(menuItemId);
+
+         if(true){
+                const container = foodItemsContainer.closest('.card-body').querySelector('.food-items-container');
+                const accordionHeader = foodItemsContainer.closest('.card').querySelector('.card-header');
+                foodItemsContainer.remove();
+                confirmationModal.hide();
+                const itemCount = container.querySelectorAll('.food-item-template').length;
+                updateAccordionCount(accordionHeader, itemCount);  
+         }
+     };
+ 
+     // Handle the "Cancel" button click
+     document.getElementById('cancelDeleteButton').onclick = function () {
+         confirmationModal.hide(); // Simply close the modal
+     };
+}
+
+async function deleteFoodItem(menuId){
+    try {
+        const response = await fetch(`/menu-items/${menuId}`, {
+            method: 'DELETE'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete menu item.');
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to delete menu item. Please try again.');
+    }
+}
+
+// Function to save the food item to the backend
+async function saveFoodItem(payload, imageFile) {
+    try {
+
+        // Create a FormData object to send the payload and image file
+        const formData = new FormData();
+        formData.append('dishName', payload.dishName);
+        formData.append('dishDescription', payload.dishDescription);
+        formData.append('price', payload.price);
+        formData.append('foodType', payload.foodType);
+        formData.append('categoryId', payload.categoryId);
+
+        // Append the image file if it exists
+        if (imageFile) {
+            formData.append('image', imageFile);
+        }
+
+        //Append menu id if not null
+        if(payload.menuId != null){
+            formData.append('menuId', payload.menuId);
+        }
+
+        // Send the data to the backend
+        const response = await fetch('/menu-items/save-item', {
+            method: 'POST',
+            body: formData, // Use FormData to send multipart data
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save food item.');
+        }
+
+        const data = await response.json();
+        return data; // Return the response from the backend
+    } catch (error) {
+        console.error('Error:', error);
+        throw error;
+    }
+}
+
 // Function to create a new category
 async function createNewCategory(categoryName) {
     const payload = {
@@ -73,7 +160,6 @@ async function deleteCategory(categoryId) {
         alert('Failed to delete category. Please try again.');
     }
 }
-
 
 //function to delete accordion category
 function deleteAccordion(button,categoryId) {
@@ -153,68 +239,187 @@ async function toggleHeaderName(button, categoryId) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Define the food item template
-    const foodItemTemplate = `
-        <div class="food-item-template d-flex align-items-center p-3 border rounded shadow-sm">
+function previewImage(event, imgElement,foodImageWrapper) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // Display the uploaded image
+            imgElement.src = e.target.result;
+            imgElement.classList.remove('d-none');
+            foodImageWrapper.classList.add('has-image'); // Add a class to indicate an image is uploaded
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Function to toggle between edit and save modes for a food item
+function toggleEditFoodItemInfo(button) {
+    const foodItemTemplate = button.closest('.food-item-template');
+    const editButton = foodItemTemplate.querySelector('#edit-info-button');
+    const saveButton = foodItemTemplate.querySelector('#save-info-button');
+    const infoFields = foodItemTemplate.querySelectorAll('.info-field');
+    const infoInputs = foodItemTemplate.querySelectorAll('.info-input');
+    const foodImageUpload = foodItemTemplate.querySelector('[id^="foodImageUpload-"]');
+    const foodImageWrapper = foodItemTemplate.querySelector('.food-image-wrapper');
+    const vegNonVegInfoField = foodItemTemplate.querySelector('.veg-nonveg-section .info-field');
+    const vegNonVegInputs = foodItemTemplate.querySelector('.veg-nonveg-section .info-input');
+
+    if (editButton.classList.contains('d-none')) {
+        // Currently in Save mode, switch back to Edit mode
+
+        const foodItem = button.closest('.food-items-container');
+        const foodItemsContainer = button.closest('.card-body').querySelector('.food-items-container');
+        const categoryId = foodItemsContainer.getAttribute('data-category-id'); // Retrieve the categoryId
+
+        const dishName = foodItem.querySelector('.food-name').value;
+        const dishDescription = foodItem.querySelector('.food-description').value;
+        const price = foodItem.querySelector('#price').value;
+        const foodType = foodItem.querySelector('input[name="foodType"]:checked').value;
+        const imageFile = foodImageUpload.files[0];
+        const menuId = foodItemTemplate.getAttribute("data-menu-id");
+
+        // Prepare the payload
+        const payload = {
+            dishName,
+            dishDescription,
+            price: parseFloat(price),
+            foodType,
+            categoryId,
+            menuId
+        };
+
+        // Send the data to the backend
+        saveFoodItem(payload, imageFile)
+            .then((response) => {
+                if (response.status === "success") {
+                    const savedMenuItem = response.menuId;
+
+                    //update id fields
+                    if(!foodItemTemplate.hasAttribute("data-menu-id")){
+                        foodItemTemplate.setAttribute("data-menu-id",response.menuId);
+                    }
+
+                    if(!foodImageUpload.hasAttribute("data-menu-item-id")){
+                        foodImageUpload.setAttribute("data-menu-item-id", response.menuId);
+                    }
+
+                    console.log("savedMenuItem", savedMenuItem);
+                    // Update the displayed text with the input values
+                    infoFields[0].textContent = dishName; // Dish Name
+                    infoFields[1].textContent = dishDescription; // Description
+                    infoFields[2].textContent = price; // Price
+                    vegNonVegInfoField.textContent = foodType === 'veg' ? 'Veg' : 'Non-Veg'; // Veg/Non-Veg
+
+                    // Revert to Presentation mode
+                    infoFields.forEach(field => field.style.display = 'inline');
+                    infoInputs.forEach(input => input.style.display = 'none');
+                    vegNonVegInfoField.style.display = 'inline';
+                    vegNonVegInputs.style.display = 'none';
+                    editButton.classList.remove('d-none');
+                    saveButton.classList.add('d-none');
+                    foodImageUpload.disabled = true;
+                } else {
+                    alert('Failed to save food item. Please try again.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            
+    } else {
+        // Currently in Edit mode, switch to Save mode
+        infoFields.forEach((field, index) => {
+            infoInputs[index].value = field.textContent; // Set the input value to the current text
+            field.style.display = 'none'; // Hide the info field
+        });
+
+        // Set the selected radio button based on the info field value
+        const selectedFoodType = vegNonVegInfoField.textContent.trim().toLowerCase();
+        if (selectedFoodType === 'veg') {
+            foodItemTemplate.querySelector('#veg').checked = true;
+        } else if (selectedFoodType === 'non-veg') {
+            foodItemTemplate.querySelector('#nonVeg').checked = true;
+        }
+
+        // Show the radio buttons
+        vegNonVegInfoField.style.display = 'none';
+        vegNonVegInputs.style.display = 'block';
+
+        // Show the input fields
+        infoInputs.forEach(input => input.style.display = 'block');
+
+        // Toggle buttons
+        editButton.classList.add('d-none');
+        saveButton.classList.remove('d-none');
+
+        //Enable food upload
+        foodImageUpload.disabled = false;
+
+    }
+}
+
+function getFoodItemTemplate(menuItem) {
+    return `
+        <div id="food-item-template-${menuItem}" class="food-item-template d-flex align-items-center p-3 border rounded shadow-sm">
             <div class="action-buttons">
-                <!-- Edit and save button -->
-                <button id="edit-info-button" class="btn btn-warning text-white" onclick="toggleEditInfo()"><i class="fas fa-edit"></i></button>
-                <button id="save-info-button" class="btn btn-warning text-white d-none" onclick="toggleEditInfo()"><i class="fas fa-save"></i></button>
+                <button id="edit-info-button" class="btn btn-warning text-white cus-btn d-none" onclick="toggleEditFoodItemInfo(this)"><i class="fas fa-edit"></i></button>
+                <button id="save-info-button" class="btn btn-warning text-white cus-btn" onclick="toggleEditFoodItemInfo(this)"><i class="fas fa-save"></i></button>
+                <button class="btn btn-danger ms-3 remove-food-item cus-btn">-</button>
             </div>
             <div class="inner-menu-content d-flex align-items-center">
-                <!-- Image Upload (Left Side) -->
-                <div class="food-image-wrapper flex-shrink-0">
-                    <i class="fas fa-plus mb-2"></i>
-                    <p>Upload Image</p>
-                    <input type="file" class="form-control-file d-none" id="foodImageUpload">
+                <div class="food-image-wrapper flex-shrink-0" onclick="document.getElementById('foodImageUpload-${menuItem}').click()">
+                    <i class="fas fa-plus mb-2 upload-icon"></i>
+                    <p class="upload-text">Upload Image</p>
+                    <img src="" alt="Food Image" class="food-image-preview d-none" id="food-image-preview-${menuItem}">
+                    <input type="file" class="form-control-file food-image-upload d-none" id="foodImageUpload-${menuItem}" data-menu-item-id="${menuItem}">
                 </div>
-                <!-- Food Details (Right Side) -->
                 <div class="food-details flex-grow-1 d-flex flex-column justify-content-between ms-3">
-                    <!-- Name & Description -->
                     <div class="food-info d-flex">
-                        <div class="dish-name">
-                            <label class="text-secondary" for="categoryInput">Dish Name</label>
-                            <p class="info-field bg-light p-2 rounded active"  th:text="Dish Name">Dish Name</p>
-                            <input type="text" class="info-input form-control border rounded mt-1 food-name" placeholder="Enter Dish Name">
+                        <div class="dish-name d-flex flex-column">
+                            <label class="text-secondary">Dish Name</label>
+                            <p class="info-field bg-light p-2 rounded"></p>
+                            <input type="text" class="info-input form-control border rounded mt-1 food-name active" placeholder="Enter Dish Name">
                         </div>
-                        <div class="dish-description">
-                            <label class="text-secondary" for="categoryInput">Description</label>
-                            <p class="info-field bg-light p-2 rounded active"  th:text="Dish Name">Description</p>
-                            <textarea class="info-input form-control border rounded mt-1  food-description" placeholder="Enter Dish Description"></textarea>
+                        <div class="dish-description d-flex flex-column">
+                            <label class="text-secondary">Description</label>
+                            <p class="info-field bg-light p-2 rounded"></p>
+                            <textarea class="info-input form-control border rounded mt-1 food-description active" placeholder="Enter Dish Description"></textarea>
                         </div>
                     </div>
-                    <!-- Price & Veg/Non-Veg -->
                     <div class="food-options d-flex justify-content-between mt-2">
                         <div class="price">
-                            <label class="text-secondary" for="price">Price</label>
-                            <p class="info-field bg-light p-2 rounded active"  th:text="Dish Name">Description</p>
-                            <input type="number" id="price" class="info-input form-control border rounded mt-1 w-50" placeholder="Price">
+                            <label class="text-secondary">Price</label>
+                            <p class="info-field bg-light p-2 rounded"></p>
+                            <input id="price" type="number" class="info-input form-control border rounded active mt-1 w-50" placeholder="Price">
                         </div>
                         <div class="veg-nonveg-section d-flex flex-column">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg">
-                                <label class="form-check-label text-success" for="veg">Veg</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg">
-                                <label class="form-check-label text-danger" for="nonVeg">Non-Veg</label>
+                            <p class="info-field bg-light p-2 rounded"></p>
+                            <div class="info-input active">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg">
+                                    <label class="form-check-label text-success">Veg</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg">
+                                    <label class="form-check-label text-danger">Non-Veg</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Remove Button (Right Side) -->
-                <button class="btn btn-danger ms-3 remove-food-item">-</button>
             </div>
-        </div>
-    `;
+        </div>`;
+}
 
-    // Function to update the count in the accordion header
-    function updateAccordionCount(accordionHeader, count) {
-        const titleText = accordionHeader.querySelector('.flex-grow-1');
-        const currentText = titleText.textContent.split('(')[0].trim();
-        titleText.textContent = `${currentText} (${count})`;
-    }
+// Function to update the count in the accordion header
+function updateAccordionCount(accordionHeader, count) {
+    const titleText = accordionHeader.querySelector('.flex-grow-1');
+    const currentText = titleText.textContent.split('(')[0].trim();
+    titleText.textContent = `${currentText} (${count})`;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
 
     // Function to check if a category name already exists
     function isCategoryNameExists(categoryName) {
@@ -236,10 +441,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Create a new food item from the template
             const newFoodItem = document.createElement('div');
-            newFoodItem.innerHTML = foodItemTemplate;
+            newFoodItem.innerHTML = getFoodItemTemplate("new");
 
             // Append the new food item to the container
-            foodItemsContainer.appendChild(newFoodItem);
+            foodItemsContainer.prepend(newFoodItem);
 
             // Update the count in the accordion header
             const itemCount = foodItemsContainer.querySelectorAll('.food-item-template').length;
@@ -255,15 +460,21 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Add event listener to the image upload input
-            const foodImageUpload = newFoodItem.querySelector('.food-image-upload');
-            const foodImageWrapper = newFoodItem.querySelector('.food-image-wrapper');
+            const foodImageUpload = foodItemsContainer.querySelector('[id^="foodImageUpload-"]');
+            const foodImageWrapper = foodItemsContainer.querySelector('.food-image-wrapper');
+            const foodImagePreview = foodImageWrapper.querySelector('[id^="food-image-preview-"]');
+            const uploadIcon = foodImageWrapper.querySelector('.upload-icon');
+            const uploadText = foodImageWrapper.querySelector('.upload-text');
 
             foodImageUpload.addEventListener('change', function (event) {
                 const file = event.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
-                        foodImageWrapper.innerHTML = `<img src="${e.target.result}" alt="Food Image" class="img-fluid">`;
+                        // Display the uploaded image
+                        foodImagePreview.src = e.target.result;
+                        foodImagePreview.classList.remove('d-none');
+                        foodImageWrapper.classList.add('has-image'); // Add a class to indicate an image is uploaded
                     };
                     reader.readAsDataURL(file);
                 }
@@ -314,13 +525,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </span>
                             </button>
                             <div class="header-buttons">
-                                <button id="edit-info-button" class="btn btn-warning text-white" onclick="toggleHeaderName(this, ${result.id})">
+                                <button id="edit-info-button" class="btn btn-warning text-white cus-btn" onclick="toggleHeaderName(this, ${result.id})">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button id="save-info-button" class="btn btn-warning text-white d-none" onclick="toggleHeaderName(this, ${result.id})">
+                                <button id="save-info-button" class="btn btn-warning text-white cus-btn d-none" onclick="toggleHeaderName(this, ${result.id})">
                                     <i class="fas fa-save"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm delete-accordion" onclick="deleteAccordion(this, ${result.id})">
+                                <button class="btn btn-danger btn-sm delete-accordion cus-btn" onclick="deleteAccordion(this, ${result.id})">
                                     <i class="fas fa-minus"></i>
                                 </button>
                             </div>
@@ -329,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div id="${collapseId}" class="collapse" aria-labelledby="${uniqueId}" data-parent="#categoriesContainer">
                         <div class="card-body">
                             <button class="btn btn-success add-food-item mb-2">Add Item +</button>
-                            <div class="food-items-container"></div>
+                            <div class="food-items-container" data-category-id="${result.id}"></div>
                         </div>            
                     </div>
                 `;
@@ -369,4 +580,16 @@ document.addEventListener('DOMContentLoaded', function () {
         setupAddFoodItemButton(button);
     })
 
+    //Event listner for image upload
+    document.querySelectorAll('.food-image-upload').forEach(fileInput => {
+        fileInput.addEventListener('change', function (event) {
+            const menuItemId = this.getAttribute('data-menu-item-id');
+            const foodImageWrapper = this.closest('.food-image-wrapper');
+            const imgElement = document.getElementById(`food-image-preview-${menuItemId}`);
+            previewImage(event, imgElement,foodImageWrapper);
+        });
+    });
+    
 });
+
+
