@@ -49,6 +49,7 @@ public class UserController {
     public String loginUser(
         @RequestParam String username, 
         @RequestParam String password, 
+        @RequestParam(name = "redirect", required = false) String redirectUrl,
         HttpSession session, 
         RedirectAttributes redirectAttributes) {
     
@@ -59,8 +60,13 @@ public class UserController {
             // Store user in session
             session.setAttribute("loggedInUser", existingUser.get());  
     
-            // Redirect to dashboard
-            return "redirect:/dashboard";
+        
+            // Redirect to the specific page if a redirect URL is provided
+            if (redirectUrl != null && !redirectUrl.isEmpty()) {
+                return "redirect:" + redirectUrl;
+            } else {
+                return "redirect:/dashboard";
+            }
         }
     
         // Invalid login - Show error message using RedirectAttributes

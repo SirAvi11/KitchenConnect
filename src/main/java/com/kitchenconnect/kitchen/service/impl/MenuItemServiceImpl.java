@@ -45,4 +45,8 @@ public class MenuItemServiceImpl implements MenuItemService {
     public MenuItem getMenuItemById(Long id){
         return menuItemRepository.findById(id).orElse(null);
     }
+
+    public List<MenuItem> getMenuItemsByIds(List<Long> ids){
+        return menuItemRepository.findAllById(ids);
+    }
 }

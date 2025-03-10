@@ -11,4 +11,5 @@ public interface MenuItemService {
     MenuItem updateMenuItem(Long id, MenuItem updatedMenuItem);
     boolean deleteMenuItem(Long id);
     MenuItem getMenuItemById(Long id);
+    List<MenuItem> getMenuItemsByIds(List<Long> ids);
 }

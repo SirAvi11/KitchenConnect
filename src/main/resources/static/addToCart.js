@@ -11,7 +11,7 @@ function decreaseCount(foodItemId) {
         updateCart(foodItemId, count - 1);
     } else {
         // Restore "Add to Cart" button when count reaches 0
-        document.getElementById(`cart-button-container-${foodItemId}`).innerHTML = `
+        document.getElementById(`inner-cart-button-container-${foodItemId}`).innerHTML = `
             <button id="addToCart-${foodItemId}" class="add-to-cart" onclick="toggleCart(${foodItemId})">
                 Add to Cart
             </button>
@@ -45,12 +45,12 @@ function updateCart(foodItemId, quantity) {
             document.getElementById("confirmAdd")?.setAttribute("onclick", `clearCartAndAddItem(${foodItemId}, ${quantity})`);
         }else{
             if(quantity != 0){
-                let container = document.getElementById(`cart-button-container-${foodItemId}`);
+                let container = document.getElementById(`inner-cart-button-container-${foodItemId}`);
 
                 // If item is not in the cart, add it
                 container.innerHTML = `
                     <button class="cart-btn" onclick="decreaseCount(${foodItemId})">-</button>
-                    <span id="itemCount-${foodItemId}" class="count">1</span>
+                    <span id="itemCount-${foodItemId}" class="count">${quantity}</span>
                     <button class="cart-btn" onclick="increaseCount(${foodItemId})">+</button>
                 `;
             }

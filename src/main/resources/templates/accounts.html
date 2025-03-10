@@ -56,6 +56,7 @@
                 <button id="registerTab" class="btn btn-link tab-button">Register</button>
             </div>
             <form id="loginForm" th:action="@{/accounts/loginUser}" method="post">
+                <input type="hidden" name="redirect" th:value="${param.redirect}">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input name="username" type="text" class="form-control" id="username" placeholder="Enter username" required>
