@@ -26,16 +26,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kitchenconnect.kitchen.entity.Category;
 import com.kitchenconnect.kitchen.entity.Chef;
-import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.KitchenStatusUpdateRequest;
+import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
+import com.kitchenconnect.kitchen.service.CategoryService;
 import com.kitchenconnect.kitchen.service.ChefService;
-import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
+import com.kitchenconnect.kitchen.service.MenuItemService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -49,7 +51,10 @@ public class KitchenController {
     private ChefService chefService;
 
     @Autowired
-    private FoodItemService foodItemService;
+    private MenuItemService menuItemService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     private static final String UPLOAD_DIR = "src/main/resources/static/uploads/kitchenRequest/";
 
@@ -83,8 +88,16 @@ public class KitchenController {
             String chefName = kitchen.getUser().getFirstname() + " " + kitchen.getUser().getLastname();
             Chef chef = chefService.getChefByKitchenId(kitchen.getKitchenId());
 
-            //Fetch Food items (menu)
-            List<FoodItem> menuItems = foodItemService.findByKitchenId(id);
+           // Fetch Food Categories and Categories Items (Menu)
+            Map<String, List<MenuItem>> menuItems = new HashMap<>();
+
+            List<Category> foodCategories = categoryService.getCategoriesByKitchen(id);
+
+            if (foodCategories != null && !foodCategories.isEmpty()) {
+                for (Category category : foodCategories) {
+                    menuItems.put(category.getName(), menuItemService.getMenuItemsByCategory(category.getId()));
+                }
+            }
 
             // Retrieve cart from session
             Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
@@ -97,6 +110,7 @@ public class KitchenController {
             model.addAttribute("chefId", chef.getChefId()); // Add chef's Id to the model
             model.addAttribute("menuItems", menuItems); // Add menu items to model
             model.addAttribute("cartItems", cart);
+
 
             return "kitchenpage";
         }

@@ -1,7 +1,6 @@
 package com.kitchenconnect.kitchen.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -25,11 +24,18 @@ public class MenuItem {
     @Column
     private String imageUrl;
 
+    @Column(nullable = false, columnDefinition = "DOUBLE DEFAULT 0.0")
+    private Double overallRating = 0.0; // Default value for overallRating
+
+    @Column(nullable = false, columnDefinition = "INT DEFAULT 0")
+    private Integer ratingCount = 0; // Default value for ratingCount
+
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     @JsonBackReference // Prevents circular reference
     private Category category;
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -76,6 +82,22 @@ public class MenuItem {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Double getOverallRating() {
+        return overallRating;
+    }
+
+    public void setOverallRating(Double overallRating) {
+        this.overallRating = overallRating;
+    }
+
+    public Integer getRatingCount() {
+        return ratingCount;
+    }
+
+    public void setRatingCount(Integer ratingCount) {
+        this.ratingCount = ratingCount;
     }
 
     public Category getCategory() {

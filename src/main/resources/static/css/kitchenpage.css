@@ -99,6 +99,23 @@ color: #4b5563;
 .card .info .details .detail p:last-child {
 font-weight: bold;
 }
+
+
+.category{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    gap: 5px;
+}
+
+.header-category{
+    margin-top: 20px;
+    font-size: xx-large;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
 .menu {
 margin-top: 2.5rem;
 background-color: #ffffff;
@@ -117,9 +134,9 @@ font-size: 1.25rem;
 font-weight: bold;
 }
 .menu .items {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-gap: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 .menu .item {
 background-color: #ffffff;
@@ -136,6 +153,7 @@ margin: 0 auto;
 border-radius: 0.5rem;
 object-fit: cover;
 height: 220px;
+width:250px;
 }
 .menu .item h4 {
 font-size: 1.125rem;
