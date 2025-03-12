@@ -57,12 +57,6 @@ public class HomeController {
 
         return "index";
     }
-
-    @GetMapping("/orders")
-    public String orders() {
-        return "orders";
-    }
-
     
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {

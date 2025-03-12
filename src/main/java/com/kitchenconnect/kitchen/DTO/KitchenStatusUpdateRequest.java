@@ -1,4 +1,4 @@
-package com.kitchenconnect.kitchen.entity;
+package com.kitchenconnect.kitchen.DTO;
 
 public class KitchenStatusUpdateRequest {
     private Long kitchenId;

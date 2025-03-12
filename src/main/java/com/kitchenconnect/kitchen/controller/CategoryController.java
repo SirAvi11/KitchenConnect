@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import com.kitchenconnect.kitchen.DTO.CategoryRequest;
+import com.kitchenconnect.kitchen.DTO.UpdateCategoryRequest;
 import com.kitchenconnect.kitchen.entity.Category;
-import com.kitchenconnect.kitchen.entity.CategoryRequest;
 import com.kitchenconnect.kitchen.entity.Kitchen;
-import com.kitchenconnect.kitchen.entity.UpdateCategoryRequest;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.service.CategoryService;
 import com.kitchenconnect.kitchen.service.KitchenService;

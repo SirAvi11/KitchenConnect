@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.kitchenconnect.kitchen.entity.CartRequest;
+import com.kitchenconnect.kitchen.DTO.CartRequest;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.MenuItem;

@@ -1,4 +1,4 @@
-package com.kitchenconnect.kitchen.entity;
+package com.kitchenconnect.kitchen.DTO;
 
 public class CategoryRequest {
     private String name;

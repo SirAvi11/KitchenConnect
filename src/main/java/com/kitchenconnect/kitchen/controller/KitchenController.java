@@ -26,11 +26,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.kitchenconnect.kitchen.DTO.KitchenRequest;
+import com.kitchenconnect.kitchen.DTO.KitchenStatusUpdateRequest;
 import com.kitchenconnect.kitchen.entity.Category;
 import com.kitchenconnect.kitchen.entity.Chef;
 import com.kitchenconnect.kitchen.entity.Kitchen;
-import com.kitchenconnect.kitchen.entity.KitchenRequest;
-import com.kitchenconnect.kitchen.entity.KitchenStatusUpdateRequest;
 import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;

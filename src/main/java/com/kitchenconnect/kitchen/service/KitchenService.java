@@ -2,8 +2,8 @@ package com.kitchenconnect.kitchen.service;
 
 import java.util.List;
 
+import com.kitchenconnect.kitchen.DTO.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.Kitchen;
-import com.kitchenconnect.kitchen.entity.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.User;
 
 public interface KitchenService {

@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kitchenconnect.kitchen.DTO.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.Chef;
 import com.kitchenconnect.kitchen.entity.Kitchen;
-import com.kitchenconnect.kitchen.entity.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
 import com.kitchenconnect.kitchen.enums.UserRole;
