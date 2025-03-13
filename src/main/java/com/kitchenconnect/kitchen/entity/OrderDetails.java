@@ -22,7 +22,7 @@ public class OrderDetails {
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false, precision = 10, scale = 2)
+    @Column(nullable = false, precision = 10)
     private double price;
 
     // Getters and Setters

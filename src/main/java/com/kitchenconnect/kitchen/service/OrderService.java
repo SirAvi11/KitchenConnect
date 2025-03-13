@@ -6,7 +6,7 @@ import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
 
 public interface OrderService {
-    Order placeOrder(OrderRequest orderRequest, Long userId, Long kitchenId);
+    Order placeOrder(OrderRequest orderRequest);
     List<Order> getAllOrders();
     Order getOrderById(Long id);
     Order updateOrderStatus(Long id, OrderStatus status);

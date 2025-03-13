@@ -1,18 +1,31 @@
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KitchenConnect - Orders</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/orders.css}">
-    <link rel="icon" type="image/png" th:href="@{/images/favicon_io/favicon-16x16.png}">
-</head>
-<body>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" th:href="@{/css/orders.css}" />
+    <link
+      rel="icon"
+      type="image/png"
+      th:href="@{/images/favicon_io/favicon-16x16.png}"
+    />
+  </head>
+  <body>
     <!-- Include Header -->
     <div th:replace="~{fragments/header :: header}"></div>
-    <!-- Main Content-->
+    <!-- Main Content
     <div class="container-main">
         <div class="container">
             <img src="https://cdn-icons-png.flaticon.com/512/1046/1046857.png" alt="Home-cooked Food Icon">
@@ -20,12 +33,203 @@
             <p>You need to log in to check your food orders. Click the button below to proceed and enjoy delicious home-cooked meals.</p>
             <a th:href="@{/accounts}" class="login-btn"><i class="fa fa-sign-in-alt"></i> Login</a>
         </div>
-    </div>
+    </div> -->
+    <main class="py-4">
+      <div class="d-flex justify-content-between border-bottom pb-2 mb-4">
+        <div class="d-flex space-x-4">
+          <a
+            class="font-weight-bold border-bottom border-primary pb-1"
+            href="#"
+          >
+            Orders
+          </a>
+          <a href="#"> Restaurants </a>
+        </div>
+        <input
+          class="form-control"
+          placeholder="Filter order history"
+          type="text"
+        />
+      </div>
+      <h2 class="font-weight-bold mb-4">Past orders</h2>
+      <div class="space-y-4">
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+          <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-start space-x-4 w-75">
+              <img
+                alt="minigrow kitchen"
+                class="rounded"
+                height="100"
+                src="https://storage.googleapis.com/a1aa/image/H2jsIofK4u1oZICqBBwwJnbJ-OF-QVn8cuTC6B7acpY.jpg"
+                width="150"
+              />
+              <div class="ml-3">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex align-items-center space-x-2">
+                    <h3 class="h5 font-weight-bold">minigrow</h3>
+                  </div>
+                  <p class="h5 font-weight-bold ml-4">$12.19</p>
+                </div>
+                <p class="text-muted">March 27, 2018</p>
+                <p class="text-muted">PICKUP</p>
+                <div class="marquee">
+                  <div class="marquee-content">
+                    <p class="border-top border-bottom py-2">
+                      1 Warm Bases $8.95
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Cold Bases $9.95
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Hot Bases $10.95
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Spicy Bases $11.95
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Sweet Bases $12.95
+                    </p>
+                  </div>
+                </div>
+                <a class="text-primary" href="#"> View receipt </a>
+              </div>
+            </div>
+            <div class="text-right d-flex flex-column space-y-2 w-25">
+              <button class="btn btn-primary w-100 mb-2">
+                Track your order
+              </button>
+              <a class="text-primary mt-2" href="#"> Rate &amp; review </a>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+          <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-start space-x-4 w-75">
+              <img
+                alt="Sophie's Cuban Cuisine kitchen"
+                class="rounded"
+                height="100"
+                src="https://storage.googleapis.com/a1aa/image/9tLfAy-71bgQW33GZxR3nxnDVLkHCaUsAcbADjd47ZE.jpg"
+                width="150"
+              />
+              <div class="ml-3">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex align-items-center space-x-2">
+                    <h3 class="h5 font-weight-bold">
+                      Sophie's Cuban Cuisine (Americas)
+                    </h3>
+                  </div>
+                  <p class="h5 font-weight-bold ml-4">$10.20</p>
+                </div>
+                <p class="text-muted">March 23, 2018</p>
+                <p class="text-muted">PICKUP</p>
+                <div class="marquee">
+                  <div class="marquee-content">
+                    <p class="border-top border-bottom py-2">
+                      2 Spinach and Cheese Empanada $2.69
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Yellow Rice $3.99
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Black Beans $2.50
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Chicken Empanada $3.00
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Beef Empanada $3.00
+                    </p>
+                  </div>
+                </div>
+                <a class="text-primary" href="#"> View receipt </a>
+              </div>
+            </div>
+            <div class="text-right d-flex flex-column space-y-2 w-25">
+              <button class="btn btn-primary w-100 mb-2">
+                Express reorder
+              </button>
+              <button class="btn btn-outline-primary w-100 mb-2">
+                Add to bag
+              </button>
+              <div class="text-warning mt-4 d-flex justify-content-center">
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-white p-4 rounded shadow-sm mb-4">
+          <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-start space-x-4 w-75">
+              <img
+                alt="Pressed Juicery kitchen"
+                class="rounded"
+                height="100"
+                src="https://storage.googleapis.com/a1aa/image/NiWwDykwAjziOizR14KgYyQPxa3EBEp-eDYkrIOkMXI.jpg"
+                width="150"
+              />
+              <div class="ml-3">
+                <div class="d-flex justify-content-between w-100">
+                  <div class="d-flex align-items-center space-x-2">
+                    <h3 class="h5 font-weight-bold">
+                      Pressed Juicery (369 Lexington Ave)
+                    </h3>
+                  </div>
+                  <p class="h5 font-weight-bold ml-4">$25.87</p>
+                </div>
+                <p class="text-muted">March 19, 2018</p>
+                <p class="text-muted">PICKUP</p>
+                <div class="marquee">
+                  <div class="marquee-content">
+                    <p class="border-top border-bottom py-2">
+                      1 Custom Cleanse - No Waters $34.50
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Green Juice $5.50
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Citrus Juice $6.50
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Root Juice $7.50
+                    </p>
+                    <p class="border-top border-bottom py-2">
+                      1 Fruit Juice $8.50
+                    </p>
+                  </div>
+                </div>
+                <a class="text-primary" href="#"> View receipt </a>
+              </div>
+            </div>
+            <div class="text-right d-flex flex-column space-y-2 w-25">
+              <button class="btn btn-primary w-100 mb-2">
+                Express reorder
+              </button>
+              <button class="btn btn-outline-primary w-100 mb-2">
+                Add to bag
+              </button>
+              <div class="text-warning mt-4 d-flex justify-content-center">
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+                <i class="fas fa-star"> </i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+  </body>
 </html>

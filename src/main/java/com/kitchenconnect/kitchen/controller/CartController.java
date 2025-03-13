@@ -3,15 +3,19 @@ package com.kitchenconnect.kitchen.controller;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.kitchenconnect.kitchen.DTO.CartRequest;
+import com.kitchenconnect.kitchen.DTO.OrderRequest;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.MenuItem;
+import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.service.MenuItemService;
+import com.kitchenconnect.kitchen.service.OrderService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +28,9 @@ public class CartController {
 
     @Autowired
     private MenuItemService menuItemService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping
     public String showCartPage(HttpSession session, Model model) {
@@ -125,6 +132,15 @@ public class CartController {
         response.put("status", "success");
         response.put("message", "Cart updated successfully.");
         return response;
+    }
+
+    @PostMapping("/place")
+    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest, HttpSession session){
+        Order placedOrder = orderService.placeOrder(orderRequest);
+        if(placedOrder != null){
+            clearCart(session);
+        }
+        return ResponseEntity.ok(placedOrder);
     }
 
     @PostMapping("/clear-cart")

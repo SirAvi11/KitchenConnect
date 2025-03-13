@@ -44,11 +44,11 @@ public class OrderServiceImpl implements OrderService {
 
     // Create a new order
     @Transactional
-    public Order placeOrder(OrderRequest orderRequest, Long userId, Long kitchenId) {
+    public Order placeOrder(OrderRequest orderRequest) {
         // Fetch the user and kitchen
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(orderRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Kitchen kitchen = kitchenRepository.findById(kitchenId)
+        Kitchen kitchen = kitchenRepository.findById(orderRequest.getKitchenId())
                 .orElseThrow(() -> new RuntimeException("Kitchen not found"));
 
         // Create the order

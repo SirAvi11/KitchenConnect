@@ -25,19 +25,6 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
 
-    @Autowired
-    private KitchenService kitchenService;
-
-    // Create a new order
-    @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest, HttpSession session) {
-        // Get the logged-in user from session
-        User sessionUser = (User) session.getAttribute("loggedInUser");
-        Kitchen existingKitchen = kitchenService.findKitchenByUser(sessionUser);
-        Order placedOrder = orderService.placeOrder(orderRequest, sessionUser.getId(), existingKitchen.getKitchenId());
-        return ResponseEntity.ok(placedOrder);
-    }
-
     // Get all orders
     // @GetMapping
     // public ResponseEntity<List<Order>> getAllOrders() {
