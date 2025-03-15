@@ -1,7 +1,9 @@
 package com.kitchenconnect.kitchen.controller;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,12 +16,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitchenconnect.kitchen.entity.Category;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
+import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
+import com.kitchenconnect.kitchen.enums.OrderStatus;
 import com.kitchenconnect.kitchen.enums.UserRole;
 import com.kitchenconnect.kitchen.service.CategoryService;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
+import com.kitchenconnect.kitchen.service.OrderService;
 import com.kitchenconnect.kitchen.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -40,6 +45,9 @@ public class HomeController {
 
     @Autowired 
     private CategoryService categoryService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping
     public String showHomePage(Model model, HttpSession session) {
@@ -96,14 +104,44 @@ public class HomeController {
             List<Category> categories = categoryService.getCategoriesByKitchen(userKitchen.getKitchenId());
             
             session.setAttribute("categories", categories);
-
         }
-    
+
+        //If User is chef/food lover
+
+        if(loggedInUser.getRole() == UserRole.CHEF || loggedInUser.getRole() == UserRole.FOOD_LOVER){
+               // Initialize lists for current and past orders
+        List<Order> currentOrders = new ArrayList<>();
+        List<Order> pastOrders = new ArrayList<>();
+
+        // Fetch orders based on the user's role
+        List<Order> orders = null;
+        if (loggedInUser.getRole() == UserRole.CHEF) {
+                // Fetch orders for the chef's kitchen
+                // Kitchen kitchen = kitchenService.getKitchenByUser(loggedInUser);
+                // orders = orderService.getOrdersByKitchen(kitchen);
+            } else {
+                // Fetch orders for the food lover
+                orders = orderService.getOrdersByUser(loggedInUser);
+            }
+
+            if(orders != null){
+                // Split orders into currentOrders and pastOrders based on status
+                for (Order order : orders) {
+                    if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.PROCESSING) {
+                        currentOrders.add(order); // Add to currentOrders if status is PENDING or PROCESSING
+                    } else {
+                        pastOrders.add(order); // Add to pastOrders for all other statuses
+                    }
+                }
+                // Add both lists to the model
+                model.addAttribute("currentOrders", currentOrders);
+                model.addAttribute("pastOrders", pastOrders);
+            }
+        }
+            
         return "dashboard";
     }
     
-
-
     private Map<String, Object> getKitchenData(){
         Map<String, Object> kitchenData = new HashMap<>();
 

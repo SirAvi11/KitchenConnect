@@ -38,23 +38,3 @@
 .login-btn:hover {
     background: #e66a00;
 }
-
-.marquee {
-    height: 4rem; /* Adjust height to fit two items */
-    overflow: hidden;
-    position: relative;
-  }
-  .marquee-content {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    animation: scroll 10s linear infinite;
-  }
-  @keyframes scroll {
-    0% {
-      top: 0;
-    }
-    100% {
-      top: -100%;
-    }
-  }

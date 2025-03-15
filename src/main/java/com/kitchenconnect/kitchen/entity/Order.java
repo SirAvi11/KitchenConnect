@@ -33,7 +33,18 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDetails> orderDetails;
 
+    @Column(nullable = false, columnDefinition = "DOUBLE DEFAULT 0.0")
+    private double rating = 0.0;
+
     // Getters and Setters
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+    
     public Long getId() {
         return id;
     }

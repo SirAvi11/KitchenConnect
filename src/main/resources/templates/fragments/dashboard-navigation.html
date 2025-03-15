@@ -64,13 +64,13 @@
          Manage Users
         </span>
     </li>
-    <li class="dashboard-item tab-link">
+    <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'ADMIN'}" data-tab="my-orders">
       <div class="dashboard-icon">
        <i class="fas fa-utensils text-dark tab-icon">
        </i>
       </div>
       <span>
-       View Orders
+       Orders
       </span>
      </li>
      <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-kitchen">
