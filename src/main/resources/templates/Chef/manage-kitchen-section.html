@@ -2,6 +2,7 @@
   class="mainContent col-lg-9 mb-4 tab-content d-none"
   th:fragment="kitchen-section"
   id="manage-kitchen"
+  th:classappend="${param.tab == 'manage-kitchen'} ? 'active-content' : 'd-none'"
 >
 <link rel="stylesheet" th:href="@{/css/manage-kitchen-section.css}">
   <div class="card shadow-sm">

@@ -1,4 +1,4 @@
-<div class="mainContent col-lg-9 mb-4 tab-content active-content" th:fragment="personal-information" id="personal-information">
+<div class="mainContent col-lg-9 mb-4 tab-content active-content" th:fragment="personal-information" id="personal-information" th:classappend="${param.tab == 'personal-information'} ? 'active-content' : 'd-none'">
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center">

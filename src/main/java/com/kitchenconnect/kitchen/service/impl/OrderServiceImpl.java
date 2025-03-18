@@ -87,6 +87,10 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll();
     }
 
+    public List<Order> getAllOrdersByKitchen(Kitchen kitchen){
+        return orderRepository.findByKitchen(kitchen);
+    }
+
     // Get order by ID
     public Order getOrderById(Long id) {
         return orderRepository.findById(id)

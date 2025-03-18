@@ -2,6 +2,7 @@
   class="mainContent col-lg-9 mb-4 tab-content d-none"
   th:fragment="my-orders"
   id="my-orders"
+  th:classappend="${param.tab == 'manage-menu'} ? 'active-content' : 'd-none'"
 >
   <link rel="stylesheet" th:href="@{/css/my-order.css}" />
   <h2 class="font-weight-bold mb-4">Your Orders</h2>
@@ -61,18 +62,24 @@
                   ></p>
                   <!-- Order Status -->
                   <strong><p class="text-muted" th:text="${order.status}"></p></strong>
-                  <!-- Order Details (Items) -->
-                  <div class="marquee">
+                  <!-- Order Details (more than 2 Items) -->
+                  <div  th:if="${order.orderDetails.size() > 2}" class="marquee">
                     <div class="marquee-content">
                       <p
                         th:each="item : ${order.orderDetails}"
-                        class="border-top border-bottom py-2"
+                        class="border-top"
                       >
                         <span
                           th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
                         ></span>
                       </p>
                     </div>
+                  </div>
+                  <!-- Order Details (Maximum 2 items)-->
+                  <div th:unless="${order.orderDetails.size() > 2}">
+                    <p th:each="item : ${order.orderDetails}" class="border-top">
+                        <span th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"></span>
+                    </p>
                   </div>
                   <!-- View Receipt Link -->
                   <a
@@ -146,18 +153,24 @@
                   ></p>
                   <!-- Order Status -->
                   <strong><p class="text-muted" th:text="${order.status}"></p></strong>
-                  <!-- Order Details (Items) -->
-                  <div class="marquee">
+                  <!-- Order Details (more than 2 Items) -->
+                  <div  th:if="${order.orderDetails.size() > 2}" class="marquee">
                     <div class="marquee-content">
                       <p
                         th:each="item : ${order.orderDetails}"
-                        class="border-top border-bottom py-2"
+                        class="border-top"
                       >
                         <span
                           th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
                         ></span>
                       </p>
                     </div>
+                  </div>
+                  <!-- Order Details (Maximum 2 items)-->
+                  <div th:unless="${order.orderDetails.size() > 2}">
+                    <p th:each="item : ${order.orderDetails}" class="border-top">
+                        <span th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"></span>
+                    </p>
                   </div>
                   <!-- View Receipt Link -->
                   <a

@@ -1,0 +1,116 @@
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="kitchen-orders"
+  id="kitchen-orders"
+  th:classappend="${param.tab == 'kitchen-orders'} ? 'active-content' : 'd-none'"
+>   
+    <link rel="stylesheet" th:href="@{/css/kitchen-orders.css}">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h4">Orders</h1>
+            <!--Auto refresh feature
+            <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="bg-dark text-white px-3 py-1 rounded mr-2">7</div>
+                </div>
+            </div>
+            -->
+        </div>
+        <div class="d-flex mb-4">
+            <input type="text" class="form-control mr-2" placeholder="Search order number...">
+            <button class="btn btn-warning mr-2"><i class="fas fa-search"></i></button>
+            <select class="form-control mr-2">
+                <option>All</option>
+            </select>
+            <input type="date" class="form-control mr-2">
+            <input type="date" class="form-control mr-2">
+            <button class="btn btn-warning"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <div class="row mb-4 text-center">
+            <div class="col-md-2">
+                <div class="status-card bg-orange">
+                    <div class="count">0</div>
+                </div>
+                <div class="status-label">Pending</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-green">
+                    <div class="count">0</div>
+                </div>
+                <div class="status-label">Accepted</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-blue">
+                    <div class="count">0</div>
+                </div>
+                <div class="status-label">Delivered</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-red">
+                    <div class="count">0</div>
+                </div>
+                <div class="status-label">Rejected</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-purple">
+                    <div class="count">0</div>
+                </div>
+                <div class="status-label">Others</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-dark">
+                    <div class="count">0</div>
+                </div>
+                <div class="status-label">Total</div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order Number</th>
+                        <th>Name</th>
+                        <th>Order Date</th>
+                        <th>Mobile Number</th>
+                        <th>Order Total</th>
+                        <th>Payment Status</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="order, iterStat : ${kitchenOrders}">
+                        <!-- Auto-increment the first cell -->
+                        <td th:text="${iterStat.count}"></td>
+                        
+                        <!-- Display order ID -->
+                        <td th:text="${order.id}"></td>
+                        
+                        <!-- Concatenate user's first and last name -->
+                        <td th:text="${order.user.firstname + ' ' + order.user.lastname}"></td>
+                        
+                        <!-- Format the date to show only day-month-year -->
+                        <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"></td>
+                                                
+                        <!-- Display user's phone number -->
+                        <td th:text="${order.user.phoneNumber}"></td>
+                        
+                        <!-- Add "Rs" to the total amount -->
+                        <td th:text="'Rs ' + ${order.totalAmount}"></td>
+                        
+                        <!-- Display payment status -->
+                        <td>Paid</td>
+                        
+                        <!-- Display order status -->
+                        <td th:text="${order.status}"></td>
+                        
+                        <!-- View button -->
+                        <td><button class="btn btn-primary btn-sm">View</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

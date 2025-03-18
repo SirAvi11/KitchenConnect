@@ -1,0 +1,22 @@
+.status-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    color: white;
+    margin: 0 auto;
+}
+.status-label {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 1rem;
+}
+.bg-orange { background-color: #FFA500; }
+.bg-green { background-color: #28a745; }
+.bg-blue { background-color: #007bff; }
+.bg-red { background-color: #dc3545; }
+.bg-purple { background-color: #6f42c1; }

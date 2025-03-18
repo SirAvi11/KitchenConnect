@@ -8,7 +8,11 @@
         <!-- Load Personal Information Section -->
         <div  th:replace="~{fragments/personal-information :: personal-information}"></div>
 
-        <!--Load View Orders Section-->
+        <!--Load my orders Section-->
+        <div  th:replace="~{fragments/my-orders :: my-orders}"></div>
+
+        <!--Load my kitchen orders-->
+        <div  th:replace="~{Chef/kitchen-orders :: kitchen-orders}"></div>
 
         <!--Load Manage Kitchen Section-->
         <div  th:replace="~{Chef/manage-kitchen-section :: kitchen-section}"></div>

@@ -92,6 +92,12 @@ public class CartController {
         return "cart"; 
     }
 
+    @GetMapping("/redirect-to-dashboard-my-orders")
+    public String redirectToDashboard() {
+        // Redirect to the dashboard with the second tab activated
+        return "redirect:/dashboard?tab=my-orders"; // Replace with the desired tab
+    }
+
     @PostMapping("/update")
     @ResponseBody
     public Map<String, Object> updateCart(@RequestBody CartRequest cartRequest, HttpSession session) {

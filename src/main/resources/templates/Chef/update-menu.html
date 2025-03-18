@@ -2,6 +2,7 @@
   class="mainContent col-lg-9 mb-4 tab-content d-none"
   th:fragment="update-menu"
   id="manage-menu"
+  th:classappend="${param.tab == 'manage-menu'} ? 'active-content' : 'd-none'"
 >
     <script th:src="@{/js/update-menu.js}"></script>
     <link rel="stylesheet" th:href="@{/css/update-menu.css}">

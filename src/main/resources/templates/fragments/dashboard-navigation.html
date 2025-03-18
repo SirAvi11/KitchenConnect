@@ -37,59 +37,47 @@
      Dashboard
     </h2>
     <ul class="list-unstyled">
-     <li class="dashboard-item tab-link" data-tab="personal-information">
-      <div class="dashboard-icon">
-       <i class="fas fa-bell text-dark tab-icon theme-text">
-       </i>
-      </div>
-      <span>
-       Personal Information
-      </span>
-     </li>
-    <li data-tab="view-kitchens" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}">
-        <div class="dashboard-icon">
-         <i class="fas fa-cogs text-dark tab-icon">
-         </i>
-        </div>
-        <span>
-         View Kitchens
-        </span>
-    </li>
-    <li data-tab="manage-users" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}">
-        <div class="dashboard-icon">
-         <i class="fas fa-users text-dark tab-icon">
-         </i>
-        </div>
-        <span>
-         Manage Users
-        </span>
-    </li>
-    <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'ADMIN'}" data-tab="my-orders">
-      <div class="dashboard-icon">
-       <i class="fas fa-utensils text-dark tab-icon">
-       </i>
-      </div>
-      <span>
-       Orders
-      </span>
-     </li>
-     <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-kitchen">
-      <div class="dashboard-icon">
-       <i class="fas fa-cogs text-dark tab-icon">
-       </i>
-      </div>
-      <span>
-       Manage Kitchen
-      </span>
-     </li>
-     <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-menu">
-        <div class="dashboard-icon">
-         <i class="fas fa-utensils text-dark tab-icon">
-         </i>
-        </div>
-        <span>
-            Update Menu
-        </span>
-    </li>
+        <li class="dashboard-item tab-link" data-tab="personal-information" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-bell text-dark tab-icon" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Personal Information</span>
+        </li>
+        <li data-tab="view-kitchens" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}" th:classappend="${param.tab == 'view-kitchens'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'view-kitchens'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>View Kitchens</span>
+        </li>
+        <li data-tab="manage-users" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}" th:classappend="${param.tab == 'manage-users'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-users text-dark tab-icon" th:classappend="${param.tab == 'manage-users'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Manage Users</span>
+        </li>
+        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'ADMIN'}" data-tab="my-orders" th:classappend="${param.tab == 'my-orders'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-utensils text-dark tab-icon" th:classappend="${param.tab == 'my-orders'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>My Orders</span>
+        </li>
+        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-kitchen" th:classappend="${param.tab == 'manage-kitchen'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'manage-kitchen'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Manage Kitchen</span>
+        </li>
+        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="kitchen-orders" th:classappend="${param.tab == 'kitchen-orders'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'kitchen-orders'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Kitchen Orders</span>
+        </li>
+        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-menu" th:classappend="${param.tab == 'manage-menu'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-utensils text-dark tab-icon" th:classappend="${param.tab == 'manage-menu'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Update Menu</span>
+        </li>
     </ul>
 </div>

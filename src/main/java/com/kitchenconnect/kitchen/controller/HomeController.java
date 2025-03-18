@@ -114,19 +114,21 @@ public class HomeController {
         List<Order> pastOrders = new ArrayList<>();
 
         // Fetch orders based on the user's role
-        List<Order> orders = null;
+        List<Order> personalOrders = null;
+        List<Order> kitchenOrders = null ;
         if (loggedInUser.getRole() == UserRole.CHEF) {
                 // Fetch orders for the chef's kitchen
-                // Kitchen kitchen = kitchenService.getKitchenByUser(loggedInUser);
-                // orders = orderService.getOrdersByKitchen(kitchen);
+                Kitchen kitchen = kitchenService.findKitchenByUser(loggedInUser);
+                kitchenOrders = orderService.getAllOrdersByKitchen(kitchen);
+                personalOrders = orderService.getOrdersByUser(loggedInUser);
             } else {
                 // Fetch orders for the food lover
-                orders = orderService.getOrdersByUser(loggedInUser);
+                personalOrders = orderService.getOrdersByUser(loggedInUser);
             }
 
-            if(orders != null){
+            if(personalOrders != null){
                 // Split orders into currentOrders and pastOrders based on status
-                for (Order order : orders) {
+                for (Order order : personalOrders) {
                     if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.PROCESSING) {
                         currentOrders.add(order); // Add to currentOrders if status is PENDING or PROCESSING
                     } else {
@@ -136,6 +138,10 @@ public class HomeController {
                 // Add both lists to the model
                 model.addAttribute("currentOrders", currentOrders);
                 model.addAttribute("pastOrders", pastOrders);
+            }
+
+            if(kitchenOrders != null){
+                model.addAttribute("kitchenOrders", kitchenOrders);
             }
         }
             
