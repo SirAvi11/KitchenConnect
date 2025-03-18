@@ -76,7 +76,7 @@
                 <!-- Kitchen 1 -->
                 <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
                      <div class="card shadow-sm position-relative">
-                      <img th:alt="${kitchen.kitchenName} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}"/>
+                      <img th:alt="${kitchen.kitchenName} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImagePath}}"/>
                       <div class="rating-overlay">
                        <i class="fas fa-star">
                        </i>

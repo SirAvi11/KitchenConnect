@@ -1,0 +1,126 @@
+.input-btn{
+    height:50px;
+    gap:20px;
+    width:70%;
+}
+
+.food-item-template{
+    flex-direction:column;
+}
+
+.inner-menu-content{
+    gap:10px;
+    width: 100%;
+}
+
+.action-buttons{
+    display: flex;
+    gap:5px;
+    align-self:end;
+}
+
+.cus-btn{
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.outer-header{
+    gap:5px;
+}
+
+.header-icon-name{
+    gap:30px;
+}
+
+.header-buttons{
+    display: flex;
+    gap: 5px;
+}
+
+.btn-link{
+    gap:30px;
+}
+
+.food-info{
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.food-options{
+    gap:10px;
+}
+
+/* Fixed size for the wrapper */
+.food-image-wrapper {
+    width: 200px; /* Adjust as needed */
+    height: 160px; /* Adjust as needed */
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    color: #007bff;
+    align-self:start;
+    overflow: hidden; /* Ensure the image stays within the wrapper */
+}
+
+/* Style for the upload icon and text */
+.upload-icon,
+.upload-text {
+    color: #666;
+    transition: opacity 0.3s ease;
+}
+
+/* Hide the upload icon and text when an image is uploaded */
+.food-image-wrapper.has-image .upload-icon,
+.food-image-wrapper.has-image .upload-text {
+    opacity: 0;
+}
+
+/* Style for the preview image */
+.food-image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure the image covers the wrapper */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Hide the file input */
+.food-image-upload {
+    display: none;
+}
+
+.dish-name{
+    width:100%;
+}
+
+.dish-description{
+    width: 100%;
+}
+
+/* Hide the radio buttons by default */
+.info-input {
+    display: none;
+}
+
+/* Show the radio buttons in Edit mode */
+.edit-mode .info-input {
+    display: block;
+}
+
+/* Hide the info field in Edit mode */
+.edit-mode .info-field {
+    display: none;
+}
+

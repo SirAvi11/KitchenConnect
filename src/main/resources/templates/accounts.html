@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" th:href="@{/images/favicon_io/favicon-16x16.png}">
     <style>
         .background-image {
-            background-image: url('./images/login2.jpg');
+            background-image: url('/images/login2.jpg');
             background-size: cover;
             background-position: center;
             filter: blur(2px);
@@ -56,6 +56,7 @@
                 <button id="registerTab" class="btn btn-link tab-button">Register</button>
             </div>
             <form id="loginForm" th:action="@{/accounts/loginUser}" method="post">
+                <input type="hidden" name="redirect" th:value="${param.redirect}">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input name="username" type="text" class="form-control" id="username" placeholder="Enter username" required>

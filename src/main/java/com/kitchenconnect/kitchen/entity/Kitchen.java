@@ -1,12 +1,10 @@
 package com.kitchenconnect.kitchen.entity;
 
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
 
 @Entity
@@ -27,7 +25,7 @@ public class Kitchen {
     private KitchenStatus status = KitchenStatus.UNDER_VERIFICATION;
 
     @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodItem> foodItems;
+    private List<FoodItem> foodItems = new ArrayList<>();
 
     @Column(name = "kitchen_name", length = 35, nullable = false)
     private String kitchenName;
@@ -35,8 +33,8 @@ public class Kitchen {
     @Column(columnDefinition = "TEXT")
     private String kitchenDescription;
 
-    @Column(columnDefinition = "TEXT")
-    private String kitchenImage;
+    @Column(name = "kitchen_image_path")
+    private String kitchenImagePath;
 
     @Column(nullable = false, precision = 3, scale = 1)
     private BigDecimal overallRating = BigDecimal.ZERO;
@@ -76,7 +74,7 @@ public class Kitchen {
     @ElementCollection
     @CollectionTable(name = "kitchen_cuisines", joinColumns = @JoinColumn(name = "kitchen_id"))
     @Column(name = "cuisine")
-    private List<String> selectedCuisines;
+    private List<String> selectedCuisines = new ArrayList<>();
 
     @Column(name = "open_days", columnDefinition = "TEXT")
     private String openDays;
@@ -107,6 +105,8 @@ public class Kitchen {
     @Column(nullable = false)
     private boolean acceptTerms;
 
+    // Getters and Setters
+
     public Long getKitchenId() {
         return kitchenId;
     }
@@ -132,11 +132,11 @@ public class Kitchen {
     }
 
     public List<FoodItem> getFoodItems() {
-        return foodItems;
+        return new ArrayList<>(foodItems); // Return a mutable copy
     }
 
     public void setFoodItems(List<FoodItem> foodItems) {
-        this.foodItems = foodItems;
+        this.foodItems = new ArrayList<>(foodItems); // Set a mutable copy
     }
 
     public String getKitchenName() {
@@ -155,12 +155,12 @@ public class Kitchen {
         this.kitchenDescription = kitchenDescription;
     }
 
-    public String getKitchenImage() {
-        return kitchenImage;
+    public String getKitchenImagePath() {
+        return kitchenImagePath;
     }
 
-    public void setKitchenImage(String kitchenImage) {
-        this.kitchenImage = kitchenImage;
+    public void setKitchenImagePath(String kitchenImagePath) {
+        this.kitchenImagePath = kitchenImagePath;
     }
 
     public BigDecimal getOverallRating() {
@@ -244,24 +244,23 @@ public class Kitchen {
     }
 
     public List<String> getMenuImagePaths() {
-        return menuImagePaths != null ? Arrays.asList(menuImagePaths.split(",")) : new ArrayList<>();
+        return menuImagePaths != null ? new ArrayList<>(Arrays.asList(menuImagePaths.split(","))) : new ArrayList<>();
     }
-
 
     public void setMenuImagePaths(List<String> paths) {
         this.menuImagePaths = String.join(",", paths);
     }
 
     public List<String> getSelectedCuisines() {
-        return selectedCuisines;
+        return new ArrayList<>(selectedCuisines); // Return a mutable copy
     }
 
     public void setSelectedCuisines(List<String> selectedCuisines) {
-        this.selectedCuisines = selectedCuisines;
+        this.selectedCuisines = new ArrayList<>(selectedCuisines); // Set a mutable copy
     }
 
     public List<String> getOpenDays() {
-        return openDays != null ? Arrays.asList(openDays.split(",")) : new ArrayList<>();
+        return openDays != null ? new ArrayList<>(Arrays.asList(openDays.split(","))) : new ArrayList<>();
     }
 
     public void setOpenDays(List<String> openDays) {

@@ -1,0 +1,219 @@
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="my-orders"
+  id="my-orders"
+  th:classappend="${param.tab == 'manage-menu'} ? 'active-content' : 'd-none'"
+>
+  <link rel="stylesheet" th:href="@{/css/my-order.css}" />
+  <h2 class="font-weight-bold mb-4">Your Orders</h2>
+  <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+    <main class="py-4">
+      <!--Not important
+      <div class="d-flex justify-content-between border-bottom pb-2 mb-4 d-none">
+        <div class="d-flex space-x-4">
+          <a
+            class="font-weight-bold border-bottom border-primary pb-1"
+            href="#"
+          >
+            Orders
+          </a>
+          <a href="#"> Kitchens </a>
+        </div>
+        <input
+          class="form-control"
+          placeholder="Filter order history"
+          type="text"
+        />
+      </div>-->
+      <!--Current Orders-->
+      <div>
+        <h3 class="font-weight-bold mb-4">Current Orders</h3>
+        <div class="space-y-4">
+          <div class="bg-white p-4 rounded shadow-sm mb-4" th:each="order : ${currentOrders}">
+            <div class="d-flex justify-content-between mb-4">
+              <div class="d-flex align-items-start space-x-4 w-75">
+                <!-- Kitchen Image -->
+                <img
+                  th:alt="${order.kitchen.kitchenName}"
+                  class="rounded"
+                  height="100"
+                  th:src="${order.kitchen.kitchenImagePath}"
+                  width="150"
+                />
+                <div class="ml-3 mr-3 order-info-container">
+                  <div class="d-flex justify-content-between w-100">
+                    <div class="d-flex align-items-center space-x-2">
+                      <!-- Kitchen Name -->
+                      <h3
+                        class="h5 font-weight-bold"
+                        th:text="${order.kitchen.kitchenName}"
+                      ></h3>
+                    </div>
+                    <!-- Total Price -->
+                    <p
+                      class="h5 font-weight-bold ml-4"
+                      th:text="'Rs' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"
+                    ></p>
+                  </div>
+                  <!-- Order Date -->
+                  <p
+                    class="text-muted"
+                    th:text="${#temporals.format(order.orderDate, 'MMMM dd, yyyy')}"
+                  ></p>
+                  <!-- Order Status -->
+                  <strong><p class="text-muted" th:text="${order.status}"></p></strong>
+                  <!-- Order Details (more than 2 Items) -->
+                  <div  th:if="${order.orderDetails.size() > 2}" class="marquee">
+                    <div class="marquee-content">
+                      <p
+                        th:each="item : ${order.orderDetails}"
+                        class="border-top"
+                      >
+                        <span
+                          th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Order Details (Maximum 2 items)-->
+                  <div th:unless="${order.orderDetails.size() > 2}">
+                    <p th:each="item : ${order.orderDetails}" class="border-top">
+                        <span th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"></span>
+                    </p>
+                  </div>
+                  <!-- View Receipt Link -->
+                  <a
+                    class="text-primary"
+                    href="#"
+                    th:href="@{/orders/{id}/receipt(id=${order.id})}"
+                    >View receipt</a
+                  >
+                </div>
+              </div>
+              <!-- Buttons and Rating -->
+              <div class="text-right d-flex flex-column justify-content-between space-y-2 w-25">
+                <!-- Track Order Button (Visible for PENDING or PROCESSING status) -->
+                <button
+                  class="btn btn-primary w-100 mb-2"
+                >
+                  Track your order
+                </button>
+                <!-- Rating Stars -->
+                <div class="text-warning mt-4 d-flex justify-content-center">
+                  <!-- Star 1 -->
+                  <i th:class="${order.rating >= 1 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 2 -->
+                  <i th:class="${order.rating >= 2 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 3 -->
+                  <i th:class="${order.rating >= 3 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 4 -->
+                  <i th:class="${order.rating >= 4 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 5 -->
+                  <i th:class="${order.rating >= 5 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Past Orders-->
+      <div>
+        <h3 class="font-weight-bold mb-4">Past Orders</h3>
+        <div class="space-y-4">
+          <div class="bg-white p-4 rounded shadow-sm mb-4" th:each="order : ${pastOrders}">
+            <div class="d-flex justify-content-between mb-4">
+              <div class="d-flex align-items-start space-x-4 w-75">
+                <!-- Kitchen Image -->
+                <img
+                  th:alt="${order.kitchen.kitchenName}"
+                  class="rounded"
+                  height="100"
+                  th:src="${order.kitchen.kitchenImagePath}"
+                  width="150"
+                />
+                <div class="ml-3 mr-3 order-info-container">
+                  <div class="d-flex justify-content-between w-100">
+                    <div class="d-flex align-items-center space-x-2">
+                      <!-- Kitchen Name -->
+                      <h3
+                        class="h5 font-weight-bold"
+                        th:text="${order.kitchen.kitchenName}"
+                      ></h3>
+                    </div>
+                    <!-- Total Price -->
+                    <p
+                      class="h5 font-weight-bold ml-4"
+                      th:text="'Rs' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"
+                    ></p>
+                  </div>
+                  <!-- Order Date -->
+                  <p
+                    class="text-muted"
+                    th:text="${#temporals.format(order.orderDate, 'MMMM dd, yyyy')}"
+                  ></p>
+                  <!-- Order Status -->
+                  <strong><p class="text-muted" th:text="${order.status}"></p></strong>
+                  <!-- Order Details (more than 2 Items) -->
+                  <div  th:if="${order.orderDetails.size() > 2}" class="marquee">
+                    <div class="marquee-content">
+                      <p
+                        th:each="item : ${order.orderDetails}"
+                        class="border-top"
+                      >
+                        <span
+                          th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
+                        ></span>
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Order Details (Maximum 2 items)-->
+                  <div th:unless="${order.orderDetails.size() > 2}">
+                    <p th:each="item : ${order.orderDetails}" class="border-top">
+                        <span th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"></span>
+                    </p>
+                  </div>
+                  <!-- View Receipt Link -->
+                  <a
+                    class="text-primary"
+                    href="#"
+                    th:href="@{/orders/{id}/receipt(id=${order.id})}"
+                    >View receipt</a
+                  >
+                </div>
+              </div>
+              <!-- Buttons and Rating -->
+              <div class="text-right d-flex flex-column justify-content-between space-y-2 w-25">
+                <!-- Express Reorder and Add to Bag Buttons (Visible for other statuses) -->
+                 <div>
+                  <button
+                    class="btn btn-primary w-100 mb-2"
+                  >
+                    Express reorder
+                  </button>
+                  <button
+                    class="btn btn-outline-primary w-100 mb-2"
+                  >
+                    Add to cart
+                  </button>
+                 </div>
+                <!-- Rating Stars -->
+                <div class="text-warning mt-4 d-flex justify-content-center">
+                  <!-- Star 1 -->
+                  <i th:class="${order.rating >= 1 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 2 -->
+                  <i th:class="${order.rating >= 2 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 3 -->
+                  <i th:class="${order.rating >= 3 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 4 -->
+                  <i th:class="${order.rating >= 4 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                  <!-- Star 5 -->
+                  <i th:class="${order.rating >= 5 ? 'fas fa-star text-warning' : 'far fa-star'}"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

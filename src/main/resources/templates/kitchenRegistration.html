@@ -129,7 +129,7 @@
                                 <p class="text-muted">
                                     jpeg, png or jpg formats up-to 5MB
                                 </p>
-                                <input th:field="*{menuImages}" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple />
+                                <input th:field="*{menuImages}" name="menuImages" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple />
                             </div>
                             <div class="image-container" id="menu-images-container">
                             </div>
@@ -170,36 +170,36 @@
                             </div>
                             <div class="row mb-4">
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button active" onclick="toggleSelection(this)">North Indian</button>
+                                    <button class="cuisine-button active" onclick="toggleSelection(this)" data-cuisine="North Indian">North Indian</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button active" onclick="toggleSelection(this)">Fast Food</button>
+                                    <button class="cuisine-button active" onclick="toggleSelection(this)" data-cuisine="Fast Food">Fast Food</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button active" onclick="toggleSelection(this)">Biryani</button>
+                                    <button class="cuisine-button active" onclick="toggleSelection(this)" data-cuisine="Biryani">Biryani</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Chinese</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="Chinese">Chinese</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">South Indian</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="South Indian">South Indian</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Pizza</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="Pizza">Pizza</button>
                                 </div>
                             </div>
                             <div class="more-options row mb-4">
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Italian</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="Italian">Italian</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Mexican</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="Mexican">Mexican</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Thai</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="Thai">Thai</button>
                                 </div>
                                 <div class="col-6 mb-2">
-                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)">Japanese</button>
+                                    <button class="cuisine-button inactive" onclick="toggleSelection(this)" data-cuisine="Japanese">Japanese</button>
                                 </div>
                             </div>
                             <div class="text-right">
@@ -260,9 +260,11 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label class="font-weight-bold text-dark" for="delivery-fees">Approximate Delivery Fees</label>
-                                <input th:field="*{deliveryFees}" id="delivery-fees" class="form-control" placeholder="Delivery Fees" type="text" />
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label class="font-weight-bold text-dark" for="delivery-fees">Approximate Delivery Fees (Rs)</label>
+                                    <input th:field="*{deliveryFees}" id="delivery-fees" class="form-control" placeholder="Delivery Fees" type="text" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -535,8 +537,15 @@
                 button.classList.remove('inactive');
                 button.classList.add('active');
             }
-            document.getElementById('selectedCuisines').value = selectedCuisines.join(',');
 
+            // Update the selected cuisines list
+            var selectedCuisines = [];
+            document.querySelectorAll('.cuisine-button.active').forEach(function (btn) {
+                selectedCuisines.push(btn.getAttribute('data-cuisine')); // Assuming a data attribute
+            });
+
+            // Set the value of the hidden input
+            document.getElementById('selectedCuisines').value = selectedCuisines.join(',');
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -633,6 +642,48 @@
         
             return isValid;
         }
+
+        // Function to generate time slots in 30-minute intervals
+        function generateTimeSlots() {
+            let timeSlots = [];
+            let startTime = 0; // 00:00 in minutes
+            let endTime = 23 * 60 + 30; // 23:30 in minutes
+
+            while (startTime <= endTime) {
+                let hours = Math.floor(startTime / 60);
+                let minutes = startTime % 60;
+                let formattedTime = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+                timeSlots.push(formattedTime);
+                startTime += 30; // Increment by 30 minutes
+            }
+
+            return timeSlots;
+        }
+
+        // Function to populate select fields
+        function populateTimeFields() {
+            let timeSlots = generateTimeSlots();
+            let openTimeSelect = document.getElementById("openTime");
+            let closeTimeSelect = document.getElementById("closeTime");
+
+            // Clear existing options
+            openTimeSelect.innerHTML = "";
+            closeTimeSelect.innerHTML = "";
+
+            // Append the default option
+            openTimeSelect.appendChild(new Option("Open Time", ""));
+            closeTimeSelect.appendChild(new Option("Close Time", ""));
+
+            // Populate options
+            timeSlots.forEach(time => {
+                openTimeSelect.appendChild(new Option(time, time));
+                closeTimeSelect.appendChild(new Option(time, time));
+            });
+        }
+
+        // Call function on page load
+        window.onload = populateTimeFields;
+
         
     </script>
     

@@ -14,14 +14,17 @@
     <div th:replace="~{fragments/header :: header}"></div>
 
     <div class="container py-4">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
         <!-- Load Admin's Dashboard -->
-        <div  th:replace="~{fragments/admin-dashboard :: dashboard}"></div>
+        <div  th:replace="~{Admin/admin-dashboard :: dashboard}"></div>
         
         <!-- Load Chef's Dashboard -->
-        <div th:replace="~{fragments/chef-dashboard :: dashboard}"></div>
+        <div th:replace="~{Chef/chef-dashboard :: dashboard}"></div>
         
         <!-- Load User's Dashboard -->
-        <div th:replace="~{fragments/user-dashboard :: dashboard}"></div>
+        <div th:replace="~{User/user-dashboard :: dashboard}"></div>
     </div>
 
     <!-- Include Footer -->
@@ -29,68 +32,61 @@
 
     <script>
 
-        // Function to activate the tab and show the corresponding content
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const tabParam = urlParams.get('tab');
+        
+            if (tabParam) {
+                activateTab(tabParam);
+            } else {
+                // Default to the first tab if no tab parameter is provided
+                activateTab('personal-information');
+            }
+        
+            const tabs = document.querySelectorAll(".tab-link");
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    let target = this.getAttribute("data-tab");
+                    activateTab(target);
+                });
+            });
+        });
+        
         function activateTab(target) {
             const tabs = document.querySelectorAll(".tab-link");
             const contents = document.querySelectorAll(".tab-content");
-            // Remove active-tab class and update icons for all tabs
+        
             tabs.forEach(t => {
                 t.classList.remove("active-tab");
-    
-                // Select the icon inside the tab
                 let icon = t.querySelector(".tab-icon");
                 if (icon) {
                     icon.classList.remove("theme-text");
                     icon.classList.add("text-muted");
                 }
             });
-    
-            // Add active-tab class to the clicked tab
+        
             const activeTab = document.querySelector(`[data-tab="${target}"]`);
             if (activeTab) {
                 activeTab.classList.add("active-tab");
-    
-                // Update icon of the active tab
                 let activeIcon = activeTab.querySelector(".tab-icon");
                 if (activeIcon) {
                     activeIcon.classList.remove("text-muted");
                     activeIcon.classList.add("theme-text");
                 }
             }
-    
-            // Hide all content sections
+        
             contents.forEach(content => {
                 content.classList.remove("active-content");
                 content.classList.add("d-none");
             });
-    
-            // Show the targeted content section
+        
             const activeContent = document.getElementById(target);
             if (activeContent) {
                 activeContent.classList.remove("d-none");
                 activeContent.classList.add("active-content");
-    
             }
         }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const tabs = document.querySelectorAll(".tab-link");
-            const tabsIcons = document.querySelectorAll(".tab-icon");
-
-            console.log("All tabs", tabs);
-            console.log("All tab icons", tabsIcons);
-        
-            // Event listener for clicking on tabs
-            tabs.forEach(tab => {
-                tab.addEventListener("click", function () {
-                    event.preventDefault();
-                    let target = this.getAttribute("data-tab");
-                    const currentContent = document.querySelector(".tab-content.active-content");
-                    activateTab(target);
-                });
-            });
-        
-        });  
 
 
         function toggleEditBio() {

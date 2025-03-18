@@ -17,5 +17,9 @@ public class ChefServiceImpl implements ChefService {
         return chefRepository.findById(id).orElse(null);
     }
 
+    public Chef getChefByKitchenId(Long id){
+        return chefRepository.findByKitchen_KitchenId(id).orElse(null);
+    }
+
 }
 

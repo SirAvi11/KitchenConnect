@@ -30,3 +30,21 @@ body {
 .order-summary h2 {
     color: #ff6600;
 }
+.theme-color {
+    color: #ff5722;
+}
+.theme-bg {
+    background-color: #ff5722;
+}
+.theme-border {
+    border-color: #ff5722;
+}
+.theme-bg-hover:hover {
+    background-color: #e64a19;
+}
+.contrast-bg {
+    background-color: #6c757d;
+}
+.contrast-bg-hover:hover {
+    background-color: #5a6268;
+}

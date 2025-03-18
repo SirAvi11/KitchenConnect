@@ -41,7 +41,16 @@ public class User {
     @Column(name="role", nullable = false)
     private UserRole role;
 
+    @Column(name = "first_login")
+    private Boolean firstLogin = false;
+
     // Getters & Setters
+    public Boolean getFirstLogin() {
+        return firstLogin;
+    }
+    public void setFirstLogin(Boolean firstLogin) {
+        this.firstLogin = firstLogin;
+    }
     public Long getId() {
         return id;
     }

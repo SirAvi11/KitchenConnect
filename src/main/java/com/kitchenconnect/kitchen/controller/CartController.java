@@ -3,13 +3,19 @@ package com.kitchenconnect.kitchen.controller;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import com.kitchenconnect.kitchen.entity.CartRequest;
+import com.kitchenconnect.kitchen.DTO.CartRequest;
+import com.kitchenconnect.kitchen.DTO.OrderRequest;
 import com.kitchenconnect.kitchen.entity.FoodItem;
-import com.kitchenconnect.kitchen.service.FoodItemService;
+import com.kitchenconnect.kitchen.entity.Kitchen;
+import com.kitchenconnect.kitchen.entity.MenuItem;
+import com.kitchenconnect.kitchen.entity.Order;
+import com.kitchenconnect.kitchen.service.MenuItemService;
+import com.kitchenconnect.kitchen.service.OrderService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +27,10 @@ import java.util.Map;
 public class CartController {
 
     @Autowired
-    private FoodItemService foodItemService;
+    private MenuItemService menuItemService;
+
+    @Autowired
+    private OrderService orderService;
 
     @GetMapping
     public String showCartPage(HttpSession session, Model model) {
@@ -34,16 +43,59 @@ public class CartController {
         }
 
         // Fetch food details 
-        List<FoodItem> foodItems = getFoodItems(cart);
+        List<MenuItem> foodItems = getFoodItems(cart);
+
+        //Fetch kitchen details
+        Kitchen kitchenData = foodItems.size() != 0 ? foodItems.get(0).getCategory().getKitchen() : null;
 
         // Calculate the total number of items in the cart
         int totalItemsInCart = cart.size();
+
+      
+
+        if(foodItems.size() !=0 && kitchenData != null){
+
+            // Calculate subtotal using simpler logic
+            double subtotal = 0.0;
+            for (MenuItem item : foodItems) {
+                int quantity = cart.getOrDefault(item.getId(), 1);
+                subtotal += item.getPrice() * quantity;
+            }
+
+            // Calculate tax (5%)
+            double tax = subtotal * 0.05;
+
+            // Calculate delivery fees (fixed or dynamic)
+            double deliveryFees = kitchenData.getDeliveryFees().doubleValue();
+
+            // Calculate platform fees (fixed or dynamic)
+            double platformFees = 5.00;
+
+            // Calculate total
+            double total = subtotal + tax + deliveryFees + platformFees;
+
+            model.addAttribute("tax", tax);
+            model.addAttribute("deliveryFees", deliveryFees);
+            model.addAttribute("platformFees", platformFees);
+            model.addAttribute("total", total);
+            model.addAttribute("subtotal", subtotal);
+        }
+
+
 
         // Add food items and cart quantities to model
         model.addAttribute("foodItems", foodItems);
         model.addAttribute("cartQuantities", cart);      
         model.addAttribute("totalItems", totalItemsInCart);
+        model.addAttribute("kitchen", kitchenData);
+        
         return "cart"; 
+    }
+
+    @GetMapping("/redirect-to-dashboard-my-orders")
+    public String redirectToDashboard() {
+        // Redirect to the dashboard with the second tab activated
+        return "redirect:/dashboard?tab=my-orders"; // Replace with the desired tab
     }
 
     @PostMapping("/update")
@@ -60,12 +112,12 @@ public class CartController {
         // Check if cart is not empty before performing kitchen validation
         if (!cart.isEmpty()) {
             Long firstFoodId = cart.keySet().iterator().next();
-            FoodItem existingFoodItem = foodItemService.getFoodItemById(firstFoodId);
-            FoodItem newFoodItem = foodItemService.getFoodItemById(cartRequest.getFoodItemId());
+            MenuItem existingFoodItem = menuItemService.getMenuItemById(firstFoodId);
+            MenuItem newFoodItem = menuItemService.getMenuItemById(cartRequest.getFoodItemId());
 
             if (existingFoodItem != null && newFoodItem != null) {
-                Long existingKitchenId = existingFoodItem.getKitchen().getKitchenId();
-                Long newKitchenId = newFoodItem.getKitchen().getKitchenId();
+                Long existingKitchenId = existingFoodItem.getCategory().getKitchen().getKitchenId();
+                Long newKitchenId = newFoodItem.getCategory().getKitchen().getKitchenId();
 
                 if (!existingKitchenId.equals(newKitchenId)) {
                     response.put("status", "error");
@@ -88,6 +140,15 @@ public class CartController {
         return response;
     }
 
+    @PostMapping("/place")
+    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest, HttpSession session){
+        Order placedOrder = orderService.placeOrder(orderRequest);
+        if(placedOrder != null){
+            clearCart(session);
+        }
+        return ResponseEntity.ok(placedOrder);
+    }
+
     @PostMapping("/clear-cart")
     @ResponseBody
     public Map<String, String> clearCart(HttpSession session) {
@@ -101,11 +162,11 @@ public class CartController {
         
     }
 
-    private List<FoodItem> getFoodItems(Map<Long, Integer> cart){
+    private List<MenuItem> getFoodItems(Map<Long, Integer> cart){
         // Extract food item IDs
         List<Long> foodItemIds = new ArrayList<>(cart.keySet());
         // Fetch food details from service
-        List<FoodItem> foodItems = foodItemIds.isEmpty() ? new ArrayList<>() : foodItemService.getFoodItemsByIds(foodItemIds);
+        List<MenuItem> foodItems = foodItemIds.isEmpty() ? new ArrayList<>() : menuItemService.getMenuItemsByIds(foodItemIds);
 
         return foodItems;
     }

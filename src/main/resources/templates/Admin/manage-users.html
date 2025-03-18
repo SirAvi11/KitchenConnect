@@ -1,0 +1,34 @@
+<div class="mainContent col-lg-9 mb-4 tab-content d-none" id="manage-users" th:fragment:"manage-users" th:classappend="${param.tab == 'manage-users'} ? 'active-content' : 'd-none'">>
+    <div class="container">
+        <div class="card shadow-sm mainCard">
+            <div class="card-body">
+                <h2 class="h4 font-weight-bold">Manage Users</h2>
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Loop through users using Thymeleaf 
+                        <tr th:each="user, index : ${users}">
+                            <td th:text="${index.index + 1}"></td>
+                            <td th:text="${user.fullName}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.role}"></td>
+                            <td>
+                                <a th:href="@{/admin/view-user/{id}(id=${user.id})}" class="btn btn-primary btn-sm">
+                                    View More
+                                </a>
+                            </td>
+                        </tr>-->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

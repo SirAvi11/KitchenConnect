@@ -19,7 +19,7 @@
             <p>Order directly from professional chefs in your area</p>
             <div>
                 <a th:href="@{/kitchens}" class="btn btn-order-now">Order Now</a>
-                <a th:href="@{/accounts/register}" class="btn btn-join-chef">Join as Chef</a>
+                <a th:href="@{/accounts/register}" class="btn btn-join-chef">Register Now</a>
             </div>
         </div>
     </section>
@@ -32,7 +32,7 @@
             <div th:each="kitchen : ${kitchens}" class="col-md-4 mb-4">
                 <a th:href="@{'/kitchens/' + ${kitchen.kitchenId}}" class="text-decoration-none">
                     <div class="card shadow-sm position-relative">
-                        <img th:alt="${kitchen.kitchenName} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImage}}">
+                        <img th:alt="${kitchen.kitchenName} + ' Kitchen'" class="card-img-top" th:src="@{'/images/kitchens/' + ${kitchen.kitchenImagePath}}">
                         <div class="rating-overlay">
                             <i class="fas fa-star"></i> <span th:text="${kitchen.overallRating}"></span>
                         </div>
@@ -117,7 +117,7 @@
         </div>
     </section>
 
-    <!-- Are You a Chef Section -->
+    <!-- Are You a Chef Section 
     <section class="are-you-a-chef">
         <div class="container">
             <div class="text-content">
@@ -130,6 +130,7 @@
             </div>
         </div>
     </section>
+    -->
 
     <!-- Bootstrap Modal -->
     <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">

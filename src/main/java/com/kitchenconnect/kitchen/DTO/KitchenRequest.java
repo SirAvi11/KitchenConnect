@@ -1,13 +1,14 @@
-package com.kitchenconnect.kitchen.entity;
+package com.kitchenconnect.kitchen.DTO;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class KitchenRequest {
 
-    //User Id
+    // User Id
     private Long userId;
 
     // Kitchen Information
@@ -22,29 +23,27 @@ public class KitchenRequest {
     private String phoneNumber;
 
     // Menu and Operational Details
-    private List<MultipartFile> menuImages; // List to store MultipartFile objects
-    private List<String> menuImagePaths;    // Multiple images path for menu
+    private List<MultipartFile> menuImages = new ArrayList<>(); // List to store MultipartFile objects
+    private List<String> menuImagePaths = new ArrayList<>();   // Multiple images path for menu
     private MultipartFile kitchenImage; // Field to store the kitchen image
-    private String kitchenImagePath;         // Single kitchen path profile image
-    private List<String> selectedCuisines;      // Selected cuisines
-    private List<String> openDays;              // Selected open days
-    private String openTime;                    // Kitchen opening time
-    private String closeTime;                   // Kitchen closing time
-    private BigDecimal deliveryFees;             
+    private String kitchenImagePath;    // Single kitchen path profile image
+    private List<String> selectedCuisines = new ArrayList<>(); // Selected cuisines
+    private List<String> openDays = new ArrayList<>();         // Selected open days
+    private String openTime;            // Kitchen opening time
+    private String closeTime;           // Kitchen closing time
+    private BigDecimal deliveryFees;    // Delivery fees
 
     // Kitchen Documents
     private String fssaiNumber;
     private String fssaiExpiryDate;
     private MultipartFile fssaiDocument; // FSSAI document
-    private String fssaiDocumentPath;       // FSSAI document upload
-    private MultipartFile panDocument; // PAN document
+    private String fssaiDocumentPath;    // FSSAI document upload
+    private MultipartFile panDocument;   // PAN document
     private String panNumber;
-    private String panDocumentPath;         // PAN document upload
+    private String panDocumentPath;     // PAN document upload
 
     // Partner Contract
-    private boolean acceptTerms;               // Checkbox for accepting terms
-
-    // Delivery Fees
+    private boolean acceptTerms;        // Checkbox for accepting terms
 
     // Getters and Setters
 
@@ -113,11 +112,11 @@ public class KitchenRequest {
     }
 
     public List<String> getMenuImagePaths() {
-        return menuImagePaths;
+        return new ArrayList<>(menuImagePaths); // Return a mutable copy
     }
 
     public void setMenuImagePaths(List<String> menuImagePaths) {
-        this.menuImagePaths = menuImagePaths;
+        this.menuImagePaths = new ArrayList<>(menuImagePaths); // Set a mutable copy
     }
 
     public String getKitchenImagePath() {
@@ -129,19 +128,19 @@ public class KitchenRequest {
     }
 
     public List<String> getSelectedCuisines() {
-        return selectedCuisines;
+        return new ArrayList<>(selectedCuisines); // Return a mutable copy
     }
 
     public void setSelectedCuisines(List<String> selectedCuisines) {
-        this.selectedCuisines = selectedCuisines;
+        this.selectedCuisines = new ArrayList<>(selectedCuisines); // Set a mutable copy
     }
 
     public List<String> getOpenDays() {
-        return openDays;
+        return new ArrayList<>(openDays); // Return a mutable copy
     }
 
     public void setOpenDays(List<String> openDays) {
-        this.openDays = openDays;
+        this.openDays = new ArrayList<>(openDays); // Set a mutable copy
     }
 
     public String getOpenTime() {
@@ -217,11 +216,11 @@ public class KitchenRequest {
     }
 
     public List<MultipartFile> getMenuImages() {
-        return menuImages;
+        return new ArrayList<>(menuImages); // Return a mutable copy
     }
 
     public void setMenuImages(List<MultipartFile> menuImages) {
-        this.menuImages = menuImages;
+        this.menuImages = new ArrayList<>(menuImages); // Set a mutable copy
     }
 
     public MultipartFile getKitchenImage() {

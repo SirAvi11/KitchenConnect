@@ -1,0 +1,13 @@
+<!--User Dashboard-->
+<div class="row" th:fragment="dashboard" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'FOOD_LOVER'}">
+    <!-- Left Section -->
+    <!-- Dashboard Navigation -->
+    <div  th:replace="~{fragments/dashboard-navigation :: dashboard-navigation}"></div>
+    <!-- Right Section -->
+        <!-- Load Personal Information Section -->
+        <div  th:replace="~{fragments/personal-information :: personal-information}"></div>
+
+        <!--Load my orders Section-->
+        <div  th:replace="~{fragments/my-orders :: my-orders}"></div>
+    </div>
+</div>
