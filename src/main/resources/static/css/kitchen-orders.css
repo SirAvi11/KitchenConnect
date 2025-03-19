@@ -15,6 +15,12 @@
     margin-top: 10px;
     font-size: 1rem;
 }
+
+.sub-title{
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    font-size: 20px;
+}
 .bg-orange { background-color: #FFA500; }
 .bg-green { background-color: #28a745; }
 .bg-blue { background-color: #007bff; }

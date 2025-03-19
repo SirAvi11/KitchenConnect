@@ -8,13 +8,6 @@
     <div class="card p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4">Orders</h1>
-            <!--Auto refresh feature
-            <div class="d-flex align-items-center">
-                <div class="d-flex align-items-center">
-                    <div class="bg-dark text-white px-3 py-1 rounded mr-2">7</div>
-                </div>
-            </div>
-            -->
         </div>
         <div class="d-flex mb-4">
             <input type="text" class="form-control mr-2" placeholder="Search order number...">
@@ -29,25 +22,25 @@
         <div class="row mb-4 text-center">
             <div class="col-md-2">
                 <div class="status-card bg-orange">
-                    <div class="count">0</div>
+                    <div class="count" th:text="${pendingCount}"></div>
                 </div>
                 <div class="status-label">Pending</div>
             </div>
             <div class="col-md-2">
                 <div class="status-card bg-green">
-                    <div class="count">0</div>
+                    <div class="count" th:text="${processingCount}"></div>
                 </div>
                 <div class="status-label">Accepted</div>
             </div>
             <div class="col-md-2">
                 <div class="status-card bg-blue">
-                    <div class="count">0</div>
+                    <div class="count" th:text="${completedCount}"></div>
                 </div>
                 <div class="status-label">Delivered</div>
             </div>
             <div class="col-md-2">
                 <div class="status-card bg-red">
-                    <div class="count">0</div>
+                    <div class="count" th:text="${cancelledCount}"></div>
                 </div>
                 <div class="status-label">Rejected</div>
             </div>
@@ -59,7 +52,7 @@
             </div>
             <div class="col-md-2">
                 <div class="status-card bg-dark">
-                    <div class="count">0</div>
+                    <div class="count" th:text="${totalCount}"></div>
                 </div>
                 <div class="status-label">Total</div>
             </div>
@@ -103,14 +96,148 @@
                         <td>Paid</td>
                         
                         <!-- Display order status -->
-                        <td th:text="${order.status}"></td>
+                        <td>
+                            <select class="form-control form-control-sm order-status-dropdown" th:data-order-id="${order.id}">
+                                <option value="PENDING" th:selected="${order.status.name() == 'PENDING'}">PENDING</option>
+                                <option value="PROCESSING" th:selected="${order.status.name() == 'PROCESSING'}">PROCESSING</option>
+                                <option value="COMPLETED" th:selected="${order.status.name() == 'COMPLETED'}">COMPLETED</option>
+                                <option value="CANCELLED" th:selected="${order.status.name() == 'CANCELLED'}">CANCELLED</option>
+                                <option value="DELIVERED" th:selected="${order.status.name() == 'DELIVERED'}">DELIVERED</option>
+                            </select>
+                        </td>
                         
                         <!-- View button -->
-                        <td><button class="btn btn-primary btn-sm">View</button></td>
+                        <td><button class="btn btn-primary btn-sm view-order-btn" th:data-order-id="${order.id}"
+                            th:data-customer-name="${order.user.firstname + ' ' + order.user.lastname}"
+                            th:data-customer-phone="${order.user.phoneNumber}"
+                            th:data-customer-address="${order.user.address}"
+                            th:data-order-date="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"
+                            th:data-order-total="${order.totalAmount}"
+                            th:data-order-status="${order.status}"
+                            th:data-payment-status="Paid">View</button></td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <!-- Modal for Order Details -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Customer Details -->
+                    <div class="mb-4">
+                        <h6 class="mb-3 sub-title">Customer Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Name:</strong> <span id="customerName"></span></p>
+                                <p><strong>Phone Number:</strong> <span id="customerPhone"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Address:</strong> <span id="customerAddress"></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Details -->
+                    <div>
+                        <h6 class="mb-3 sub-title">Order Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Order ID:</strong> <span id="orderId"></span></p>
+                                <p><strong>Order Date:</strong> <span id="orderDate"></span></p>
+                                <p><strong>Total Amount:</strong> <span id="orderTotal"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Status:</strong> <span id="orderStatus"></span></p>
+                                <p><strong>Payment Status:</strong> <span id="paymentStatus"></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all "View" buttons
+            const viewButtons = document.querySelectorAll('.view-order-btn');
+    
+            // Add click event listener to each button
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    // Extract data from the button's data attributes
+                    const orderId = button.getAttribute('data-order-id');
+                    const customerName = button.getAttribute('data-customer-name');
+                    const customerPhone = button.getAttribute('data-customer-phone');
+                    const customerAddress = button.getAttribute('data-customer-address');
+                    const orderDate = button.getAttribute('data-order-date');
+                    const orderTotal = button.getAttribute('data-order-total');
+                    const orderStatus = button.getAttribute('data-order-status');
+                    const paymentStatus = button.getAttribute('data-payment-status');
+    
+                    // Populate the modal with the extracted data
+                    document.getElementById('customerName').textContent = customerName;
+                    document.getElementById('customerPhone').textContent = customerPhone;
+                    document.getElementById('customerAddress').textContent = customerAddress;
+                    document.getElementById('orderId').textContent = orderId;
+                    document.getElementById('orderDate').textContent = orderDate;
+                    document.getElementById('orderTotal').textContent = 'Rs ' + orderTotal;
+                    document.getElementById('orderStatus').textContent = orderStatus;
+                    document.getElementById('paymentStatus').textContent = paymentStatus;
+    
+                    // Show the modal
+                    const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+                    modal.show();
+                });
+            });
+
+             // Get all status dropdowns
+        const statusDropdowns = document.querySelectorAll('.order-status-dropdown');
+
+        // Add change event listener to each dropdown
+        statusDropdowns.forEach(dropdown => {
+            dropdown.addEventListener('change', function () {
+                const orderId = dropdown.getAttribute('data-order-id');
+                const newStatus = dropdown.value;
+
+                // Send an AJAX request to update the order status
+                fetch('/orders/update-order-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '[[${_csrf.token}]]' // Include CSRF token for security
+                    },
+                    body: JSON.stringify({
+                        orderId: orderId,
+                        newStatus: newStatus
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Order status updated successfully!');
+                        // Optionally, refresh the page or update the UI dynamically
+                        location.reload();
+                    } else {
+                        alert('Failed to update order status.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating the order status.');
+                });
+            });
+        });
+        });
+    </script>
 
 </div>
