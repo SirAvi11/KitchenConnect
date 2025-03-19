@@ -118,5 +118,12 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
         orderRepository.delete(order);
     }
+
+    @Override
+    @Transactional
+    public Order saveOrder(Order order) {
+        // Save or update the order in the database
+        return orderRepository.save(order);
+    }
     
 }

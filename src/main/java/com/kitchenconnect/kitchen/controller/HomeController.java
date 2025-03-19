@@ -140,8 +140,45 @@ public class HomeController {
                 model.addAttribute("pastOrders", pastOrders);
             }
 
-            if(kitchenOrders != null){
+            if (kitchenOrders != null) {
+                int pendingCount = 0, processingCount = 0, completedCount = 0, deliveredCount = 0, cancelledCount = 0, totalCount = 0;;
+            
+                // Add the kitchenOrders to the model
                 model.addAttribute("kitchenOrders", kitchenOrders);
+            
+                // Iterate through the orders and count based on status
+                for (Order order : kitchenOrders) {
+                    totalCount++;
+                    switch (order.getStatus()) {
+                        case PENDING:
+                            pendingCount++;
+                            break;
+                        case PROCESSING:
+                            processingCount++;
+                            break;
+                        case COMPLETED:
+                            completedCount++;
+                            break;
+                        case DELIVERED:
+                            deliveredCount++;
+                            break;
+                        case CANCELLED:
+                            cancelledCount++;
+                            break;
+                        default:
+                            // Handle any unexpected status
+                            break;
+                    }
+                }
+            
+                // Add the counts to the model
+                model.addAttribute("pendingCount", pendingCount);
+                model.addAttribute("processingCount", processingCount);
+                model.addAttribute("completedCount", completedCount);
+                model.addAttribute("deliveredCount", deliveredCount);
+                model.addAttribute("cancelledCount", cancelledCount);
+                model.addAttribute("totalCount", totalCount);
+
             }
         }
             

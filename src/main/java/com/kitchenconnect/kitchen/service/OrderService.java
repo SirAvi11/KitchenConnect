@@ -15,4 +15,5 @@ public interface OrderService {
     Order updateOrderStatus(Long id, OrderStatus status);
     void deleteOrder(Long id);
     List<Order> getAllOrdersByKitchen(Kitchen kitchen);
+    Order saveOrder(Order order);
 }
