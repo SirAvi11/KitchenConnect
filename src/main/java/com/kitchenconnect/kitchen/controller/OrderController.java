@@ -12,11 +12,13 @@ import com.kitchenconnect.kitchen.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/orders")
@@ -35,6 +37,12 @@ public class OrderController {
     @GetMapping
     public String showOrderPage(){
         return "Orders";
+    }
+
+    @GetMapping("/{orderId}/items")
+    public ResponseEntity<List<OrderDetails>> getOrderItems(@PathVariable Long orderId) {
+        List<OrderDetails> orderDetails = orderService.getOrderDetailsById(orderId);
+        return ResponseEntity.ok(orderDetails);
     }
 
     // Get order by ID
@@ -56,5 +64,28 @@ public class OrderController {
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/update-order-status")
+    public ResponseEntity<String> updateOrderStatus(@RequestBody Map<String, String> request) {
+        try {
+            Long orderId = Long.parseLong(request.get("orderId"));
+            String newStatus = request.get("newStatus");
+            System.out.println("id" + orderId + "status" + newStatus);
+
+            // Fetch the order by ID
+            Order order = orderService.getOrderById(orderId);
+            if (order == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+            }
+
+            // Update the order status
+            order.setStatus(OrderStatus.valueOf(newStatus));
+            orderService.saveOrder(order);
+
+            return ResponseEntity.ok("Order status updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update order status");
+        }
     }
 }

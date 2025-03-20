@@ -21,5 +21,9 @@ public class ChefServiceImpl implements ChefService {
         return chefRepository.findByKitchen_KitchenId(id).orElse(null);
     }
 
+    public Chef updateChef(Chef chef){
+        return chefRepository.save(chef);
+    }
+
 }
 

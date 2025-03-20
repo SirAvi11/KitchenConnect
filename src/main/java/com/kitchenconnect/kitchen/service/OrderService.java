@@ -4,6 +4,7 @@ import java.util.List;
 import com.kitchenconnect.kitchen.DTO.OrderRequest;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.Order;
+import com.kitchenconnect.kitchen.entity.OrderDetails;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
 
@@ -15,4 +16,6 @@ public interface OrderService {
     Order updateOrderStatus(Long id, OrderStatus status);
     void deleteOrder(Long id);
     List<Order> getAllOrdersByKitchen(Kitchen kitchen);
+    Order saveOrder(Order order);
+    List<OrderDetails> getOrderDetailsById(Long id);
 }
