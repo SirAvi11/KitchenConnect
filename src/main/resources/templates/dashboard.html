@@ -90,6 +90,7 @@
 
 
         function toggleEditBiography() {
+            event.preventDefault();
             const biographyView = document.getElementById('biography-view');
             const biographyEdit = document.getElementById('biography-edit');
             const editButton = document.getElementById('biography-edit-info-button');
@@ -128,6 +129,36 @@
                 infoInputs.forEach(input => input.classList.remove('d-none'));
                 editInfoButton.classList.add('d-none');
                 saveInfoButton.classList.remove('d-none');
+            }
+        }
+        
+        function previewProfileImage(event) {
+            const fileInput = event.target;
+            const imgPreview = document.getElementById('profileImagePreview');
+        
+            if (fileInput.files && fileInput.files[0]) {
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]); // Append the file
+                formData.append('chefId', document.getElementById("chefId").value); // Append the chefId
+        
+                // Upload the image via AJAX
+                fetch('/chef/upload-profile-image', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the image preview with the new image path
+                        imgPreview.src = data.imagePath;
+                    } else {
+                        alert('Failed to upload image.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while uploading the image.');
+                });
             }
         }
     </script>

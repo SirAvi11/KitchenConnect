@@ -10,6 +10,12 @@ body{
     height: 200px;
 }
 
+.biography-contents{
+    height: 200px;
+    display: block;
+    overflow: auto;
+}
+
 .profile-card {
     max-width: 400px;
     margin: auto;

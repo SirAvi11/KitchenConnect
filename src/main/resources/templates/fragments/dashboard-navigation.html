@@ -2,28 +2,35 @@
 <div th:fragment="dashboard-navigation" class="profile-card col-lg-3">
     <div th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}">
         <h2 class="h4 font-weight-bold mb-4">Welcome back, <span th:text="${session.loggedInUser.firstname}"></span></h2>
-        <div class="text-center mb-2 position-relative">
-            <img alt="Profile picture of a person" class="profile-img" height="100" src="https://storage.googleapis.com/a1aa/image/UcfF5Hf__LzTpxWc3RPSCPL9MVo8pkN8GYq8-tDLLAk.jpg" width="100"/>
+        <div class="text-center mb-4 position-relative">
+            <!-- Default avatar image or uploaded image preview -->
+            <img alt="Profile picture of a person" id="profileImagePreview" class="profile-img" height="100" width="100"
+                 th:src="${chefDetails.chefProfilePicture != null} ? ${chefDetails.chefProfilePicture} : '/images/chef/default-avatar.png'"/>
+            
+            <!-- Upload icon -->
             <label class="upload-icon" for="uploadImage">
-            <i class="fas fa-camera">
-            </i>
+                <i class="fas fa-camera"></i>
             </label>
-            <input id="uploadImage" style="display: none;" type="file"/>
+            
+            <!-- File input for image upload -->
+            <input id="uploadImage" style="display: none;" type="file" accept="image/*" onchange="previewProfileImage(event)"/>
+            <input type="hidden" id="chefId" th:value="${chefDetails.chefId}"/>
         </div>
-        <form id="biography-form" th:action="@{/update-chef-biography}" th:object="${chefDetails}" method="post">
+        <form id="biography-form" th:action="@{/chef/update-biography}" th:object="${chefDetails}" method="post">
+            <input type="hidden" th:field="*{chefId}" />
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <h2 class="h5 font-weight-bold mb-0">Biography</h2>
                 <button id="biography-edit-info-button" class="btn btn-warning text-white" onclick="toggleEditBiography()">
                     <i class="fas fa-edit"></i>
                 </button>
-                <button id="biography-save-info-button" type="submit" class="btn btn-warning text-white d-none" form="user-form">
+                <button id="biography-save-info-button" type="submit" class="btn btn-warning text-white d-none" form="biography-form">
                     <i class="fas fa-save"></i>
                 </button>
             </div>
             <div class="bg-light p-3 rounded mb-4">
                 <!-- View Mode -->
                 <p id="biography-view" class="mb-0">
-                    <span th:text="${chefDetails.biography}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+                    <span class="biography-contents" th:text="${chefDetails.biography}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
                 </p>
                 <!-- Edit Mode -->
                 <textarea id="biography-edit" class="form-control d-none" th:field="*{biography}" rows="4"></textarea>
