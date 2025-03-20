@@ -125,5 +125,9 @@ public class OrderServiceImpl implements OrderService {
         // Save or update the order in the database
         return orderRepository.save(order);
     }
+
+    public List<OrderDetails> getOrderDetailsById(Long id){
+        return orderDetailsRepository.findByOrderId(id);
+    }
     
 }

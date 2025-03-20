@@ -116,9 +116,10 @@ public class HomeController {
         // Fetch orders based on the user's role
         List<Order> personalOrders = null;
         List<Order> kitchenOrders = null ;
+        Kitchen kitchen = null;
         if (loggedInUser.getRole() == UserRole.CHEF) {
                 // Fetch orders for the chef's kitchen
-                Kitchen kitchen = kitchenService.findKitchenByUser(loggedInUser);
+                kitchen = kitchenService.findKitchenByUser(loggedInUser);
                 kitchenOrders = orderService.getAllOrdersByKitchen(kitchen);
                 personalOrders = orderService.getOrdersByUser(loggedInUser);
             } else {
@@ -129,8 +130,8 @@ public class HomeController {
             if(personalOrders != null){
                 // Split orders into currentOrders and pastOrders based on status
                 for (Order order : personalOrders) {
-                    if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.PROCESSING) {
-                        currentOrders.add(order); // Add to currentOrders if status is PENDING or PROCESSING
+                    if (order.getStatus() == OrderStatus.PENDING || order.getStatus() == OrderStatus.PREPARING || order.getStatus() == OrderStatus.READY) {
+                        currentOrders.add(order); // Add to currentOrders if status is PENDING or PREPARING or READY
                     } else {
                         pastOrders.add(order); // Add to pastOrders for all other statuses
                     }
@@ -141,7 +142,7 @@ public class HomeController {
             }
 
             if (kitchenOrders != null) {
-                int pendingCount = 0, processingCount = 0, completedCount = 0, deliveredCount = 0, cancelledCount = 0, totalCount = 0;;
+                int pendingCount = 0, preparingCount = 0, readyCount = 0, deliveredCount = 0, cancelledCount = 0, totalCount = 0;;
             
                 // Add the kitchenOrders to the model
                 model.addAttribute("kitchenOrders", kitchenOrders);
@@ -153,11 +154,11 @@ public class HomeController {
                         case PENDING:
                             pendingCount++;
                             break;
-                        case PROCESSING:
-                            processingCount++;
+                        case PREPARING:
+                            preparingCount++;
                             break;
-                        case COMPLETED:
-                            completedCount++;
+                        case READY:
+                            readyCount++;
                             break;
                         case DELIVERED:
                             deliveredCount++;
@@ -173,11 +174,12 @@ public class HomeController {
             
                 // Add the counts to the model
                 model.addAttribute("pendingCount", pendingCount);
-                model.addAttribute("processingCount", processingCount);
-                model.addAttribute("completedCount", completedCount);
+                model.addAttribute("preparingCount", preparingCount);
+                model.addAttribute("readyCount", readyCount);
                 model.addAttribute("deliveredCount", deliveredCount);
                 model.addAttribute("cancelledCount", cancelledCount);
                 model.addAttribute("totalCount", totalCount);
+                model.addAttribute("kitchenData", kitchen);
 
             }
         }

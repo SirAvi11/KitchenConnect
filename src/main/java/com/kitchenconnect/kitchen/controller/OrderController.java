@@ -39,6 +39,12 @@ public class OrderController {
         return "Orders";
     }
 
+    @GetMapping("/{orderId}/items")
+    public ResponseEntity<List<OrderDetails>> getOrderItems(@PathVariable Long orderId) {
+        List<OrderDetails> orderDetails = orderService.getOrderDetailsById(orderId);
+        return ResponseEntity.ok(orderDetails);
+    }
+
     // Get order by ID
     @GetMapping("/{id}")
     public ResponseEntity<Order> getOrderById(@PathVariable Long id) {
@@ -65,6 +71,7 @@ public class OrderController {
         try {
             Long orderId = Long.parseLong(request.get("orderId"));
             String newStatus = request.get("newStatus");
+            System.out.println("id" + orderId + "status" + newStatus);
 
             // Fetch the order by ID
             Order order = orderService.getOrderById(orderId);

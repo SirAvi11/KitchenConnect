@@ -5,6 +5,7 @@
   th:classappend="${param.tab == 'kitchen-orders'} ? 'active-content' : 'd-none'"
 >   
     <link rel="stylesheet" th:href="@{/css/kitchen-orders.css}">
+    <script th:src="@{/js/kitchen-orders.js}"></script>
     <div class="card p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h4">Orders</h1>
@@ -18,10 +19,10 @@
             <select id="filterStatus" class="form-control mr-2">
                 <option value="ALL">All</option>
                 <option value="PENDING">Pending</option>
-                <option value="PROCESSING">Processing</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
+                <option value="PREPARING">Preparing</option>
+                <option value="READY">Ready</option>
                 <option value="DELIVERED">Delivered</option>
+                <option value="CANCELLED">Cancelled</option>
             </select>
         
             <!-- Filter by Date Range -->
@@ -39,14 +40,20 @@
                 <div class="status-label">Pending</div>
             </div>
             <div class="col-md-2">
-                <div class="status-card bg-green">
-                    <div class="count" th:text="${processingCount}"></div>
+                <div class="status-card bg-purple">
+                    <div class="count" th:text="${preparingCount}"></div>
                 </div>
-                <div class="status-label">Accepted</div>
+                <div class="status-label">Preparing</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-green">
+                    <div class="count" th:text="${readyCount}"></div>
+                </div>
+                <div class="status-label">Ready</div>
             </div>
             <div class="col-md-2">
                 <div class="status-card bg-blue">
-                    <div class="count" th:text="${completedCount}"></div>
+                    <div class="count" th:text="${deliveredCount}"></div>
                 </div>
                 <div class="status-label">Delivered</div>
             </div>
@@ -55,12 +62,6 @@
                     <div class="count" th:text="${cancelledCount}"></div>
                 </div>
                 <div class="status-label">Rejected</div>
-            </div>
-            <div class="col-md-2">
-                <div class="status-card bg-purple">
-                    <div class="count">0</div>
-                </div>
-                <div class="status-label">Others</div>
             </div>
             <div class="col-md-2">
                 <div class="status-card bg-dark">
@@ -94,16 +95,16 @@
                         <td th:text="'Rs ' + ${order.totalAmount}"></td>
                         <td>Paid</td>
                         <td>
-                            <select th:if="${order.status.name() == 'PENDING' or order.status.name() == 'PROCESSING'}" 
+                            <select th:if="${order.status.name() == 'PENDING' or order.status.name() == 'PREPARING'}" 
                                     class="form-control form-control-sm order-status-dropdown" 
                                     th:data-order-id="${order.id}" id="filterStatus">
                                 <option value="PENDING" th:selected="${order.status.name() == 'PENDING'}">PENDING</option>
-                                <option value="PROCESSING" th:selected="${order.status.name() == 'PROCESSING'}">PROCESSING</option>
-                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="PREPARING" th:selected="${order.status.name() == 'PREPARING'}">PREPARING</option>
+                                <option value="READY">READY</option>
                                 <option value="CANCELLED">CANCELLED</option>
                                 <option value="DELIVERED">DELIVERED</option>
                             </select>
-                            <span th:if="${order.status.name() == 'COMPLETED'}" class="badge bg-success">COMPLETED</span>
+                            <span th:if="${order.status.name() == 'READY'}" class="badge bg-green">READY</span>
                             <span th:if="${order.status.name() == 'CANCELLED'}" class="badge bg-danger">CANCELLED</span>
                             <span th:if="${order.status.name() == 'DELIVERED'}" class="badge bg-primary">DELIVERED</span>
                         </td>
@@ -111,6 +112,7 @@
                             <button class="btn btn-primary btn-sm view-order-btn" th:data-order-id="${order.id}"
                                     th:data-customer-name="${order.user.firstname + ' ' + order.user.lastname}"
                                     th:data-customer-phone="${order.user.phoneNumber}"
+                                    th:data-kitchen-delivery="${kitchenData.deliveryFees}"
                                     th:data-customer-address="${order.user.address}"
                                     th:data-order-date="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"
                                     th:data-order-total="${order.totalAmount}"
@@ -146,16 +148,34 @@
                         </div>
                     </div>
 
-                    <!-- Order Details -->
+                    <!-- Order Items Table -->
+                    <div class="mb-4">
+                        <h6 class="mb-3 sub-title">Order Items</h6>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Item Name</th>
+                                    <th>Quantity</th>
+                                    <th>Price (Rs)</th>
+                                    <th>Total (Rs)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="orderItemsTableBody">
+                                <!-- Order items will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Order Summary -->
                     <div>
-                        <h6 class="mb-3 sub-title">Order Details</h6>
+                        <h6 class="mb-3 sub-title">Order Summary</h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <p><strong>Order ID:</strong> <span id="orderId"></span></p>
                                 <p><strong>Order Date:</strong> <span id="orderDate"></span></p>
-                                <p><strong>Total Amount:</strong> <span id="orderTotal"></span></p>
                             </div>
                             <div class="col-md-6">
+                                <p><strong>Total Amount:</strong> <span id="orderTotal"></span></p>
                                 <p><strong>Status:</strong> <span id="orderStatus"></span></p>
                                 <p><strong>Payment Status:</strong> <span id="paymentStatus"></span></p>
                             </div>
@@ -195,175 +215,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get all "View" buttons
-            const viewButtons = document.querySelectorAll('.view-order-btn');
-    
-            // Add click event listener to each button
-            viewButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    // Extract data from the button's data attributes
-                    const orderId = button.getAttribute('data-order-id');
-                    const customerName = button.getAttribute('data-customer-name');
-                    const customerPhone = button.getAttribute('data-customer-phone');
-                    const customerAddress = button.getAttribute('data-customer-address');
-                    const orderDate = button.getAttribute('data-order-date');
-                    const orderTotal = button.getAttribute('data-order-total');
-                    const orderStatus = button.getAttribute('data-order-status');
-                    const paymentStatus = button.getAttribute('data-payment-status');
-    
-                    // Populate the modal with the extracted data
-                    document.getElementById('customerName').textContent = customerName;
-                    document.getElementById('customerPhone').textContent = customerPhone;
-                    document.getElementById('customerAddress').textContent = customerAddress;
-                    document.getElementById('orderId').textContent = orderId;
-                    document.getElementById('orderDate').textContent = orderDate;
-                    document.getElementById('orderTotal').textContent = 'Rs ' + orderTotal;
-                    document.getElementById('orderStatus').textContent = orderStatus;
-                    document.getElementById('paymentStatus').textContent = paymentStatus;
-    
-                    // Show the modal
-                    const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
-                    modal.show();
-                });
-            });
-
-             // Get all status dropdowns
-            const statusDropdowns = document.querySelectorAll('.order-status-dropdown');
-
-            // Add change event listener to each dropdown
-            statusDropdowns.forEach(dropdown => {
-                dropdown.addEventListener('change', function () {
-                    const orderId = dropdown.getAttribute('data-order-id');
-                    const newStatus = dropdown.value;
-
-                    // Send an AJAX request to update the order status
-                    fetch('/orders/update-order-status', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            orderId: orderId,
-                            newStatus: newStatus
-                        })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // Optionally, refresh the page or update the UI dynamically
-                            // If the new status is COMPLETED, CANCELLED, or DELIVERED, replace the dropdown with a span
-                        window.location.href = window.location.pathname + '?tab=kitchen-orders';
-                        if (newStatus === 'COMPLETED' || newStatus === 'CANCELLED' || newStatus === 'DELIVERED') {
-                            const statusCell = dropdown.closest('td');
-                            let badgeClass = '';
-                            let statusText = '';
-
-                            switch (newStatus) {
-                                case 'COMPLETED':
-                                    badgeClass = 'bg-success';
-                                    statusText = 'COMPLETED';
-                                    break;
-                                case 'CANCELLED':
-                                    badgeClass = 'bg-danger';
-                                    statusText = 'CANCELLED';
-                                    break;
-                                case 'DELIVERED':
-                                    badgeClass = 'bg-primary';
-                                    statusText = 'DELIVERED';
-                                    break;
-                            }
-
-                            // Replace the dropdown with a span
-                            statusCell.innerHTML = `<span class="badge ${badgeClass}">${statusText}</span>`;
-                        } else {
-                            const selectElement = document.getElementById('filterStatus');
-                            // Replace the dropdown with a span
-                            selectElement.innerHTML = `<span class="badge">${newStatus}</span>`;
-                            // Show success toast
-                            successToast.show();
-
-                        }
-                        } else {
-                            // Show error toast
-                            errorToast.show();
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        errorToast.show();
-                    });
-                });
-            });
-            // Get filter elements
-            const searchOrderNumber = document.getElementById('searchOrderNumber');
-                const searchButton = document.getElementById('searchButton');
-                const filterStatus = document.getElementById('filterStatus');
-                const startDate = document.getElementById('startDate');
-                const endDate = document.getElementById('endDate');
-                const refreshButton = document.getElementById('refreshButton');
-                const tableRows = document.querySelectorAll('tbody tr');
-            
-                // Function to filter table rows
-                function filterTable() {
-                    const searchText = searchOrderNumber.value.trim().toLowerCase();
-                    const selectedStatus = filterStatus.value;
-                    const startDateValue = startDate.value;
-                    const endDateValue = endDate.value;
-            
-                    tableRows.forEach(row => {
-                        const orderNumber = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
-                        const orderDate = row.querySelector('td:nth-child(4)').textContent.trim();
-            
-                        // Convert order date to a comparable format (dd-MM-yyyy to yyyy-MM-dd)
-                        const orderDateFormatted = orderDate.split('-').reverse().join('-');
-            
-                        // Get the status from the dropdown or span
-                        const statusCell = row.querySelector('td:nth-child(8)');
-                        let status = '';
-            
-                        if (statusCell.querySelector('select')) {
-                            // If the status is in a dropdown, get the selected value
-                            status = statusCell.querySelector('select').value;
-                        } else if (statusCell.querySelector('span')) {
-                            // If the status is in a span, get the text content
-                            status = statusCell.querySelector('span').textContent.trim();
-                        }
-            
-                        // Check if the row matches the filters
-                        const matchesSearch = orderNumber.includes(searchText);
-                        const matchesStatus = selectedStatus === 'ALL' || status === selectedStatus;
-                        const matchesDateRange = (!startDateValue || orderDateFormatted >= startDateValue) &&
-                                                (!endDateValue || orderDateFormatted <= endDateValue);
-            
-                        // Show or hide the row based on the filters
-                        if (matchesSearch && matchesStatus && matchesDateRange) {
-                            row.style.display = '';
-                        } else {
-                            row.style.display = 'none';
-                        }
-                    });
-                }
-            
-                // Add event listeners
-                searchButton.addEventListener('click', filterTable);
-                filterStatus.addEventListener('change', filterTable);
-                startDate.addEventListener('change', filterTable);
-                endDate.addEventListener('change', filterTable);
-            
-                // Refresh button to reset filters
-                refreshButton.addEventListener('click', function () {
-                    searchOrderNumber.value = '';
-                    filterStatus.value = 'ALL';
-                    startDate.value = '';
-                    endDate.value = '';
-                    filterTable(); // Reapply filters (which will show all rows)
-                });
-            
-                // Initial filter application (optional)
-                filterTable();
-        });
-    </script>
-
 </div>

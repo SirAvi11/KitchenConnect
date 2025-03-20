@@ -22,7 +22,7 @@
     font-size: 20px;
 }
 .bg-orange { background-color: #FFA500; }
-.bg-green { background-color: #28a745; }
+.bg-green { background-color: #28a745; color: white;}
 .bg-blue { background-color: #007bff; }
 .bg-red { background-color: #dc3545; }
 .bg-purple { background-color: #6f42c1; }
@@ -38,4 +38,8 @@
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: 0.25rem;
+}
+tfoot {
+    font-weight: bold;
+    background-color: #f8f9fa;
 }
