@@ -89,42 +89,43 @@
         }
 
 
-        function toggleEditBio() {
-            event.preventDefault();
-            const bioText = document.getElementById('bio-text');
-            const bioInput = document.getElementById('bio-input');
-            const editBioButton = document.getElementById('edit-bio-button');
-            const saveBioButton = document.getElementById('save-bio-button');
+        function toggleEditBiography() {
+            const biographyView = document.getElementById('biography-view');
+            const biographyEdit = document.getElementById('biography-edit');
+            const editButton = document.getElementById('biography-edit-info-button');
+            const saveButton = document.getElementById('biography-save-info-button');
         
-            if (bioText.classList.contains('d-none')) {
-                // Switching back to view mode
-                bioText.classList.remove('d-none');
-                bioInput.classList.add('d-none');
-                editBioButton.classList.remove('d-none');
-                saveBioButton.classList.add('d-none');
+            if (editButton.classList.contains('d-none')) {
+                // Switch back to view mode
+                biographyView.classList.remove('d-none');
+                biographyEdit.classList.add('d-none');
+                editButton.classList.remove('d-none');
+                saveButton.classList.add('d-none');
             } else {
-                // Switching to edit mode
-                bioText.classList.add('d-none');
-                bioInput.classList.remove('d-none');
-                editBioButton.classList.add('d-none');
-                saveBioButton.classList.remove('d-none');
+                // Switch to edit mode
+                biographyView.classList.add('d-none');
+                biographyEdit.classList.remove('d-none');
+                editButton.classList.add('d-none');
+                saveButton.classList.remove('d-none');
             }
         }
 
         function toggleEditInfo() {
-            const infoFields = document.querySelectorAll('.info-field');
-            const infoInputs = document.querySelectorAll('.info-input');
-            const editInfoButton = document.getElementById('edit-info-button');
-            const saveInfoButton = document.getElementById('save-info-button');
-
+            const infoFields = document.querySelectorAll('.personal-info-field');
+            const infoInputs = document.querySelectorAll('.personal-info-input');
+            const editInfoButton = document.getElementById('personal-edit-info-button');
+            const saveInfoButton = document.getElementById('personal-save-info-button');
+    
             if (editInfoButton.classList.contains('d-none')) {
-                infoFields.forEach(field => field.classList.add('active'));
-                infoInputs.forEach(input => input.classList.remove('active'));
+                // Switch back to view mode
+                infoFields.forEach(field => field.classList.remove('d-none'));
+                infoInputs.forEach(input => input.classList.add('d-none'));
                 editInfoButton.classList.remove('d-none');
                 saveInfoButton.classList.add('d-none');
             } else {
-                infoFields.forEach(field => field.classList.remove('active'));
-                infoInputs.forEach(input => input.classList.add('active'));
+                // Switch to edit mode
+                infoFields.forEach(field => field.classList.add('d-none'));
+                infoInputs.forEach(input => input.classList.remove('d-none'));
                 editInfoButton.classList.add('d-none');
                 saveInfoButton.classList.remove('d-none');
             }

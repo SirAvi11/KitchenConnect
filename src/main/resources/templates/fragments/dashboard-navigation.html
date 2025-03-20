@@ -10,20 +10,26 @@
             </label>
             <input id="uploadImage" style="display: none;" type="file"/>
         </div>
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h2 class="h5 font-weight-bold mb-0">
-            Biography
-            </h2>
-            <button class="edit-btn" id="editToggle">
-            <i class="fas fa-edit">
-            </i>
-            </button>
-        </div>
-        <div class="bg-light p-3 rounded mb-4">
-            <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-        </div>
+        <form id="biography-form" th:action="@{/update-chef-biography}" th:object="${chefDetails}" method="post">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h2 class="h5 font-weight-bold mb-0">Biography</h2>
+                <button id="biography-edit-info-button" class="btn btn-warning text-white" onclick="toggleEditBiography()">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button id="biography-save-info-button" type="submit" class="btn btn-warning text-white d-none" form="user-form">
+                    <i class="fas fa-save"></i>
+                </button>
+            </div>
+            <div class="bg-light p-3 rounded mb-4">
+                <!-- View Mode -->
+                <p id="biography-view" class="mb-0">
+                    <span th:text="${chefDetails.biography}">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</span>
+                </p>
+                <!-- Edit Mode -->
+                <textarea id="biography-edit" class="form-control d-none" th:field="*{biography}" rows="4"></textarea>
+            </div>
+        </form>
+        
     </div>
     <h2 class="h5 font-weight-bold mb-4">
      Dashboard
@@ -31,7 +37,7 @@
     <ul class="list-unstyled">
         <li class="dashboard-item tab-link" data-tab="personal-information" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'active-tab' : ''">
             <div class="dashboard-icon">
-                <i class="fas fa-bell text-dark tab-icon" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'theme-text' : 'text-muted'"></i>
+                <i class="fas fa-user text-dark tab-icon" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'theme-text' : 'text-muted'"></i>
             </div>
             <span>Personal Information</span>
         </li>
@@ -47,27 +53,27 @@
             </div>
             <span>Manage Users</span>
         </li>
+        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-kitchen" th:classappend="${param.tab == 'manage-kitchen'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-store text-dark tab-icon" th:classappend="${param.tab == 'manage-kitchen'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Kitchen Information</span>
+        </li>
         <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'ADMIN'}" data-tab="my-orders" th:classappend="${param.tab == 'my-orders'} ? 'active-tab' : ''">
             <div class="dashboard-icon">
-                <i class="fas fa-utensils text-dark tab-icon" th:classappend="${param.tab == 'my-orders'} ? 'theme-text' : 'text-muted'"></i>
+                <i class="fas fa-shopping-cart text-dark tab-icon" th:classappend="${param.tab == 'my-orders'} ? 'theme-text' : 'text-muted'"></i>
             </div>
             <span>My Orders</span>
         </li>
-        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-kitchen" th:classappend="${param.tab == 'manage-kitchen'} ? 'active-tab' : ''">
-            <div class="dashboard-icon">
-                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'manage-kitchen'} ? 'theme-text' : 'text-muted'"></i>
-            </div>
-            <span>Manage Kitchen</span>
-        </li>
         <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="kitchen-orders" th:classappend="${param.tab == 'kitchen-orders'} ? 'active-tab' : ''">
             <div class="dashboard-icon">
-                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'kitchen-orders'} ? 'theme-text' : 'text-muted'"></i>
+                <i class="fas fa-utensils text-dark tab-icon" th:classappend="${param.tab == 'kitchen-orders'} ? 'theme-text' : 'text-muted'"></i>
             </div>
             <span>Kitchen Orders</span>
         </li>
         <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="manage-menu" th:classappend="${param.tab == 'manage-menu'} ? 'active-tab' : ''">
             <div class="dashboard-icon">
-                <i class="fas fa-utensils text-dark tab-icon" th:classappend="${param.tab == 'manage-menu'} ? 'theme-text' : 'text-muted'"></i>
+                <i class="fas fa-book-open text-dark tab-icon" th:classappend="${param.tab == 'manage-menu'} ? 'theme-text' : 'text-muted'"></i>
             </div>
             <span>Update Menu</span>
         </li>

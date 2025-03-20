@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitchenconnect.kitchen.entity.Category;
+import com.kitchenconnect.kitchen.entity.Chef;
 import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.Order;
@@ -22,6 +23,7 @@ import com.kitchenconnect.kitchen.enums.KitchenStatus;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
 import com.kitchenconnect.kitchen.enums.UserRole;
 import com.kitchenconnect.kitchen.service.CategoryService;
+import com.kitchenconnect.kitchen.service.ChefService;
 import com.kitchenconnect.kitchen.service.FoodItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 import com.kitchenconnect.kitchen.service.OrderService;
@@ -48,6 +50,8 @@ public class HomeController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired ChefService chefService;
 
     @GetMapping
     public String showHomePage(Model model, HttpSession session) {
@@ -109,19 +113,21 @@ public class HomeController {
         //If User is chef/food lover
 
         if(loggedInUser.getRole() == UserRole.CHEF || loggedInUser.getRole() == UserRole.FOOD_LOVER){
-               // Initialize lists for current and past orders
-        List<Order> currentOrders = new ArrayList<>();
-        List<Order> pastOrders = new ArrayList<>();
+            // Initialize lists for current and past orders
+            List<Order> currentOrders = new ArrayList<>();
+            List<Order> pastOrders = new ArrayList<>();
 
-        // Fetch orders based on the user's role
-        List<Order> personalOrders = null;
-        List<Order> kitchenOrders = null ;
-        Kitchen kitchen = null;
-        if (loggedInUser.getRole() == UserRole.CHEF) {
+            // Fetch orders based on the user's role
+            List<Order> personalOrders = null;
+            List<Order> kitchenOrders = null ;
+            Kitchen kitchen = null;
+            if (loggedInUser.getRole() == UserRole.CHEF) {
                 // Fetch orders for the chef's kitchen
                 kitchen = kitchenService.findKitchenByUser(loggedInUser);
                 kitchenOrders = orderService.getAllOrdersByKitchen(kitchen);
                 personalOrders = orderService.getOrdersByUser(loggedInUser);
+                Chef chefDetails = chefService.getChefByKitchenId(kitchen.getKitchenId());
+                model.addAttribute("chefDetails", chefDetails);
             } else {
                 // Fetch orders for the food lover
                 personalOrders = orderService.getOrdersByUser(loggedInUser);

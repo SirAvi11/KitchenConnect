@@ -2,9 +2,7 @@ body{
     background-color: #f3f4f6;
     font-family: 'Roboto', sans-serif;
 }
-.info-field, .info-input {
-    display: none;
-}
+
 .info-field.active, .info-input.active {
     display: block;
 }
