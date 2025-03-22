@@ -199,6 +199,35 @@ public class KitchenController {
         return response;
     }
 
+    @PostMapping("/update-kitchen")
+    public String updateKitchen(@ModelAttribute("kitchen") Kitchen updatedKitchen, 
+                                @RequestParam("selectedCuisines") String selectedCuisines,
+                                @RequestParam("openDays") String openDays,
+                                @RequestParam(value = "kitchenImage", required = false) MultipartFile kitchenImage, // Make kitchenImage optional   
+                                Model model,
+                                HttpSession session) {
+
+        User sessionUser = (User) session.getAttribute("loggedInUser");
+        System.out.println("reached 111111111--------------------------"+kitchenImage);
+
+        // Save kitchen image and set its path only if a file is uploaded
+        if (kitchenImage != null && !kitchenImage.isEmpty()) {
+            System.out.println("reached --------------------------"+kitchenImage);
+            String kitchenImagePath = null;
+            try {
+                kitchenImagePath = saveToDisk(kitchenImage, sessionUser.getId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            updatedKitchen.setKitchenImagePath(kitchenImagePath);
+        }
+        updatedKitchen.setSelectedCuisines(Arrays.asList(selectedCuisines.split(",")));
+        updatedKitchen.setOpenDays(Arrays.asList(openDays.split(",")));
+        Kitchen savedKitchen = kitchenService.updateKitchen(updatedKitchen.getKitchenId(), updatedKitchen);
+        model.addAttribute("kitchen", savedKitchen); // Add the updated kitchen to the model
+        return "redirect:/dashboard?tab=manage-kitchen"; // Redirect to the kitchen details page
+    }
+
     @PostMapping("/getKitchenDocuments")
     public ResponseEntity<Map<String, Object>> getKitchenDocuments(@RequestBody Map<String, Object> request) {
         // Extract kitchenId as Integer

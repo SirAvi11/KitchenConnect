@@ -54,8 +54,6 @@ public class KitchenServiceImpl implements KitchenService {
 
     @Transactional
     public void saveKitchenRequest(KitchenRequest kitchenRequest) {
-        System.out.println("\n----------------Value of user id is ------------------\n" + kitchenRequest.getUserId());
-
         // Fetch the user by ID
         User user = userRepository.findById(kitchenRequest.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
@@ -66,7 +64,6 @@ public class KitchenServiceImpl implements KitchenService {
         Kitchen kitchen;
         if (existingKitchen != null) {
             // If the kitchen exists, update it
-            System.out.println("Updating existing kitchen ID: " + existingKitchen.getKitchenId());
             kitchen = existingKitchen;
 
             if (existingKitchen.getStatus() == KitchenStatus.REJECTED) {
@@ -164,6 +161,31 @@ public class KitchenServiceImpl implements KitchenService {
             return true;
         }
         return false;
+    }
+    
+    public Kitchen updateKitchen(Long kitchenId, Kitchen updatedKitchen) {
+        Kitchen existingKitchen = kitchenRepository.findById(kitchenId)
+                .orElseThrow(() -> new RuntimeException("Kitchen not found with ID: " + kitchenId));
+
+        // Update the fields
+        existingKitchen.setKitchenName(updatedKitchen.getKitchenName());
+        existingKitchen.setKitchenDescription(updatedKitchen.getKitchenDescription());
+        existingKitchen.setKitchenImagePath(updatedKitchen.getKitchenImagePath());
+        existingKitchen.setSelectedCuisines(updatedKitchen.getSelectedCuisines());
+        existingKitchen.setKitchenDescription(updatedKitchen.getKitchenDescription());
+        existingKitchen.setOpenDays(updatedKitchen.getOpenDays());
+        existingKitchen.setOpenTime(updatedKitchen.getOpenTime());
+        existingKitchen.setCloseTime(updatedKitchen.getCloseTime());
+        existingKitchen.setPhoneNumber(updatedKitchen.getPhoneNumber());
+        existingKitchen.setDeliveryFees(updatedKitchen.getDeliveryFees());
+        existingKitchen.setMinDeliveryTime(updatedKitchen.getMinDeliveryTime());
+        existingKitchen.setMaxDeliveryTime(updatedKitchen.getMaxDeliveryTime());
+        existingKitchen.setShopName(updatedKitchen.getShopName());
+        existingKitchen.setFloor(updatedKitchen.getFloor());
+        existingKitchen.setArea(updatedKitchen.getArea());
+        existingKitchen.setCity(updatedKitchen.getCity());
+
+        return kitchenRepository.save(existingKitchen);
     }
 
 }
