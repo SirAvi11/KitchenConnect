@@ -38,7 +38,14 @@
                         </div>
                         <div class="card-body">
                             <h5  th:text="${kitchen.kitchenName}" class="card-title font-weight-bold"></h5>
-                            <p th:text="${kitchen.getSelectedCuisines()}" class="card-text text-muted"></p>
+                            <p class="card-text text-muted">
+                                <span
+                                    th:each="selectedCuisine, iterStat : ${kitchen.selectedCuisines}"
+                                >
+                                    <span th:text="${selectedCuisine}"></span>
+                                    <span th:if="${!iterStat.last}">, </span>
+                                </span>
+                            </p>
                             <div class="d-flex justify-content-between text-muted">
                                 <div>
                                     <i class="fas fa-clock"></i>
@@ -60,18 +67,18 @@
             <!-- Dishes -->
             <div th:each="foodItem : ${foodItems}" class="col-md-3 mb-4">
                 <div class="card shadow-sm">
-                    <img th:alt="${foodItem.name}" class="card-img-top" th:src="@{'/images/food/' + ${foodItem.picture}}">
+                    <img th:alt="${foodItem.name}" class="card-img-top" th:src="${foodItem.imageUrl}">
                     <div class="rating-overlay">
                         <i class="fas fa-star"></i><span th:text="${foodItem.overallRating}"></span>
                     </div>
                     <div class="card-body">
                         <h5 class="card-title font-weight-bold" th:text="${foodItem.name}"></h5>
-                        <p class="card-text text-muted">By <span th:text="${foodItem.kitchen.kitchenName}"></p>
+                        <p class="card-text text-muted">By <span th:text="${foodItem.category.kitchen.kitchenName}"></p>
                         <div class="card-bottom-section">
                             <div class="price">
                                 <span th:text="'Rs ' + ${foodItem.price}"></span>
-                                <span th:class="${foodItem.availability} ? 'status' : 'status sold-out'"
-                                    th:text="${foodItem.availability} ? 'Available' : 'Sold Out'">
+                                <span th:class="${foodItem.isVeg} ? 'status' : 'status sold-out'"
+                                    th:text="${foodItem.isVeg} ? 'Veg' : 'Non-Veg'">
                                 </span>
                             </div>
                             <div th:id="'cart-button-container-' + ${foodItem.id}">

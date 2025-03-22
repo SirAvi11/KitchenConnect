@@ -1,0 +1,94 @@
+<!-- Menu -->
+<div class="menu">
+    <h3 class="text-center mb-4">Menu</h3>
+    <!-- Category List -->
+    <div class="category-list d-flex flex-wrap justify-content-center">
+      <button
+        th:each="category : ${menuItems}"
+        th:text="${category.key}"
+        class="category-pill"
+        th:data-category="${category.key}"
+        onclick="showCategory(this.getAttribute('data-category'))"
+      >
+        Category Name
+      </button>
+    </div>
+    <!-- Menu Items -->
+    <section
+      th:each="category : ${menuItems}"
+      th:id="${'category-' + category.key}"
+      class="category"
+    >
+      <div class="header-category">
+        <h4 th:text="${category.key}">Category Name</h4>
+      </div>
+      <div class="items">
+        <div th:each="foodItem : ${category.value}" class="item">
+          <div class="upper-container">
+            <img
+              th:alt="${foodItem.name}"
+              class="card-img-top"
+              th:src="${foodItem.imageUrl}"
+            />
+            <h4 th:text="${foodItem.name}"></h4>
+            <p th:text="${foodItem.description}"></p>
+          </div>
+          <div class="card-bottom-section">
+            <div class="price-rating">
+              <div class="price">
+                <span th:text="'Rs ' + ${foodItem.price}"></span>
+              </div>
+              <div class="rating">
+                <i class="fas fa-star"></i>
+                <span th:text="${foodItem.overallRating}"></span>
+                <span
+                  >(<span th:text="${foodItem.ratingCount}"></span>)</span
+                >
+              </div>
+            </div>
+            <div th:id="'cart-button-container-' + ${foodItem.id}">
+              <div th:id="'inner-cart-button-container-' + ${foodItem.id}">
+                <th:block th:if="${cartItems.containsKey(foodItem.id)}">
+                  <button
+                    class="cart-btn"
+                    th:data-item-id="${foodItem.id}"
+                    onclick="decreaseCount(this.getAttribute('data-item-id'))"
+                  >
+                    -
+                  </button>
+                  <span
+                    th:id="'itemCount-' + ${foodItem.id}"
+                    class="count"
+                    th:text="${cartItems.get(foodItem.id)}"
+                  ></span>
+                  <button
+                    class="cart-btn"
+                    th:data-item-id="${foodItem.id}"
+                    onclick="increaseCount(this.getAttribute('data-item-id'))"
+                  >
+                    +
+                  </button>
+                </th:block>
+                <th:block
+                  th:unless="${cartItems.containsKey(foodItem.id)}"
+                >
+                  <button
+                    th:id="'addToCart-' + ${foodItem.id}"
+                    class="add-to-cart"
+                    th:data-item-id="${foodItem.id}"
+                    onclick="toggleCart(this.getAttribute('data-item-id'))"
+                  >
+                    Add to Cart
+                  </button>
+                </th:block>
+              </div>
+              <span
+                th:class="${foodItem.isVeg} ? 'status veg' : 'status non-veg'"
+                th:text="${foodItem.isVeg} ? 'Veg' : 'Non-Veg'"
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>

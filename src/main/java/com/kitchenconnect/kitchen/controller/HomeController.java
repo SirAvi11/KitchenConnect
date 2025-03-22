@@ -15,7 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kitchenconnect.kitchen.entity.Category;
 import com.kitchenconnect.kitchen.entity.Chef;
-import com.kitchenconnect.kitchen.entity.FoodItem;
+import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.entity.User;
@@ -24,13 +24,12 @@ import com.kitchenconnect.kitchen.enums.OrderStatus;
 import com.kitchenconnect.kitchen.enums.UserRole;
 import com.kitchenconnect.kitchen.service.CategoryService;
 import com.kitchenconnect.kitchen.service.ChefService;
-import com.kitchenconnect.kitchen.service.FoodItemService;
+import com.kitchenconnect.kitchen.service.MenuItemService;
 import com.kitchenconnect.kitchen.service.KitchenService;
 import com.kitchenconnect.kitchen.service.OrderService;
 import com.kitchenconnect.kitchen.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
-
 
 @Controller
 @RequestMapping("/")
@@ -40,7 +39,7 @@ public class HomeController {
     private KitchenService kitchenService;
 
     @Autowired
-    private FoodItemService foodItemService;
+    private MenuItemService menuItemService;
 
     @Autowired 
     private UserService userService;
@@ -56,7 +55,7 @@ public class HomeController {
     @GetMapping
     public String showHomePage(Model model, HttpSession session) {
         List<Kitchen> featuredKitchens = kitchenService.getFeaturedKitchens();
-        List<FoodItem> featuredFoodItems = foodItemService.getFeaturedFoodItems();
+        List<MenuItem> featuredMenuItems = menuItemService.getFeaturedMenuItems();
          // Retrieve cart from session
         Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
         if (cart == null) {
@@ -64,12 +63,16 @@ public class HomeController {
         }
 
         model.addAttribute("kitchens", featuredKitchens);
-        model.addAttribute("foodItems", featuredFoodItems);
+        model.addAttribute("foodItems", featuredMenuItems);
         model.addAttribute("cartItems", cart);
 
         return "index";
     }
     
+    @GetMapping("/about-us")
+    public String showAboutUsPage(){
+        return "about-us";
+    }
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
         User loggedInUser = (User) session.getAttribute("loggedInUser");
