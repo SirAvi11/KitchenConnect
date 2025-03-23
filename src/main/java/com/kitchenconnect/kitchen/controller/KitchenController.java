@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -89,7 +90,7 @@ public class KitchenController {
             Chef chef = chefService.getChefByKitchenId(kitchen.getKitchenId());
 
            // Fetch Food Categories and Categories Items (Menu)
-            Map<String, List<MenuItem>> menuItems = new HashMap<>();
+            Map<String, List<MenuItem>> menuItems = new LinkedHashMap<>();
 
             List<Category> foodCategories = categoryService.getCategoriesByKitchen(id);
 

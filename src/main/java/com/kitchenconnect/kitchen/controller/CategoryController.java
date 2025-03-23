@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.kitchenconnect.kitchen.DTO.CategoryRequest;
+import com.kitchenconnect.kitchen.DTO.MoveCategoryRequest;
 import com.kitchenconnect.kitchen.DTO.UpdateCategoryRequest;
 import com.kitchenconnect.kitchen.entity.Category;
 import com.kitchenconnect.kitchen.entity.Kitchen;
@@ -16,6 +17,7 @@ import com.kitchenconnect.kitchen.service.KitchenService;
 
 import jakarta.servlet.http.HttpSession;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +78,18 @@ public class CategoryController {
             return ResponseEntity.ok(true); // Return true if deletion is successful
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false); // Return false if category is not found
+        }
+    }
+
+    @PostMapping("/move")
+    public ResponseEntity<Map<String, String>> moveCategory(@RequestBody MoveCategoryRequest request) {
+        try {
+            categoryService.moveCategory(request.getCategoryId(), request.getDirection());
+            Map<String, String> response = new HashMap<>();
+            response.put("redirectUrl", "/dashboard?tab=manage-menu");
+            return ResponseEntity.ok(response); // Return JSON with redirect URL
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Error moving category"));
         }
     }
 }

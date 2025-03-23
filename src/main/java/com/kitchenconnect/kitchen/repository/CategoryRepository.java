@@ -6,5 +6,7 @@ import com.kitchenconnect.kitchen.entity.Category;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    List<Category> findByKitchen_KitchenId(Long kitchenId);
+    List<Category> findAllByKitchen_KitchenIdOrderByPositionAsc(Long kitchenId);
+
+    List<Category> findAllByOrderByPositionAsc();
 }

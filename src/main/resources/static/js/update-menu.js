@@ -1,3 +1,27 @@
+function moveCategory(categoryId, direction) {
+    fetch(`/category/move`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            categoryId: categoryId,
+            direction: direction
+        })
+    })
+    .then(response => response.json()) // Parse JSON response
+    .then(data => {
+        if (data.redirectUrl) {
+            window.location.href = data.redirectUrl; // Redirect to the new URL
+        } else {
+            console.error('Error: No redirect URL provided');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 function removeMenuItem(menuItemId){
     const foodItemsContainerId = `food-item-template-${menuItemId}`;
     const foodItemsContainer = document.getElementById(foodItemsContainerId);
