@@ -91,3 +91,51 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
+/* Star Rating Styling */
+.star-rating {
+  display: inline-block;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.star-rating .star {
+  color: #ddd; /* Default star color */
+  transition: color 0.2s;
+}
+
+.star-rating .star:hover,
+.star-rating .star.active {
+  color: #ffc107; /* Orange color for selected stars */
+}
+
+/* Text Contrast */
+.text-dark {
+  color: #212529; /* Dark gray for better contrast */
+}
+
+.text-warning {
+  color: #ffc107; /* Bootstrap warning (orange) color */
+}
+
+/* Button Styling */
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #000; /* Black text for contrast */
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #e0a800;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: #fff; /* White text for contrast */
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  border-color: #5a6268;
+}

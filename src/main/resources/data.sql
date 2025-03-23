@@ -136,31 +136,3 @@ biography = VALUES(biography),
 chef_profile_picture = VALUES(chef_profile_picture),
 favourite_dishes = VALUES(favourite_dishes),
 kitchen_id = VALUES(kitchen_id);
-
-/*Populating Food Items table*/
-
-INSERT INTO fooditem (id, kitchen_id, name, picture, price, overall_rating, rating_count, availability, description)
-VALUES
--- Kitchen 1: Khanna’s Indian Feast (North Indian Cuisine)
-(1, 1, 'Butter Chicken', 'butter_chicken.jpg', 320.00, 4.6, 250, TRUE, 'Creamy tomato-based gravy with tender chicken pieces.'),
-(2, 1, 'Dal Makhani', 'dal_makhani.jpg', 210.00, 4.7, 180, TRUE, 'Slow-cooked black lentils with butter and cream.'),
-(3, 1, 'Tandoori Roti', 'tandoori_roti.jpg', 40.00, 4.5, 150, TRUE, 'Soft, whole wheat roti baked in a clay tandoor.'),
-
--- Kitchen 2: Kapoor’s Home Kitchen (Indian Comfort Food)
-(4, 2, 'Vegetable Pulao', 'vegetable_pulao.jpg', 180.00, 4.9, 140, TRUE, 'Basmati rice cooked with aromatic spices and fresh vegetables.'),
-(5, 2, 'Palak Paneer', 'palak_paneer.jpg', 250.00, 3.7, 200, TRUE, 'Creamy spinach curry with soft paneer cubes.'),
-(6, 2, 'Aloo Poori', 'aloo_poori.jpg', 150.00, 4.5, 120, TRUE, 'Fluffy deep-fried poori served with spiced potato curry.'),
-
--- Kitchen 3: Brar’s Heritage Bites (Fusion Indian Cuisine)
-(7, 3, 'Mutton Rogan Josh', 'mutton_rogan_josh.jpg', 400.00, 4.9, 300, TRUE, 'Kashmiri-style slow-cooked lamb in a rich red gravy.'),
-(8, 3, 'Prawn Malai Curry', 'prawn_malai_curry.jpg', 380.00, 4.8, 220, TRUE, 'Bengali delicacy with prawns in a coconut milk curry.'),
-(9, 3, 'Chicken Tikka', 'chicken_tikka.jpg', 280.00, 4.7, 190, TRUE, 'Marinated and grilled chicken served with mint chutney.')
-ON DUPLICATE KEY UPDATE 
-name = VALUES(name),
-picture = VALUES(picture),
-price = VALUES(price),
-overall_rating = VALUES(overall_rating),
-rating_count = VALUES(rating_count),
-availability = VALUES(availability),
-description = VALUES(description);
-
