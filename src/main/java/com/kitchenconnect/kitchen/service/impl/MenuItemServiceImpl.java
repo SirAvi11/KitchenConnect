@@ -3,7 +3,6 @@ package com.kitchenconnect.kitchen.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.repository.MenuItemRepository;
 import com.kitchenconnect.kitchen.service.MenuItemService;

@@ -1,7 +1,6 @@
 package com.kitchenconnect.kitchen.service.impl;
 
 import com.kitchenconnect.kitchen.DTO.OrderRequest;
-import com.kitchenconnect.kitchen.entity.FoodItem;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.Order;
