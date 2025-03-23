@@ -9,6 +9,7 @@ import com.kitchenconnect.kitchen.enums.OrderStatus;
 import com.kitchenconnect.kitchen.service.KitchenService;
 import com.kitchenconnect.kitchen.service.OrderService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +60,13 @@ public class OrderController {
     public ResponseEntity<Order> updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus status) {
         Order updatedOrder = orderService.updateOrderStatus(id, status);
         return ResponseEntity.ok(updatedOrder);
+    }
+
+    @PostMapping("/{id}/cancel")
+    public String cancelOrder(@PathVariable Long id, HttpServletRequest request) {
+         // Update the order status to CANCELLED
+         orderService.updateOrderStatus(id, OrderStatus.CANCELLED);
+         return "redirect:/dashboard?tab=my-orders";
     }
 
     // Delete an order

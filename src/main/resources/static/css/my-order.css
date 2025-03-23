@@ -22,3 +22,72 @@
 .order-info-container{
   flex-grow:1;
 }
+
+/* Status Circle Styles */
+.status-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: orange; /* Default background color */
+  transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.status-circle:hover {
+  transform: scale(1.1);
+}
+
+/* Success State for Status Circle */
+.status-circle.bg-success {
+  background-color: #28a745 !important; /* Green for completed steps */
+}
+
+/* Status Line Styles */
+.status-line {
+  width: 32px;
+  height: 4px;
+  background-color: orange; /* Default background color */
+  transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+.status-line:hover {
+  width: 40px;
+}
+
+/* Gray State for Status Line */
+.status-line-gray {
+  background-color: gray; /* Gray for inactive steps */
+}
+
+/* Success State for Status Line */
+.status-line.bg-success {
+  background-color: #28a745 !important; /* Green for completed steps */
+}
+
+/* Status Text Styles */
+.status-text {
+  margin-top: 8px;
+  color: orange; /* Default text color */
+  transition: color 0.3s ease-in-out;
+}
+
+.status-text:hover {
+  color: darkorange; /* Hover color */
+}
+
+/* Success State for Status Text */
+.status-text.text-success {
+  color: #28a745 !important; /* Green for completed steps */
+}
+
+/* Info Box Styles */
+.info-box {
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+

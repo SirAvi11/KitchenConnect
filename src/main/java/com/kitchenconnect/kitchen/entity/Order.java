@@ -2,8 +2,8 @@ package com.kitchenconnect.kitchen.entity;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
 @Entity
 @Table(name = "orders")
 public class Order {
@@ -31,10 +31,15 @@ public class Order {
     private double totalAmount;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderDetails> orderDetails;
+    private List<OrderDetails> orderDetails = new ArrayList<>(); // Initialize to avoid null
 
     @Column(nullable = false, columnDefinition = "DOUBLE DEFAULT 0.0")
     private double rating = 0.0;
+
+    // Constructors
+    public Order() {
+        // Default constructor
+    }
 
     // Getters and Setters
     public double getRating() {

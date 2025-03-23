@@ -30,6 +30,9 @@ public class Kitchen {
     @JsonBackReference // Prevents circular reference
     private List<Category> categories;
 
+    @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+
     @Column(name = "kitchen_name", length = 35, nullable = false)
     private String kitchenName;
 
