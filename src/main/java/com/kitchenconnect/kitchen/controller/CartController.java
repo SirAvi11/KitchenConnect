@@ -3,6 +3,7 @@ package com.kitchenconnect.kitchen.controller;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +14,7 @@ import com.kitchenconnect.kitchen.DTO.OrderRequest;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.Order;
+import com.kitchenconnect.kitchen.entity.OrderDetails;
 import com.kitchenconnect.kitchen.service.MenuItemService;
 import com.kitchenconnect.kitchen.service.OrderService;
 
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/cart")
@@ -146,6 +149,63 @@ public class CartController {
             clearCart(session);
         }
         return ResponseEntity.ok(placedOrder);
+    }
+
+    @PostMapping("/build")
+    public ResponseEntity<Map<String, String>> buildCart(
+        @RequestParam Long orderId,
+        @RequestParam(required = false, defaultValue = "false") boolean clearCart,
+        HttpSession session
+    ) {
+        Map<String, String> response = new HashMap<>();
+        Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+
+        if (cart == null) {
+            session.setAttribute("cart", cart = new HashMap<>());
+        }
+
+        // Clear the cart if requested
+        if (clearCart) {
+            clearCart(session);
+        }
+
+        // If the cart is not empty and clearCart is false, return an error
+        if (!clearCart && !cart.isEmpty()) {
+            Long firstFoodId = cart.keySet().iterator().next();
+            MenuItem existingFoodItem = menuItemService.getMenuItemById(firstFoodId);
+            Order expressOrder = orderService.getOrderById(orderId);
+            MenuItem newFoodItem = expressOrder.getOrderDetails().get(0).getMenuItem();
+
+            if (existingFoodItem != null && newFoodItem != null) {
+                Long existingKitchenId = existingFoodItem.getCategory().getKitchen().getKitchenId();
+                Long newKitchenId = newFoodItem.getCategory().getKitchen().getKitchenId();
+
+                if (!existingKitchenId.equals(newKitchenId)) {
+                    response.put("status", "error");
+                    response.put("message", "Cart contains items from another kitchen.");
+                    return ResponseEntity.ok(response);                
+                }
+            }
+        }
+
+        // Build the cart with the specified order items
+        Order order = orderService.getOrderById(orderId);
+        if (order == null) {
+            response.put("status", "error");
+            response.put("message", "Order not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        List<OrderDetails> orderDetails = orderService.getOrderById(orderId).getOrderDetails();
+
+        for(OrderDetails od : orderDetails){
+            MenuItem mI = od.getMenuItem();
+            cart.put(mI.getId(), od.getQuantity());
+        }
+
+        response.put("status", "success");
+        response.put("message", "Cart updated successfully.");
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/clear-cart")

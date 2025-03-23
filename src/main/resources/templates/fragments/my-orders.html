@@ -258,7 +258,7 @@
               >
                 <!-- Express Reorder and Add to Bag Buttons (Visible for other statuses) -->
                 <div>
-                  <button class="btn btn-primary w-100 mb-2">
+                  <button th:data-order-id="${order.id}" onclick="buildCart(this.getAttribute('data-order-id'))" class="btn btn-primary w-100 mb-2">
                     Express reorder
                   </button>
                   <button class="btn btn-outline-primary w-100 mb-2">
@@ -345,21 +345,21 @@
                 <div class="mb-3">
                   <p>
                     <strong>Order ID:</strong>
-                    <span id="orderId">987654321</span>
+                    <span id="tracking-orderId">987654321</span>
                   </p>
                   <p>
                     <strong>Expected Delivery Time:</strong>
-                    <span id="expectedDeliveryTime">30-45 Minutes</span>
+                    <span id="tracking-expectedDeliveryTime">30-45 Minutes</span>
                   </p>
                   <p>
                     <strong>Delivery Address:</strong>
-                    <span id="deliveryAddress"
+                    <span id="tracking-deliveryAddress"
                       >456 Foodie Lane, Gourmet City, USA</span
                     >
                   </p>
                   <p>
                     <strong>Contact Info:</strong>
-                    <span id="contactInfo">+1 234 567 890</span>
+                    <span id="tracking-contactInfo">+1 234 567 890</span>
                   </p>
                 </div>
                 <div
@@ -462,15 +462,15 @@
       <!-- Modal for Order Details -->
       <div
         class="modal fade"
-        id="orderDetailsModal"
+        id="receiptDetailsModal"
         tabindex="-1"
-        aria-labelledby="orderDetailsModalLabel"
+        aria-labelledby="receiptDetailsModalLabel"
         aria-hidden="true"
       >
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="orderDetailsModalLabel">
+              <h5 class="modal-title" id="receiptDetailsModalLabel">
                 Receipt
               </h5>
               <button
@@ -542,6 +542,25 @@
           </div>
         </div>
       </div>
+
+      <!-- Confirmation Modal -->
+      <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="cartModalLabel">Confirm Action</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Your cart is not empty. Do you want to clear it and add new items?
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" id="confirmAdd" class="btn btn-primary">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -588,10 +607,10 @@
           const status = button.getAttribute('data-status');
 
           // Update modal content with the data
-          document.getElementById('orderId').innerText = orderId;
-          document.getElementById('expectedDeliveryTime').innerText = expectedDeliveryTime;
-          document.getElementById('deliveryAddress').innerText = deliveryAddress;
-          document.getElementById('contactInfo').innerText = contactInfo;
+          document.getElementById('tracking-orderId').innerText = orderId;
+          document.getElementById('tracking-expectedDeliveryTime').innerText = expectedDeliveryTime;
+          document.getElementById('tracking-deliveryAddress').innerText = deliveryAddress;
+          document.getElementById('tracking-contactInfo').innerText = contactInfo;
 
           // Update order status
           updateOrderStatus(status);
@@ -765,7 +784,7 @@
               });
 
           // Show the modal
-          const modal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
+          const modal = new bootstrap.Modal(document.getElementById('receiptDetailsModal'));
           modal.show();
         }
   </script>
