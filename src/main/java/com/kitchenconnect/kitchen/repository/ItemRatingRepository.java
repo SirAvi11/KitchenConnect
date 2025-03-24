@@ -9,5 +9,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface ItemRatingRepository extends JpaRepository<ItemRating, Long> {
-    List<ItemRating> findByMenuItemId(Long menuItemId);
 }
