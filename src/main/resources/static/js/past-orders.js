@@ -1,6 +1,6 @@
 // Function to submit ratings
 function submitRatings() {
-    const orderId = document.querySelector('[data-order-id]').getAttribute('data-order-id');
+    const orderId = parseFloat(document.getElementById('modal-order-id').value);
     const kitchenRating = document.getElementById('kitchenRating').value;
     const userNote = document.getElementById('userNote').value;
     const itemRatings = [];
@@ -45,64 +45,109 @@ function submitRatings() {
     .catch(error => console.error('Error:', error));
 }
 
+// Function to handle star hover
+function setupStarHover() {
+    // Kitchen rating stars
+    const kitchenStars = document.querySelectorAll('.kitchen-rating .star');
+    kitchenStars.forEach(star => {
+        star.addEventListener('mouseover', function() {
+            const value = parseInt(this.getAttribute('data-value'));
+            highlightStars(kitchenStars, value);
+        });
+        
+        star.addEventListener('mouseout', function() {
+            const currentRating = parseInt(document.getElementById('kitchenRating').value);
+            highlightStars(kitchenStars, currentRating);
+        });
+        
+        star.addEventListener('click', function() {
+            const value = parseInt(this.getAttribute('data-value'));
+            document.getElementById('kitchenRating').value = value;
+            highlightStars(kitchenStars, value);
+        });
+    });
+
+    // Item rating stars
+    document.querySelectorAll('.order-item .star-rating').forEach(ratingContainer => {
+        const stars = ratingContainer.querySelectorAll('.star');
+        const ratingInput = ratingContainer.nextElementSibling; // Assuming the input is right after
+        
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                highlightStars(stars, value);
+            });
+            
+            star.addEventListener('mouseout', function() {
+                const currentRating = parseInt(ratingInput.value);
+                highlightStars(stars, currentRating);
+            });
+            
+            star.addEventListener('click', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = value;
+                highlightStars(stars, value);
+            });
+        });
+    });
+}
+
 // Function to fetch and populate ratings
 function fetchAndPopulateRatings(orderId) {
-
     let data = document.getElementById('rate-order');
     let kitchenName = data.getAttribute('data-kitchen-name');
     let kitchenElement = document.getElementById('kitchenName');
     if(kitchenElement){
         kitchenElement.textContent = `${kitchenName}`;
     }
-    fetch(`/orders/${orderId}/ratings`)
+    
+    fetch(`/orders/${orderId}/get-ratings`)
     .then(response => response.json())
     .then(data => {
         if (data) {
-            // Populate kitchen rating
+            // Populate kitchen rating if exists
             if (data.kitchenRating > 0) {
-            const ratingField = document.getElementById('kitchenRating');
-            const ratingStars = ratingField.closest('.kitchen-rating').querySelectorAll('.star');
-            ratingField.value = data.kitchenRating;
-            highlightStars(ratingStars, data.kitchenRating);
+                const ratingField = document.getElementById('kitchenRating');
+                const ratingStars = ratingField.closest('.kitchen-rating').querySelectorAll('.star');
+                ratingField.value = data.kitchenRating;
+                highlightStars(ratingStars, data.kitchenRating);
             }
 
-            // Populate user note
+            // Populate user note if exists
             if (data.userNote) {
-            document.getElementById('userNote').value = data.userNote;
+                document.getElementById('userNote').value = data.userNote;
             }
 
-            // Populate item ratings
-            // Assuming 'data' is an object containing the itemRatings array
+            // Populate item ratings if exists
             if (data.itemRatings && data.itemRatings.length > 0) {
-            const container = document.getElementById('orderItemsRating'); // Assuming you have a container to hold all the items
-
-            data.itemRatings.forEach(item => {
-                // Create the HTML structure for each item
-                const itemHTML = `
-                <div class="order-item mb-3">
-                    <p class="mb-1 text-dark">Item: <span class="item-name text-warning">${item.itemName}</span></p>
-                    <div class="star-rating">
-                    <span class="star" data-value="1">&#9733;</span>
-                    <span class="star" data-value="2">&#9733;</span>
-                    <span class="star" data-value="3">&#9733;</span>
-                    <span class="star" data-value="4">&#9733;</span>
-                    <span class="star" data-value="5">&#9733;</span>
+                const container = document.getElementById('orderItemsRating');
+                
+                data.itemRatings.forEach(item => {
+                    const itemHTML = `
+                    <div class="order-item mb-3">
+                        <p class="mb-1 text-dark">Item: <span class="item-name text-warning">${item.itemName}</span></p>
+                        <div class="star-rating">
+                        <span class="star" data-value="1">&#9733;</span>
+                        <span class="star" data-value="2">&#9733;</span>
+                        <span class="star" data-value="3">&#9733;</span>
+                        <span class="star" data-value="4">&#9733;</span>
+                        <span class="star" data-value="5">&#9733;</span>
+                        </div>
+                        <input type="hidden" class="item-rating" name="itemRating" value="${item.rating || 0}">
                     </div>
-                    <input type="hidden" class="item-rating" name="itemRating" value="${item.rating}">
-                </div>
-                `;
+                    `;
+                    container.insertAdjacentHTML('beforeend', itemHTML);
 
-                // Append the HTML to the container
-                container.insertAdjacentHTML('beforeend', itemHTML);
-
-                // Highlight the stars based on the rating
-                const ratingInput = container.lastElementChild.querySelector('.item-rating');
-                const ratingStars = ratingInput.closest('.order-item').querySelectorAll('.star');
-                highlightStars(ratingStars, item.rating);
-            });
+                    const ratingInput = container.lastElementChild.querySelector('.item-rating');
+                    const ratingStars = ratingInput.closest('.order-item').querySelectorAll('.star');
+                    highlightStars(ratingStars, item.rating || 0);
+                });
             }
+            
+            // Set up star hover interactions after populating
+            setupStarHover();
         }
-        })
+    })
     .catch(error => console.error('Error fetching ratings:', error));
 }
 
@@ -139,6 +184,7 @@ document.getElementById('ratingModal').addEventListener('show.bs.modal', functio
     resetRatingModal(); // Reset the modal first
     const button = event.relatedTarget; // Button that triggered the modal
     const orderId = button.getAttribute('data-order-id'); // Extract order ID from data-order-id attribute
+    document.getElementById('modal-order-id').value = orderId;
     fetchAndPopulateRatings(orderId); // Fetch and populate ratings
 });
 });

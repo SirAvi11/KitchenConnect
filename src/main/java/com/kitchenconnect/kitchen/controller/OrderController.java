@@ -105,7 +105,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/{orderId}/ratings")
+    @GetMapping("/{orderId}/get-ratings")
     public ResponseEntity<RatingResponse> getOrderRatings(@PathVariable Long orderId) {
         RatingResponse ratingResponse = ratingService.getRatingsForOrder(orderId);
         if (ratingResponse == null) {

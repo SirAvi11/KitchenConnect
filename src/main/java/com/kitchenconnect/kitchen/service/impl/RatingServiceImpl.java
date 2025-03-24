@@ -3,11 +3,14 @@ package com.kitchenconnect.kitchen.service.impl;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kitchenconnect.kitchen.DTO.ItemRatingRequest;
 import com.kitchenconnect.kitchen.DTO.ItemRatingResponse;
 import com.kitchenconnect.kitchen.DTO.RatingRequest;
 import com.kitchenconnect.kitchen.DTO.RatingResponse;
@@ -47,9 +50,6 @@ public class RatingServiceImpl implements RatingService {
         }
 
         RatingResponse response = new RatingResponse();
-        System.out.println("reacheddddher ------" + rating.getKitchenRating());
-        System.out.println("reacheddddher ------" + rating.getUserNote());
-
 
         response.setKitchenRating(rating.getKitchenRating());
         response.setUserNote(rating.getUserNote());
@@ -72,9 +72,12 @@ public class RatingServiceImpl implements RatingService {
         response.setItemRatings(itemRatings);
         return response;
     }
-
+    @Transactional
     public void saveOrUpdateRatings(Long orderId, RatingRequest request) {
-        // Save or update ratings in the database
+        // Save or update the main rating
+        System.out.println("orderId item raing" + orderId);
+
+
         Rating rating = ratingRepository.findByOrderId(orderId);
         if (rating == null) {
             rating = new Rating();
@@ -83,18 +86,30 @@ public class RatingServiceImpl implements RatingService {
 
         rating.setKitchenRating(request.getKitchenRating());
         rating.setUserNote(request.getUserNote());
-
-        List<ItemRating> itemRatings = request.getItemRatings().stream()
-            .map(itemRequest -> {
-                ItemRating itemRating = new ItemRating();
-                itemRating.setItemName(itemRequest.getItemName());
-                itemRating.setRatingValue(itemRequest.getRating());
-                return itemRating;
-            })
-            .collect(Collectors.toList());
-
-        rating.setItemRatings(itemRatings);
         ratingRepository.save(rating);
+
+        // Process each item rating from the request
+        for (ItemRatingRequest itemRequest : request.getItemRatings()) {
+            // Try to find existing item rating
+            ItemRating existingItemRating = itemRatingRepository
+                .findByParentRatingAndItemName(rating, itemRequest.getItemName());
+
+            System.out.println("Existing item raing" + existingItemRating.getParentRating().getId());
+
+            
+            if (existingItemRating != null) {
+                // Update existing
+                existingItemRating.setRatingValue(itemRequest.getRating());
+                itemRatingRepository.save(existingItemRating);
+            } else {
+                // Create new
+                ItemRating newItemRating = new ItemRating();
+                newItemRating.setItemName(itemRequest.getItemName());
+                newItemRating.setRatingValue(itemRequest.getRating());
+                newItemRating.setParentRating(rating);
+                itemRatingRepository.save(newItemRating);
+            }
+        }
     }
 
     @Transactional
