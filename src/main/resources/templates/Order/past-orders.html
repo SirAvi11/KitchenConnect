@@ -1,0 +1,209 @@
+<!--Past Orders-->
+<div th:fragment="past-orders">
+<script src="/js/past-orders.js"></script>
+  <div th:if="${not #lists.isEmpty(pastOrders)}">
+    <h5 class="h5">Past Orders</h5>
+    <div class="space-y-4">
+      <div
+        class="bg-white p-4 rounded shadow-sm mb-4"
+        th:each="order : ${pastOrders}"
+      >
+        <div class="d-flex justify-content-between mb-4">
+          <div class="d-flex align-items-start space-x-4 w-75">
+            <!-- Kitchen Image -->
+            <img
+              th:alt="${order.kitchen.kitchenName}"
+              class="rounded"
+              height="100"
+              th:src="${order.kitchen.kitchenImagePath}"
+              width="150"
+            />
+            <div class="ml-3 mr-3 order-info-container">
+              <div class="d-flex justify-content-between w-100">
+                <div class="d-flex align-items-center space-x-2">
+                  <!-- Kitchen Name -->
+                  <h3
+                    class="h5 font-weight-bold"
+                    th:text="${order.kitchen.kitchenName}"
+                  ></h3>
+                </div>
+                <!-- Total Price -->
+                <p
+                  class="h5 font-weight-bold ml-4"
+                  th:text="'Rs' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"
+                ></p>
+              </div>
+              <!-- Order Date -->
+              <p
+                class="text-muted"
+                th:text="${#temporals.format(order.orderDate, 'MMMM dd, yyyy')}"
+              ></p>
+              <!-- Order Status -->
+              <strong
+                ><p class="text-muted" th:text="${order.status}"></p
+              ></strong>
+              <!-- Order Details (more than 2 Items) -->
+              <div th:if="${order.orderDetails.size() > 2}" class="marquee">
+                <div class="marquee-content">
+                  <p th:each="item : ${order.orderDetails}" class="border-top">
+                    <span
+                      th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
+                    ></span>
+                  </p>
+                </div>
+              </div>
+              <!-- Order Details (Maximum 2 items)-->
+              <div th:unless="${order.orderDetails.size() > 2}">
+                <p th:each="item : ${order.orderDetails}" class="border-top">
+                  <span
+                    th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
+                  ></span>
+                </p>
+              </div>
+              <!-- View Receipt Link -->
+              <button
+                class="btn btn-outline-primary btn-sm view-receipt-btn"
+                th:data-order-id="${order.id}"
+                th:data-kitchen-delivery="${order.kitchen.deliveryFees}"
+                th:data-order-date="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"
+                th:data-order-total="${order.totalAmount}"
+                th:data-order-status="${order.status}"
+                th:data-order-details="${order.orderDetails}"
+                th:data-payment-status="Paid"
+                th:onclick="showReceipt(this)"
+              >
+                View Receipt
+              </button>
+            </div>
+          </div>
+          <!-- Buttons and Rating -->
+          <div
+            class="text-right d-flex flex-column justify-content-between space-y-2 w-25"
+          >
+            <!-- Express Reorder and Add to Bag Buttons (Visible for other statuses) -->
+            <div>
+              <button
+                th:data-order-id="${order.id}"
+                onclick="buildCart(this.getAttribute('data-order-id'))"
+                class="btn btn-primary w-100 mb-2"
+              >
+                Express reorder
+              </button>
+              <button
+                id="rate-order"
+                class="btn btn-outline-primary w-100 mb-2"
+                data-bs-toggle="modal"
+                th:attr="data-kitchen-name=${order.kitchen.kitchenName}"
+                data-bs-target="#ratingModal"
+                th:data-order-id="${order.id}"
+              >
+                Rate this order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Rating Modal -->
+  <div
+    class="modal fade"
+    id="ratingModal"
+    tabindex="-1"
+    aria-labelledby="ratingModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h5 class="modal-title" id="ratingModalLabel">
+            Rate Your Experience
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- Kitchen Name -->
+          <div class="mb-4">
+            <h4 class="h5 text-dark">
+              Kitchen: <span id="kitchenName" class="text-warning"></span>
+            </h4>
+          </div>
+
+          <!-- Kitchen Rating -->
+          <div class="mb-4 kitchen-rating">
+            <label class="form-label text-dark">Rate the Kitchen:</label>
+            <div class="star-rating">
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star" data-value="4">&#9733;</span>
+              <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input
+              type="hidden"
+              id="kitchenRating"
+              name="kitchenRating"
+              value="0"
+            />
+          </div>
+
+          <!-- User Note -->
+          <div class="mb-4">
+            <label for="userNote" class="form-label text-dark"
+              >Leave a note (optional):</label
+            >
+            <textarea class="form-control" id="userNote" rows="3"></textarea>
+          </div>
+
+          <!-- Order Details -->
+          <div class="mb-4">
+            <h5 class="h6 text-dark">Rate Your Ordered Items:</h5>
+            <div id="orderItemsRating">
+              <!-- Dynamically generated order items with star ratings -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn btn-warning"
+            onclick="submitRatings()"
+          >
+            Submit Ratings
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cartModalLabel">Confirm Action</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Your cart is not empty. Do you want to clear it and add new items?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="confirmAdd" class="btn btn-primary">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

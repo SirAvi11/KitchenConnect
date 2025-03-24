@@ -1,0 +1,326 @@
+<!--Current Orders-->
+<div th:fragment="current-orders">
+  <script src="/js/current-orders.js"></script>
+  <div th:if="${not #lists.isEmpty(currentOrders)}">
+    <h5 class="h5">Current Orders</h5>
+    <div class="space-y-4">
+      <div
+        class="bg-white p-4 rounded shadow-sm mb-4"
+        th:each="order : ${currentOrders}"
+      >
+        <div class="d-flex justify-content-between mb-4">
+          <div class="d-flex align-items-start space-x-4 w-75">
+            <!-- Kitchen Image -->
+            <img
+              th:alt="${order.kitchen.kitchenName}"
+              class="rounded"
+              height="100"
+              th:src="${order.kitchen.kitchenImagePath}"
+              width="150"
+            />
+            <div class="ml-3 mr-3 order-info-container">
+              <div class="d-flex justify-content-between w-100">
+                <div class="d-flex align-items-center space-x-2">
+                  <!-- Kitchen Name -->
+                  <h3
+                    class="h5 font-weight-bold"
+                    th:text="${order.kitchen.kitchenName}"
+                  ></h3>
+                </div>
+                <!-- Total Price -->
+                <p
+                  class="h5 font-weight-bold ml-4"
+                  th:text="'Rs' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"
+                ></p>
+              </div>
+              <!-- Order Date -->
+              <p
+                class="text-muted"
+                th:text="${#temporals.format(order.orderDate, 'MMMM dd, yyyy')}"
+              ></p>
+              <!-- Order Status -->
+              <strong
+                ><p class="text-muted" th:text="${order.status}"></p
+              ></strong>
+              <!-- Order Details (more than 2 Items) -->
+              <div th:if="${order.orderDetails.size() > 2}" class="marquee">
+                <div class="marquee-content">
+                  <p th:each="item : ${order.orderDetails}" class="border-top">
+                    <span
+                      th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
+                    ></span>
+                  </p>
+                </div>
+              </div>
+              <!-- Order Details (Maximum 2 items)-->
+              <div th:unless="${order.orderDetails.size() > 2}">
+                <p th:each="item : ${order.orderDetails}" class="border-top">
+                  <span
+                    th:text="${item.quantity} + ' ' + ${item.menuItem.name} + ' Rs' + ${#numbers.formatDecimal(item.price, 1, 2)}"
+                  ></span>
+                </p>
+              </div>
+              <!-- View Receipt Link -->
+              <button
+                class="btn btn-outline-primary btn-sm view-receipt-btn"
+                th:data-order-id="${order.id}"
+                th:data-kitchen-delivery="${order.kitchen.deliveryFees}"
+                th:data-order-date="${#temporals.format(order.orderDate, 'dd-MM-yyyy')}"
+                th:data-order-total="${order.totalAmount}"
+                th:data-order-status="${order.status}"
+                th:data-order-details="${order.orderDetails}"
+                th:data-payment-status="Paid"
+                th:onclick="showReceipt(this)"
+              >
+                View Receipt
+              </button>
+            </div>
+          </div>
+          <!-- Buttons and Rating -->
+          <div
+            class="text-right d-flex flex-column justify-content-between space-y-2 w-25"
+          >
+            <div
+              class="d-flex flex-column justify-content-center align-items-center"
+            >
+              <!-- Track Order Button (Visible for PENDING or PROCESSING status) -->
+              <button
+                class="btn btn-primary w-100 mb-2"
+                data-toggle="modal"
+                data-target="#trackingModal"
+                th:data-order-id="${order.id}"
+                th:data-expected-delivery-time="${order.kitchen.maxDeliveryTime}"
+                th:data-delivery-address="${order.user.address}"
+                th:data-contact-info="${order.kitchen.phoneNumber}"
+                th:data-status="${order.status}"
+                onclick="loadTrackingModal(this)"
+              >
+                Track your order
+              </button>
+              <!-- Cancel Order Button -->
+              <button
+                class="btn btn-danger w-100 mb-2"
+                th:data-order-id="${order.id}"
+                data-toggle="modal"
+                data-target="#cancelOrderModal"
+                onclick="setOrderIdToCancel(this)"
+              >
+                Cancel Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Cancel Order Confirmation Modal -->
+  <div
+    class="modal fade"
+    id="cancelOrderModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="cancelOrderModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cancelOrderModalLabel">Cancel Order</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to cancel this order?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            No, Keep Order
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            th:onclick="cancelOrder()"
+          >
+            Yes, Cancel Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- The Track Modal -->
+  <div
+    class="modal fade"
+    id="trackingModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="trackingModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="trackingModalLabel">Order Tracking</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container info-box">
+            <h4 class="mb-3">Food Order Information</h4>
+            <div class="mb-3">
+              <p>
+                <strong>Order ID:</strong>
+                <span id="tracking-orderId">987654321</span>
+              </p>
+              <p>
+                <strong>Expected Delivery Time:</strong>
+                <span id="tracking-expectedDeliveryTime">30-45 Minutes</span>
+              </p>
+              <p>
+                <strong>Delivery Address:</strong>
+                <span id="tracking-deliveryAddress"
+                  >456 Foodie Lane, Gourmet City, USA</span
+                >
+              </p>
+              <p>
+                <strong>Contact Info:</strong>
+                <span id="tracking-contactInfo">+1 234 567 890</span>
+              </p>
+            </div>
+            <div class="d-flex align-items-center justify-content-center mt-4">
+              <!-- Pending -->
+              <div class="d-flex flex-column align-items-center">
+                <div class="status-circle bg-warning">
+                  <i class="fas fa-hourglass-start"></i>
+                </div>
+                <span class="status-text text-warning">Pending</span>
+              </div>
+              <div class="status-line"></div>
+              <!-- Preparing -->
+              <div class="d-flex flex-column align-items-center">
+                <div class="status-circle bg-warning">
+                  <i class="fas fa-utensils"></i>
+                </div>
+                <span class="status-text text-warning">Preparing</span>
+              </div>
+              <div class="status-line"></div>
+              <!-- On The Way -->
+              <div class="d-flex flex-column align-items-center">
+                <div class="status-circle bg-warning">
+                  <i class="fas fa-motorcycle"></i>
+                </div>
+                <span class="status-text text-warning">On The Way</span>
+              </div>
+              <div class="status-line status-line-gray"></div>
+              <!-- Delivered -->
+              <div class="d-flex flex-column align-items-center">
+                <div class="status-circle bg-secondary">
+                  <i class="fas fa-home"></i>
+                </div>
+                <span class="status-text text-secondary">Delivered</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Order Details -->
+  <div
+    class="modal fade"
+    id="receiptDetailsModal"
+    tabindex="-1"
+    aria-labelledby="receiptDetailsModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="receiptDetailsModalLabel">Receipt</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <!-- Order Summary -->
+          <div>
+            <h6 class="mb-3 sub-title">Order Summary</h6>
+            <div class="row">
+              <div class="col-md-6">
+                <p>
+                  <strong>Order ID:</strong>
+                  <span id="receipt-orderId"></span>
+                </p>
+                <p>
+                  <strong>Order Date:</strong>
+                  <span id="receipt-orderDate"></span>
+                </p>
+              </div>
+              <div class="col-md-6">
+                <p>
+                  <strong>Total Amount:</strong>
+                  <span id="receipt-orderTotal"></span>
+                </p>
+                <p>
+                  <strong>Status:</strong>
+                  <span id="receipt-orderStatus"></span>
+                </p>
+                <p>
+                  <strong>Payment Status:</strong>
+                  <span id="receipt-paymentStatus"></span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Items Table -->
+          <div class="mb-4">
+            <h6 class="mb-3 sub-title">Order Items</h6>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                  <th>Price (Rs)</th>
+                  <th>Total (Rs)</th>
+                </tr>
+              </thead>
+              <tbody id="receipt-orderItemsTableBody">
+                <!-- Order items will be dynamically added here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

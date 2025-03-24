@@ -1,0 +1,138 @@
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="my-orders"
+  id="my-orders"
+  th:classappend="${param.tab == 'my-orders'} ? 'active-content' : 'd-none'"
+>
+  <link rel="stylesheet" th:href="@{/css/my-order.css}" />
+  <script src="/addToCart.js"></script>
+  <h4 class="h4 font-weight-bold mb-4">My Orders</h4>
+  <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
+    <main class="py-4">
+      <!--Not important
+      <div class="d-flex justify-content-between border-bottom pb-2 mb-4 d-none">
+        <div class="d-flex space-x-4">
+          <a
+            class="font-weight-bold border-bottom border-primary pb-1"
+            href="#"
+          >
+            Orders
+          </a>
+          <a href="#"> Kitchens </a>
+        </div>
+        <input
+          class="form-control"
+          placeholder="Filter order history"
+          type="text"
+        />
+      </div>-->
+      <!-- Load Current Order Section -->
+      <div  th:replace="~{Order/current-orders :: current-orders}"></div>
+
+      <!-- Load Current Order Section -->
+      <div  th:replace="~{Order/past-orders :: past-orders}"></div>
+      
+      <!--No Orders-->
+      <div
+        th:if="${#lists.isEmpty(pastOrders) and #lists.isEmpty(currentOrders)}"
+      >
+        <div class="text-center p-5 bg-light rounded shadow-sm">
+          <!-- Font Awesome Icon -->
+          <div class="mb-4">
+            <i class="fas fa-shopping-basket fa-4x text-warning"></i>
+          </div>
+          <!-- Message -->
+          <h3 class="h4 text-muted mb-3">You have no orders yet.</h3>
+          <p class="text-muted mb-4">
+            Start exploring our kitchens and place your first order!
+          </p>
+          <!-- Orange-themed button to go back to the kitchens page -->
+          <a th:href="@{/kitchens}" class="btn btn-warning btn-lg">
+            <i class="fas fa-utensils"></i> Explore Kitchens
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function showReceipt(button){
+      // Extract data from the button's data attributes
+      const orderId = button.getAttribute('data-order-id');
+      const orderDate = button.getAttribute('data-order-date');
+      const orderTotal = parseFloat(button.getAttribute('data-order-total'));
+      const orderStatus = button.getAttribute('data-order-status');
+      const paymentStatus = button.getAttribute('data-payment-status');
+      const kitchenDeliveryFees = parseFloat(button.getAttribute('data-kitchen-delivery'));
+
+      // Populate the modal with the extracted data
+      document.getElementById('receipt-orderId').textContent = orderId;
+      document.getElementById('receipt-orderDate').textContent = orderDate;
+      document.getElementById('receipt-orderTotal').textContent = 'Rs ' + orderTotal;
+      document.getElementById('receipt-orderStatus').textContent = orderStatus;
+      document.getElementById('receipt-paymentStatus').textContent = paymentStatus;
+
+      // Clear the order items table
+      const orderItemsTableBody = document.getElementById('receipt-orderItemsTableBody');
+      orderItemsTableBody.innerHTML = '';
+
+      // Fetch order items (assuming you have an endpoint to get order items)
+      fetch(`/orders/${orderId}/items`)
+          .then(response => response.json())
+          .then(orderItems => {
+              let subtotal = 0; // Initialize subtotal
+
+              // Populate the order items table
+              orderItems.forEach(item => {
+                  const row = document.createElement('tr');
+                  const itemTotal = item.price * item.quantity; // Calculate total for each item
+                  subtotal += itemTotal; // Add to subtotal
+                  row.innerHTML = `
+                      <td>${item.menuItem.name}</td>
+                      <td>${item.quantity}</td>
+                      <td>Rs ${item.price}</td>
+                      <td>Rs ${itemTotal}</td>
+                  `;
+                  orderItemsTableBody.appendChild(row);
+              });
+              // Add rows for tax, delivery fee, and platform fee
+              const taxRow = document.createElement('tr');
+              taxRow.innerHTML = `
+                  <td colspan="3" style="text-align: right;"><strong>Tax (5%):</strong></td>
+                  <td><strong>Rs ${(subtotal * 0.05).toFixed(2)}</strong></td>
+              `;
+              orderItemsTableBody.appendChild(taxRow);
+
+              const deliveryFeeRow = document.createElement('tr');
+              deliveryFeeRow.innerHTML = `
+                  <td colspan="3" style="text-align: right;"><strong>Delivery Fee:</strong></td>
+                  <td><strong>Rs ${kitchenDeliveryFees.toFixed(2)}</strong></td>
+              `;
+              orderItemsTableBody.appendChild(deliveryFeeRow);
+
+              const platformFeeRow = document.createElement('tr');
+              platformFeeRow.innerHTML = `
+                  <td colspan="3" style="text-align: right;"><strong>Platform Fee:</strong></td>
+                  <td><strong>Rs 5.00</strong></td>
+              `;
+              orderItemsTableBody.appendChild(platformFeeRow);
+
+              // Add a row for the subtotal
+              const subtotalRow = document.createElement('tr');
+              subtotalRow.innerHTML = `
+                  <td colspan="3" style="text-align: right;"><strong>Subtotal:</strong></td>
+                  <td><strong>Rs ${orderTotal.toFixed(2)}</strong></td>
+              `;
+              orderItemsTableBody.appendChild(subtotalRow);
+
+          })
+          .catch(error => {
+              console.error('Error fetching order items:', error);
+          });
+
+      // Show the modal
+      const modal = new bootstrap.Modal(document.getElementById('receiptDetailsModal'));
+      modal.show();
+    }
+  </script>
+</div>

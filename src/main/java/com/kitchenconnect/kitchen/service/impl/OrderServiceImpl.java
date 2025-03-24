@@ -92,21 +92,14 @@ public class OrderServiceImpl implements OrderService {
 
         orderDetailsRepository.saveAll(orderDetails);
 
-        // Create and save default Rating
+        // // Create and save default Rating
         Rating rating = new Rating();
         rating.setOrderId(savedOrder.getId()); // Use the savedOrder's ID
         rating.setKitchenRating(0); // Default kitchen rating
         rating.setUserNote("Default rating"); // Default user note
         Rating savedRating = ratingRepository.save(rating);
 
-        
-        // Fetch the kitchen ID from the associated order
-        Long kitchenId = orderRepository.findById(savedRating.getOrderId()).get().getKitchen().getKitchenId();
-        // Update the kitchen's overall rating and rating count
-
-        ratingService.updateKitchenRating(kitchenId);
-
-        // Create and save default ItemRatings for each menu item in the order
+        //Create and save default ItemRatings for each menu item in the order
         List<ItemRating> itemRatings = orderDetails.stream()
                 .map(detail -> {
                     ItemRating itemRating = new ItemRating();
@@ -117,13 +110,7 @@ public class OrderServiceImpl implements OrderService {
                 })
                 .collect(Collectors.toList());
 
-        // for(ItemRating iR : itemRatings){
-        //      // Update the menu item's overall rating and rating count
-        //     ratingService.updateMenuItemRating(iR.getMenuItem().getId());
-        // }
-
         itemRatingRepository.saveAll(itemRatings);
-
 
         return savedOrder;
     }
