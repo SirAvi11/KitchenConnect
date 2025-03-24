@@ -140,30 +140,6 @@
                     Cancel Order
                   </button>
                 </div>
-
-                <!-- Rating Stars -->
-                <div class="text-warning mt-4 d-flex justify-content-center">
-                  <!-- Star 1 -->
-                  <i
-                    th:class="${order.rating >= 1 ? 'fas fa-star text-warning' : 'far fa-star'}"
-                  ></i>
-                  <!-- Star 2 -->
-                  <i
-                    th:class="${order.rating >= 2 ? 'fas fa-star text-warning' : 'far fa-star'}"
-                  ></i>
-                  <!-- Star 3 -->
-                  <i
-                    th:class="${order.rating >= 3 ? 'fas fa-star text-warning' : 'far fa-star'}"
-                  ></i>
-                  <!-- Star 4 -->
-                  <i
-                    th:class="${order.rating >= 4 ? 'fas fa-star text-warning' : 'far fa-star'}"
-                  ></i>
-                  <!-- Star 5 -->
-                  <i
-                    th:class="${order.rating >= 5 ? 'fas fa-star text-warning' : 'far fa-star'}"
-                  ></i>
-                </div>
               </div>
             </div>
           </div>
@@ -292,7 +268,7 @@
             </div>
 
             <!-- Kitchen Rating -->
-            <div class="mb-4">
+            <div class="mb-4 kitchen-rating">
               <label class="form-label text-dark">Rate the Kitchen:</label>
               <div class="star-rating">
                 <span class="star" data-value="1">&#9733;</span>
@@ -659,8 +635,10 @@
               if (data) {
                 // Populate kitchen rating
                 if (data.kitchenRating > 0) {
-                  document.getElementById('kitchenRating').value = data.kitchenRating;
-                  highlightStars('kitchenRating', data.kitchenRating);
+                  const ratingField = document.getElementById('kitchenRating');
+                  const ratingStars = ratingField.closest('.kitchen-rating').querySelectorAll('.star');
+                  ratingField.value = data.kitchenRating;
+                  highlightStars(ratingStars, data.kitchenRating);
                 }
 
                 // Populate user note
@@ -694,7 +672,8 @@
 
                     // Highlight the stars based on the rating
                     const ratingInput = container.lastElementChild.querySelector('.item-rating');
-                    highlightStars(ratingInput, item.rating);
+                    const ratingStars = ratingInput.closest('.order-item').querySelectorAll('.star');
+                    highlightStars(ratingStars, item.rating);
                   });
                 }
               }
@@ -703,8 +682,7 @@
         }
 
         // Function to highlight stars based on rating
-        function highlightStars(ratingInput, rating) {
-          const stars = ratingInput.closest('.order-item').querySelectorAll('.star');
+        function highlightStars(stars, rating) {
           stars.forEach((star, index) => {
             if (index < rating) {
               star.classList.add('active');
@@ -714,11 +692,14 @@
           });
         }
 
-        // Function to handle modal opening
-        document.getElementById('ratingModal').addEventListener('show.bs.modal', function (event) {
-          const button = event.relatedTarget; // Button that triggered the modal
-          const orderId = button.getAttribute('data-order-id'); // Extract order ID from data-order-id attribute
-          fetchAndPopulateRatings(orderId); // Fetch and populate ratings
+        document.addEventListener('DOMContentLoaded', function () {
+          document.getElementById('ratingModal').addEventListener('show.bs.modal', function (event) {
+            console.log('Modal is being shown'); // Check if this log appears in the console
+
+            const button = event.relatedTarget; // Button that triggered the modal
+            const orderId = button.getAttribute('data-order-id'); // Extract order ID from data-order-id attribute
+            fetchAndPopulateRatings(orderId); // Fetch and populate ratings
+          });
         });
 
         let orderIdToCancel = null;

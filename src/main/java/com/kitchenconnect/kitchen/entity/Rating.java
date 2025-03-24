@@ -11,7 +11,7 @@ public class Rating {
     private int kitchenRating;
     private String userNote;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "parentRating", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ItemRating> itemRatings = new ArrayList<>();
     
     @Id
