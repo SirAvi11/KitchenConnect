@@ -62,7 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
 
         // Fetch all categories ordered by their current position
-        List<Category> categories = categoryRepository.findAllByOrderByPositionAsc();
+        List<Category> categories = categoryRepository.findAllByKitchen_KitchenIdOrderByPositionAsc(category.getKitchen().getKitchenId());
 
         // Find the index of the current category
         int currentIndex = categories.indexOf(category);

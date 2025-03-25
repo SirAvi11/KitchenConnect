@@ -115,6 +115,8 @@
       </div>
       <div class="container py-4">
         <div class="row">
+          <!-- Check if menuItems is empty -->
+          <th:block th:if="${not menuItems.isEmpty()}">
             <!-- Category List -->
             <div class="col-md-3 mb-4">
                 <div class="card menu-card">
@@ -216,6 +218,22 @@
                     </div>
                 </div>
             </div>
+          </th:block>
+          <!-- Show this if menuItems is empty -->
+          <th:block th:unless="${not menuItems.isEmpty()}">
+            <div class="col-12 p-0">
+                <div class="card text-center">
+                    <div class="card-body py-5">
+                        <i class="fas fa-utensils fa-4x mb-4 text-muted"></i>
+                        <h3 class="card-title">Our Chef is currently working on new recipes!</h3>
+                        <p class="card-text text-muted">We're preparing something delicious for you. Please check back soon.</p>
+                        <button class="btn bg-warning mt-3" onclick="location.reload()">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </th:block>
         </div>
       </div>
       <!-- Bootstrap Modal -->

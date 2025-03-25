@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +64,11 @@ public class KitchenController {
     public String showAllKitchens(Model model) {
         List<Kitchen> allKitchens = kitchenService.getAllKitchens();
 
-        model.addAttribute("kitchens", allKitchens);
+        List<Kitchen> approvedKitchens = allKitchens.stream()
+        .filter(kitchen -> kitchen.getStatus() == KitchenStatus.APPROVED)
+        .collect(Collectors.toList());
+
+        model.addAttribute("kitchens", approvedKitchens);
         return "kitchens";
     }
 
