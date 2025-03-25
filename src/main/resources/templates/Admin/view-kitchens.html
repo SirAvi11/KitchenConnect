@@ -15,7 +15,7 @@
                                 aria-controls="collapseOne">
                             
                                 <span class="d-flex align-items-center">
-                                    New Kitchens (<span id="newKitchenCount" th:text="${kitchenData != null ? kitchenData.underVerificationCount : 0}"></span>)
+                                    New Kitchens (<span id="newKitchenCount" class="itemCount" th:text="${kitchenData != null ? kitchenData.underVerificationCount : 0}"></span>)
                                 </span>
                         
                                 <i class="icon fas fa-plus"></i>
@@ -40,13 +40,18 @@
                                                 <span th:text="${kitchen.shopName + (kitchen.floor != null ? ', Floor: ' + kitchen.floor : '') + ', ' + kitchen.area + ', ' + kitchen.city}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Delivery Fees:</strong> 
-                                                <span th:text="${kitchen.deliveryFees}"></span>
+                                                <span th:text="'Rs ' + ${kitchen.deliveryFees}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Contact Number:</strong> 
                                                 <span th:text="${kitchen.phoneNumber}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Speciality:</strong> 
-                                                <span th:text="${kitchen.selectedCuisines}"></span>
+                                                <span
+                                                    th:each="selectedCuisine, iterStat : ${kitchen.selectedCuisines}"
+                                                >
+                                                    <span th:text="${selectedCuisine}"></span>
+                                                    <span th:if="${!iterStat.last}">, </span>
+                                                </span>
                                             </p>
                                         </div>                                      
                                         <!-- Second Column -->
@@ -102,7 +107,7 @@
                                 aria-controls="collapseTwo">
                             
                                 <span class="d-flex align-items-center">
-                                    Active Kitchens (<span id="activeKitchenCount" th:text="${kitchenData != null ? kitchenData.activeCount : 0}"></span>)
+                                    Active Kitchens (<span id="activeKitchenCount" class="itemCount" th:text="${kitchenData != null ? kitchenData.activeCount : 0}"></span>)
                                 </span>
                         
                                 <i class="icon fas fa-plus"></i>
@@ -127,7 +132,7 @@
                                                 <span th:text="${kitchen.shopName + (kitchen.floor != null ? ', Floor: ' + kitchen.floor : '') + ', ' + kitchen.area + ', ' + kitchen.city}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Delivery Fees:</strong> 
-                                                <span th:text="${kitchen.deliveryFees}"></span>
+                                                <span th:text="'Rs ' + ${kitchen.deliveryFees}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Contact Number:</strong> 
                                                 <span th:text="${kitchen.phoneNumber}"></span>
@@ -183,7 +188,7 @@
                                 aria-controls="collapseThree">
                             
                                 <span class="d-flex align-items-center">
-                                    All Kitchens (<span id="allKitchenCount" th:text="${kitchenData != null ? kitchenData.allCount : 0}"></span>)
+                                    All Kitchens (<span id="allKitchenCount" class="itemCount" th:text="${kitchenData != null ? kitchenData.allCount : 0}"></span>)
                                 </span>
                         
                                 <i class="icon fas fa-plus"></i>
@@ -208,7 +213,7 @@
                                                 <span th:text="${kitchen.shopName + (kitchen.floor != null ? ', Floor: ' + kitchen.floor : '') + ', ' + kitchen.area + ', ' + kitchen.city}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Delivery Fees:</strong> 
-                                                <span th:text="${kitchen.deliveryFees}"></span>
+                                                <span th:text="'Rs ' + ${kitchen.deliveryFees}"></span>
                                             </p>
                                             <p class="mb-1"><strong>Contact Number:</strong> 
                                                 <span th:text="${kitchen.phoneNumber}"></span>

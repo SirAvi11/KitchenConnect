@@ -41,7 +41,7 @@ public class KitchenServiceImpl implements KitchenService {
     }
 
     public List<Kitchen> getActiveKitchens() {
-        return kitchenRepository.findByStatus(KitchenStatus.ACTIVE);
+        return kitchenRepository.findByStatus(KitchenStatus.APPROVED);
     }
 
     public List<Kitchen> getFeaturedKitchens() {
