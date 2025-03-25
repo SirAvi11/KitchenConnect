@@ -1,17 +1,41 @@
-function updateKitchenStatus(kitchenId,isApproved) {
+function updateKitchenStatus(kitchenId, isApproved) {
+    const kitchenCard = document.getElementById(`kitchen-card-${kitchenId}`);
+    
     fetch('/kitchens/statusUpdate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ kitchenId: kitchenId, isApproved: Boolean(isApproved)})
+        body: JSON.stringify({ kitchenId: kitchenId, isApproved: Boolean(isApproved) })
     })
     .then(response => response.json())
     .then(data => {
-        if(data.status == "success"){
-            console.log("Session Kitchen Updated:", data.status)
-            document.getElementById(`kitchen-card-${kitchenId}`).remove(); 
-        }else {
+        if (data.status == "success") {
+            // Replace card content with status message
+            const statusMessage = isApproved ? "Kitchen Approved!" : "Kitchen Rejected";
+            const iconClass = isApproved ? "fa-check-circle" : "fa-times-circle";
+            const bgClass = isApproved ? "bg-success" : "bg-danger";
+            
+            kitchenCard.innerHTML = `
+                <div class="d-flex flex-column justify-content-center align-items-center p-4 ${bgClass} text-white" style="height: 100%; border-radius: 0.25rem;">
+                    <i class="fas ${iconClass} fa-4x mb-3"></i>
+                    <h3>${statusMessage}</h3>
+                    <p>This kitchen has been ${isApproved ? 'approved' : 'rejected'}</p>
+                </div>
+            `;
+            
+            // Add fade out animation before removing
+            setTimeout(() => {
+                kitchenCard.style.transition = "opacity 0.5s ease";
+                kitchenCard.style.opacity = 0;
+                
+                // Remove card after animation completes
+                setTimeout(() => {
+                    kitchenCard.remove();
+                    window.location.href = "/dashboard?tab=view-kitchens"
+                }, 500);
+            }, 2000); // Show message for 2 seconds before fade out
+        } else {
             console.error("Failed to update kitchen status");
         }
     })

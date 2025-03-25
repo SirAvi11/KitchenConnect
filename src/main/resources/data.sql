@@ -1,166 +1,241 @@
-/* Populating users table */
-INSERT INTO users (id, email, first_name, last_name, password, role, user_name, address, phone_number,first_login) VALUES
-(1, 'chef1@example.com', 'Vikas', 'Khanna', 'hashed_password1', 'CHEF', 'vikas_k', 'Abc Street', '1234567892',false ),
-(2, 'chef2@example.com', 'Sanjeev', 'Kapoor', 'hashed_password2', 'CHEF', 'sanjeev_k', 'Abc Street', '1234567892',false),
-(3, 'foodlover1@example.com', 'Priya', 'Sharma', 'hashed_password3', 'FOOD_LOVER', 'priya_s', 'Abc Street', '1234567892',false),
-(4, 'foodlover2@example.com', 'Rohan', 'Verma', 'hashed_password4', 'FOOD_LOVER', 'rohan_v', 'Abc Street', '1234567892',false),
-(5, 'chef3@example.com', 'Ranveer', 'Brar', 'hashed_password5', 'CHEF', 'ranveer_b', 'Abc Street', '1234567892',false)
+-- 1. Users Table (11 users: 6 FOOD_LOVER, 4 CHEF, 1 ADMIN)
+INSERT INTO users (id, address, email, first_login, first_name, last_name, password, phone_number, role, user_name) VALUES
+-- ADMIN
+(1, '123 MG Road, Bangalore', 'admin@foodapp.com', 0, 'Rahul', 'Sharma', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543210', 'ADMIN', 'rahul.admin'),
+
+-- CHEFS (4)
+(2, '456 Connaught Place, Delhi', 'chef.sanjeev@foodapp.com', 1, 'Sanjeev', 'Kapoor', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543211', 'CHEF', 'chef.sanjeev'),
+(3, '789 Marine Drive, Mumbai', 'chef.vikas@foodapp.com', 1, 'Vikas', 'Khanna', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543212', 'CHEF', 'chef.vikas'),
+(4, '321 Jubilee Hills, Hyderabad', 'chef.ranveer@foodapp.com', 0, 'Ranveer', 'Brar', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543213', 'CHEF', 'chef.ranveer'),
+(5, '654 Park Street, Kolkata', 'chef.pankaj@foodapp.com', 1, 'Pankaj', 'Bhadouria', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543214', 'CHEF', 'chef.pankaj'),
+
+-- FOOD LOVERS (6)
+(6, '101 Brigade Road, Bangalore', 'foodie.priya@foodapp.com', 1, 'Priya', 'Patel', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543215', 'FOOD_LOVER', 'priya.foodie'),
+(7, '202 Linking Road, Mumbai', 'arjun.food@foodapp.com', 1, 'Arjun', 'Banerjee', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543216', 'FOOD_LOVER', 'arjun.foodie'),
+(8, '303 Banjara Hills, Hyderabad', 'neha.gourmet@foodapp.com', 0, 'Neha', 'Reddy', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543217', 'FOOD_LOVER', 'neha.gourmet'),
+(9, '404 Camac Street, Kolkata', 'raj.foodlover@foodapp.com', 1, 'Raj', 'Choudhury', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543218', 'FOOD_LOVER', 'raj.foodlover'),
+(10, '505 MG Road, Pune', 'meena.foodie@foodapp.com', 1, 'Meena', 'Joshi', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543219', 'FOOD_LOVER', 'meena.foodie'),
+(11, '606 Commercial Street, Bangalore', 'vikram.gourmand@foodapp.com', 0, 'Vikram', 'Malhotra', '$2a$10$3ZpaizcwYk6PDJHvPQyxQu.veIy.ORYVoAmfngrZC6Bmun6kVqA.q', '919876543220', 'FOOD_LOVER', 'vikram.gourmand')
 ON DUPLICATE KEY UPDATE 
-email = VALUES(email), 
-first_name = VALUES(first_name),
-last_name = VALUES(last_name),
-password = VALUES(password),
-role = VALUES(role),
-user_name = VALUES(user_name),
-address = VALUES(address),
-phone_number = VALUES(phone_number),
-first_login = VALUES(first_login);
+  address = VALUES(address), 
+  email = VALUES(email), 
+  first_login = VALUES(first_login),
+  first_name = VALUES(first_name),
+  last_name = VALUES(last_name),
+  password = VALUES(password),
+  phone_number = VALUES(phone_number),
+  role = VALUES(role),
+  user_name = VALUES(user_name);
 
-/* Insert into Kitchens */
-INSERT INTO kitchens (
-    kitchen_id, delivery_fees, kitchen_description, kitchen_image_path, 
-    kitchen_name, max_delivery_time, min_delivery_time, overall_rating, total_ratings_count, 
-    user_id, open_days, open_time, close_time, fssai_number, fssai_expiry_date, 
-    fssai_document_path, pan_number, pan_document_path, accept_terms, 
-    shop_name, floor, area, city, phone_number, menu_image_paths, status
-) VALUES
-(1, 50.00, 
- 'A premium North Indian kitchen specializing in slow-cooked curries and tandoori delights.', 
- 'vikas_kitchen.jpg', 'Khanna’s Indian Feast', 40, 20, 4.8, 500, 
- (SELECT id FROM users WHERE email = 'chef1@example.com'), 'Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday', 
- '09:00 AM', '11:00 PM', '12345678901234', '2030-12-31', 'path/to/fssai_doc.jpg', 'ABCDE1234F', 
- 'path/to/pan_doc.jpg', TRUE, 'Khanna’s Dine', '2nd Floor', 'Connaught Place', 'New Delhi', '9876543210', 
- 'path/to/menu1.jpg,path/to/menu2.jpg', 'UNDER_VERIFICATION'),
+-- 2. Kitchens Table (5 kitchens, 4 approved)
+INSERT INTO kitchens (kitchen_id, accept_terms, area, city, close_time, delivery_fees, floor, 
+  fssai_document_path, fssai_expiry_date, fssai_number, kitchen_description, 
+  kitchen_image_path, kitchen_name, max_delivery_time, menu_image_paths, 
+  min_delivery_time, open_days, open_time, overall_rating, pan_document_path, 
+  pan_number, phone_number, shop_name, status, total_ratings_count, user_id) VALUES
+-- Approved kitchens (4)
+(1, 1, 'Koramangala', 'Bangalore', '23:00', 49.00, 'Ground Floor', 
+'/uploads/kitchenRequest/2/fssai_license.pdf', '2025-12-31', 'FSSAI11223344', 'Authentic North Indian cuisine with family recipes', 
+'/uploads/kitchenRequest/2/punjab_rasoi.jpg', 'Punjab Rasoi', 45, '/uploads/kitchenRequest/2/menu_image.jpg,/uploads/kitchenRequest/2/menu_image2.jpg', 
+25, 'Mon,Tue,Wed,Thu,Fri,Sat,Sun', '10:00', 4.7, '/uploads/kitchenRequest/2/pan_card.jpg', 
+'ABCDE1234F', '08012345678', 'Punjab Rasoi', 'APPROVED', 150, 2),
+(2, 1, 'Bandra West', 'Mumbai', '22:30', 39.00, 'First Floor', 
+'/uploads/kitchenRequest/3/fssai_license.pdf', '2026-06-30', 'FSSAI55667788', 'Coastal Maharashtrian seafood specialties', 
+'/uploads/kitchenRequest/3/konkan_tadka.jpg', 'Konkan Tadka', 50, '/uploads/kitchenRequest/3/menu_image.jpg,/uploads/kitchenRequest/3/menu_image2.jpg', 
+30, 'Mon,Tue,Wed,Thu,Fri,Sat', '11:00', 4.5, '/uploads/kitchenRequest/3/pan_card.jpg', 
+'BCDEF2345G', '02223456789', 'Konkan Tadka', 'APPROVED', 95, 3),
+(3, 1, 'Jubilee Hills', 'Hyderabad', '22:00', 35.00, 'Second Floor', 
+'/uploads/kitchenRequest/4/fssai_license.pdf', '2025-09-30', 'FSSAI99887766', 'Authentic Hyderabadi biryanis and kebabs', 
+'/uploads/kitchenRequest/4/hyderabadi_zaika.jpg', 'Hyderabadi Zaika', 40, '/uploads/kitchenRequest/4/menu_image.jpg,/uploads/kitchenRequest/4/menu_image2.jpg', 
+20, 'Mon,Tue,Wed,Thu,Fri,Sat,Sun', '11:30', 4.6, '/uploads/kitchenRequest/4/pan_card.jpg', 
+'CDEFG3456H', '04023456789', 'Hyderabadi Zaika', 'APPROVED', 110, 4),
+(4, 1, 'Park Street', 'Kolkata', '23:30', 45.00, 'Ground Floor', 
+'/uploads/kitchenRequest/5/fssai_license.pdf', '2026-03-31', 'FSSAI33445566', 'Traditional Bengali cuisine with modern presentation', 
+'/uploads/kitchenRequest/5/bengali_bhoj.jpg', 'Bengali Bhoj', 50, '/uploads/kitchenRequest/5/menu_image.jpg,/uploads/kitchenRequest/5/menu_image2.jpg', 
+30, 'Mon,Tue,Wed,Thu,Fri,Sat,Sun', '10:30', 4.4, '/uploads/kitchenRequest/5/pan_card.jpg', 
+'DEFGH4567I', '03323456789', 'Bengali Bhoj', 'APPROVED', 85, 5),
+-- Under verification kitchen (1)
+(5, 1, 'Koregaon Park', 'Pune', '22:00', 40.00, 'Third Floor', 
+'/uploads/kitchenRequest/11/fssai_license.pdf', '2025-11-30', 'FSSAI77889900', 'Modern Indian fusion cuisine', 
+'/uploads/kitchenRequest/11/fusion_tadka.jpg', 'Fusion Tadka', 45, '/uploads/kitchenRequest/11/menu_image.jpg,/uploads/kitchenRequest/11/menu_image2.jpg', 
+25, 'Mon,Tue,Wed,Thu,Fri,Sat', '12:00', 0.0, '/uploads/kitchenRequest/11/pan_card.jpg', 
+'EFGHI5678J', '02023456789', 'Fusion Tadka', 'UNDER_VERIFICATION', 0, 11)
+ON DUPLICATE KEY UPDATE
+  accept_terms = VALUES(accept_terms),
+  area = VALUES(area),
+  city = VALUES(city),
+  close_time = VALUES(close_time),
+  delivery_fees = VALUES(delivery_fees),
+  floor = VALUES(floor),
+  fssai_document_path = VALUES(fssai_document_path),
+  fssai_expiry_date = VALUES(fssai_expiry_date),
+  fssai_number = VALUES(fssai_number),
+  kitchen_description = VALUES(kitchen_description),
+  kitchen_image_path = VALUES(kitchen_image_path),
+  kitchen_name = VALUES(kitchen_name),
+  max_delivery_time = VALUES(max_delivery_time),
+  menu_image_paths = VALUES(menu_image_paths),
+  min_delivery_time = VALUES(min_delivery_time),
+  open_days = VALUES(open_days),
+  open_time = VALUES(open_time),
+  overall_rating = VALUES(overall_rating),
+  pan_document_path = VALUES(pan_document_path),
+  pan_number = VALUES(pan_number),
+  phone_number = VALUES(phone_number),
+  shop_name = VALUES(shop_name),
+  status = VALUES(status),
+  total_ratings_count = VALUES(total_ratings_count),
+  user_id = VALUES(user_id);
 
-(2, 30.00, 
- 'A home-style kitchen bringing you the flavors of everyday Indian cooking.', 
- 'sanjeev_kitchen.jpg', 'Kapoor’s Home Kitchen', 35, 15, 4.6, 650, 
- (SELECT id FROM users WHERE email = 'chef2@example.com'), 'Tuesday,Wednesday,Thursday,Friday,Saturday', 
- '08:00 AM', '10:00 PM', '22345678901234', '2029-10-20', 'path/to/fssai_doc2.jpg', 'BCDEF1234G', 
- 'path/to/pan_doc2.jpg', TRUE, 'Kapoor’s Kitchen', '1st Floor', 'Bandra', 'Mumbai', '9876543211', 
- 'path/to/menu3.jpg,path/to/menu4.jpg', 'UNDER_VERIFICATION'),
+-- 3. Chefs Table (4 chefs - one for each approved kitchen)
+INSERT INTO chefs (chef_id, biography, chef_profile_picture, favourite_dishes, kitchen_id, user_id) VALUES
+(1, 'Master of Punjabi cuisine with 15 years experience in Delhi dhabas', '/images/chef1.jpg', 'Butter Chicken, Dal Makhani, Amritsari Kulcha', 1, 2),
+(2, 'Expert in Konkani cuisine with focus on fresh seafood preparations', '/images/chef2.jpg', 'Malvani Fish Curry, Bombil Fry, Sol Kadhi', 2, 3),
+(3, 'Hyderabadi cuisine specialist with royal kitchen experience', '/images/chef3.jpg', 'Hyderabadi Biryani, Haleem, Kebabs', 3, 4),
+(4, 'Traditional Bengali chef with expertise in fish preparations', '/images/chef4.jpg', 'Macher Jhol, Shorshe Ilish, Chingri Malai Curry', 4, 5)
+ON DUPLICATE KEY UPDATE
+  biography = VALUES(biography),
+  chef_profile_picture = VALUES(chef_profile_picture),
+  favourite_dishes = VALUES(favourite_dishes),
+  kitchen_id = VALUES(kitchen_id),
+  user_id = VALUES(user_id);
 
-(3, 75.00, 
- 'A fusion kitchen inspired by the diverse regional cuisines of India.', 
- 'ranveer_kitchen.jpg', 'Brar’s Heritage Bites', 45, 25, 4.9, 700, 
- (SELECT id FROM users WHERE email = 'chef3@example.com'), 'Wednesday,Thursday,Friday,Saturday,Sunday', 
- '10:00 AM', '12:00 AM', '32345678901234', '2028-08-15', 'path/to/fssai_doc3.jpg', 'CDEFG1234H', 
- 'path/to/pan_doc3.jpg', TRUE, 'Brar’s Eatery', 'Ground Floor', 'MG Road', 'Bangalore', '9876543212', 
- 'path/to/menu5.jpg,path/to/menu6.jpg', 'UNDER_VERIFICATION')
+-- 4. kitchen_cuisines;
 
-ON DUPLICATE KEY UPDATE 
-    delivery_fees = VALUES(delivery_fees),
-    kitchen_description = VALUES(kitchen_description),
-    kitchen_image_path = VALUES(kitchen_image_path),
-    kitchen_name = VALUES(kitchen_name),
-    max_delivery_time = VALUES(max_delivery_time),
-    min_delivery_time = VALUES(min_delivery_time),
-    overall_rating = VALUES(overall_rating),
-    total_ratings_count = VALUES(total_ratings_count),
-    open_days = VALUES(open_days),
-    open_time = VALUES(open_time),
-    close_time = VALUES(close_time),
-    fssai_number = VALUES(fssai_number),
-    fssai_expiry_date = VALUES(fssai_expiry_date),
-    fssai_document_path = VALUES(fssai_document_path),
-    pan_number = VALUES(pan_number),
-    pan_document_path = VALUES(pan_document_path),
-    accept_terms = VALUES(accept_terms),
-    shop_name = VALUES(shop_name),
-    floor = VALUES(floor),
-    area = VALUES(area),
-    city = VALUES(city),
-    phone_number = VALUES(phone_number),
-    menu_image_paths = VALUES(menu_image_paths),
-    status = VALUES(status);
-
-
-/* Insert into Kitchen Cuisines */
-INSERT INTO kitchen_cuisines (kitchen_id, cuisine) 
+INSERT INTO kitchen_cuisines (kitchen_id, cuisine)
 SELECT 1, 'North Indian' FROM DUAL WHERE NOT EXISTS 
-    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 1 AND cuisine = 'North Indian');
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 1 AND cuisine = 'North Indian')
+UNION ALL
+SELECT 1, 'Mughlai' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 1 AND cuisine = 'Mughlai')
+UNION ALL
+SELECT 2, 'Maharashtrian' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 2 AND cuisine = 'Maharashtrian')
+UNION ALL
+SELECT 2, 'Coastal' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 2 AND cuisine = 'Coastal')
+UNION ALL
+SELECT 3, 'Hyderabadi' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 3 AND cuisine = 'Hyderabadi')
+UNION ALL
+SELECT 3, 'Mughlai' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 3 AND cuisine = 'Mughlai')
+UNION ALL
+SELECT 4, 'Bengali' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 4 AND cuisine = 'Bengali')
+UNION ALL
+SELECT 5, 'Fusion' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 5 AND cuisine = 'Fusion')
+UNION ALL
+SELECT 5, 'Continental' FROM DUAL WHERE NOT EXISTS 
+    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 5 AND cuisine = 'Continental');
 
-INSERT INTO kitchen_cuisines (kitchen_id, cuisine) 
-SELECT 1, 'Tandoori' FROM DUAL WHERE NOT EXISTS 
-    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 1 AND cuisine = 'Tandoori');
 
-INSERT INTO kitchen_cuisines (kitchen_id, cuisine) 
-SELECT 2, 'Indian Comfort Food' FROM DUAL WHERE NOT EXISTS 
-    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 2 AND cuisine = 'Indian Comfort Food');
+-- 5. Categories
+INSERT INTO category (id, name, kitchen_id, position) VALUES
+(1, 'Breads', 1, 1),
+(2, 'Curries', 1, 2),
+(3, 'Rice Dishes', 1, 3),
+(4, 'Seafood Starters', 2, 1),
+(5, 'Main Course', 2, 2),
+(6, 'Biryani', 3, 1),
+(7, 'Kebabs', 3, 2),
+(8, 'Fish Dishes', 4, 1),
+(9, 'Vegetarian Specials', 4, 2),
+(10, 'Fusion Starters', 5, 1),
+(11, 'Signature Mains', 5, 2)
+ON DUPLICATE KEY UPDATE
+  name = VALUES(name),
+  kitchen_id = VALUES(kitchen_id),
+  position = VALUES(position);
 
-INSERT INTO kitchen_cuisines (kitchen_id, cuisine) 
-SELECT 2, 'South Indian' FROM DUAL WHERE NOT EXISTS 
-    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 2 AND cuisine = 'South Indian');
+-- 6. Menu Items
+INSERT INTO menu_item (id, description, image_url, is_veg, name, price, category_id, overall_rating, rating_count) VALUES
+-- Punjab Rasoi items
+(1, 'Traditional tandoor baked bread', '/uploads/menuImages/2/1/bread.jpg', 1, 'Butter Naan', 45.00, 1, 4.5, 120),
+(2, 'Creamy tomato based chicken curry', '/uploads/menuImages/2/2/butter_chicken.jpg', 0, 'Butter Chicken', 320.00, 2, 4.8, 150),
+(3, 'Aromatic basmati rice with spices', '/uploads/menuImages/2/3/biryani.jpg', 0, 'Chicken Biryani', 280.00, 3, 4.7, 180),
 
-INSERT INTO kitchen_cuisines (kitchen_id, cuisine) 
-SELECT 3, 'Fusion Indian' FROM DUAL WHERE NOT EXISTS 
-    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 3 AND cuisine = 'Fusion Indian');
+-- Konkan Tadka items
+(4, 'Crispy fried bombay duck', '/uploads/menuImages/3/4/bombil.jpg', 0, 'Bombil Fry', 220.00, 4, 4.6, 90),
+(5, 'Spicy coconut based fish curry', '/uploads/menuImages/3/5/malvani.jpg', 0, 'Malvani Fish Curry', 260.00, 5, 4.4, 75),
 
-INSERT INTO kitchen_cuisines (kitchen_id, cuisine) 
-SELECT 3, 'Street Food' FROM DUAL WHERE NOT EXISTS 
-    (SELECT 1 FROM kitchen_cuisines WHERE kitchen_id = 3 AND cuisine = 'Street Food');
+-- Hyderabadi Zaika items
+(6, 'Famous Hyderabadi dum biryani', '/uploads/menuImages/4/6/biryani.jpg', 0, 'Hyderabadi Biryani', 350.00, 6, 4.9, 200),
+(7, 'Tender chicken kebabs', '/uploads/menuImages/4/7/kebab.jpg', 0, 'Chicken Kebabs', 280.00, 7, 4.5, 150),
 
+-- Bengali Bhoj items
+(8, 'Hilsa fish in mustard sauce', '/uploads/menuImages/5/8/hilsa.jpg', 0, 'Shorshe Ilish', 400.00, 8, 4.7, 120),
+(9, 'Bengali mixed vegetables', '/uploads/menuImages/5/9/mixed_veg.jpg', 1, 'Chorchori', 180.00, 9, 4.2, 80),
 
-/* Populating chef table */
-INSERT INTO chefs (
-    chef_id, biography, chef_profile_picture, favourite_dishes, user_id, kitchen_id
-) VALUES
-(1, 'I am Vikas Khanna, an award-winning Indian chef and restaurateur. 
-My journey began in the streets of Amritsar, learning the art of authentic Punjabi cuisine from my grandmother. 
-Over the years, I have traveled across India, perfecting the delicate balance of flavors in traditional dishes. 
-I believe that food is deeply connected to culture, and I take pride in bringing rich Indian heritage to global dining tables. 
-My signature dishes, like Dal Makhani and Butter Chicken, reflect my deep love for Indian spices and flavors.', 
- 'vikas.jpg', 'Dal Makhani, Butter Chicken', 
-    (SELECT id FROM users WHERE email = 'chef1@example.com'), 
-    (SELECT kitchen_id FROM kitchens WHERE user_id = (SELECT id FROM users WHERE email = 'chef1@example.com'))),
+-- Fusion Tadka items
+(10, 'Indian style bruschetta', '/uploads/menuImages/11/10/bruschetta.jpg', 1, 'Desi Bruschetta', 220.00, 10, 4.0, 40),
+(11, 'Butter chicken pizza', '/uploads/menuImages/11/11/chicken_pizza.jfif', 0, 'Butter Chicken Pizza', 320.00, 11, 4.1, 50)
+ON DUPLICATE KEY UPDATE
+  description = VALUES(description),
+  image_url = VALUES(image_url),
+  is_veg = VALUES(is_veg),
+  name = VALUES(name),
+  price = VALUES(price),
+  category_id = VALUES(category_id),
+  overall_rating = VALUES(overall_rating),
+  rating_count = VALUES(rating_count);
 
-(2, 'I am Sanjeev Kapoor, a chef, entrepreneur, and television host who has transformed Indian home cooking. 
-My passion lies in making Indian cuisine accessible and simple for everyone. 
-With a focus on authentic flavors, I believe in giving a modern twist to traditional recipes while keeping their essence intact. 
-From rich Mughlai curries to healthy millet-based dishes, my cooking philosophy revolves around taste, nutrition, and creativity.', 
- 'sanjeev.jpg', 'Paneer Butter Masala, Pulao', 
-    (SELECT id FROM users WHERE email = 'chef2@example.com'), 
-    (SELECT kitchen_id FROM kitchens WHERE user_id = (SELECT id FROM users WHERE email = 'chef2@example.com'))),
+-- 7. Orders
+INSERT INTO orders (id, order_date, rating, status, total_amount, kitchen_id, user_id) VALUES
+(1, '2023-06-15 19:30:45', 4.5, 'DELIVERED', 765.00, 1, 6),
+(2, '2023-06-16 20:15:30', 4.0, 'DELIVERED', 480.00, 2, 7),
+(3, '2023-06-17 13:45:00', 5.0, 'DELIVERED', 730.00, 3, 8),
+(4, '2023-06-18 21:00:15', 4.5, 'DELIVERED', 580.00, 4, 9),
+(5, '2023-06-19 20:30:00', 4.0, 'DELIVERED', 540.00, 1, 10)
+ON DUPLICATE KEY UPDATE
+  order_date = VALUES(order_date),
+  rating = VALUES(rating),
+  status = VALUES(status),
+  total_amount = VALUES(total_amount),
+  kitchen_id = VALUES(kitchen_id),
+  user_id = VALUES(user_id);
 
-(3, 'I am Ranveer Brar, a chef, storyteller, and food explorer. 
-Born in Lucknow, I grew up surrounded by the aromas of kebabs and biryanis, which ignited my love for cooking. 
-For me, Indian food is an experience—it’s about history, memories, and emotions served on a plate. 
-From the street food of Delhi to the royal kitchens of Rajasthan, I find inspiration in every corner of India. 
-Biryani, Kebabs, and fusion dishes are my specialties, blending old-world charm with contemporary flavors.', 
- 'ranveer.jpg', 'Lucknowi Biryani, Galouti Kebab', 
-    (SELECT id FROM users WHERE email = 'chef3@example.com'), 
-    (SELECT kitchen_id FROM kitchens WHERE user_id = (SELECT id FROM users WHERE email = 'chef3@example.com')))
+-- 8. Order Details
+INSERT INTO order_details (id, price, quantity, menu_item_id, order_id) VALUES
+(1, 45.00, 2, 1, 1),
+(2, 320.00, 1, 2, 1),
+(3, 280.00, 1, 3, 1),
+(4, 220.00, 2, 4, 2),
+(5, 260.00, 1, 5, 2),
+(6, 350.00, 1, 6, 3),
+(7, 280.00, 1, 7, 3),
+(8, 400.00, 1, 8, 4),
+(9, 180.00, 1, 9, 4),
+(10, 45.00, 2, 1, 5),
+(11, 320.00, 1, 2, 5)
+ON DUPLICATE KEY UPDATE
+  price = VALUES(price),
+  quantity = VALUES(quantity),
+  menu_item_id = VALUES(menu_item_id),
+  order_id = VALUES(order_id);
 
-ON DUPLICATE KEY UPDATE 
-biography = VALUES(biography),
-chef_profile_picture = VALUES(chef_profile_picture),
-favourite_dishes = VALUES(favourite_dishes),
-kitchen_id = VALUES(kitchen_id);
+-- 9. Ratings
+INSERT INTO rating (id, kitchen_rating, order_id, user_note) VALUES
+(1, 5, 1, 'Excellent food quality and packaging'),
+(2, 4, 2, 'Good taste but delivery was delayed'),
+(3, 5, 3, 'Best biryani I have ever had!'),
+(4, 5, 4, 'Authentic Bengali flavors'),
+(5, 4, 5, 'Consistently good quality')
+ON DUPLICATE KEY UPDATE
+  kitchen_rating = VALUES(kitchen_rating),
+  order_id = VALUES(order_id),
+  user_note = VALUES(user_note);
 
-/*Populating Food Items table*/
-
-INSERT INTO fooditem (id, kitchen_id, name, picture, price, overall_rating, rating_count, availability, description)
-VALUES
--- Kitchen 1: Khanna’s Indian Feast (North Indian Cuisine)
-(1, 1, 'Butter Chicken', 'butter_chicken.jpg', 320.00, 4.6, 250, TRUE, 'Creamy tomato-based gravy with tender chicken pieces.'),
-(2, 1, 'Dal Makhani', 'dal_makhani.jpg', 210.00, 4.7, 180, TRUE, 'Slow-cooked black lentils with butter and cream.'),
-(3, 1, 'Tandoori Roti', 'tandoori_roti.jpg', 40.00, 4.5, 150, TRUE, 'Soft, whole wheat roti baked in a clay tandoor.'),
-
--- Kitchen 2: Kapoor’s Home Kitchen (Indian Comfort Food)
-(4, 2, 'Vegetable Pulao', 'vegetable_pulao.jpg', 180.00, 4.9, 140, TRUE, 'Basmati rice cooked with aromatic spices and fresh vegetables.'),
-(5, 2, 'Palak Paneer', 'palak_paneer.jpg', 250.00, 3.7, 200, TRUE, 'Creamy spinach curry with soft paneer cubes.'),
-(6, 2, 'Aloo Poori', 'aloo_poori.jpg', 150.00, 4.5, 120, TRUE, 'Fluffy deep-fried poori served with spiced potato curry.'),
-
--- Kitchen 3: Brar’s Heritage Bites (Fusion Indian Cuisine)
-(7, 3, 'Mutton Rogan Josh', 'mutton_rogan_josh.jpg', 400.00, 4.9, 300, TRUE, 'Kashmiri-style slow-cooked lamb in a rich red gravy.'),
-(8, 3, 'Prawn Malai Curry', 'prawn_malai_curry.jpg', 380.00, 4.8, 220, TRUE, 'Bengali delicacy with prawns in a coconut milk curry.'),
-(9, 3, 'Chicken Tikka', 'chicken_tikka.jpg', 280.00, 4.7, 190, TRUE, 'Marinated and grilled chicken served with mint chutney.')
-ON DUPLICATE KEY UPDATE 
-name = VALUES(name),
-picture = VALUES(picture),
-price = VALUES(price),
-overall_rating = VALUES(overall_rating),
-rating_count = VALUES(rating_count),
-availability = VALUES(availability),
-description = VALUES(description);
-
+-- 10. Item Ratings
+INSERT INTO item_rating (id, item_name, rating_value, rating_id) VALUES
+(1, 'Butter Chicken', 5, 1),
+(2, 'Butter Naan', 4, 1),
+(3, 'Bombil Fry', 4, 2),
+(4, 'Hyderabadi Biryani', 5, 3),
+(5, 'Shorshe Ilish', 5, 4),
+(6, 'Butter Chicken', 4, 5)
+ON DUPLICATE KEY UPDATE
+  item_name = VALUES(item_name),
+  rating_value = VALUES(rating_value),
+  rating_id = VALUES(rating_id);

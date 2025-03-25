@@ -15,4 +15,5 @@ public interface KitchenService {
     List<Kitchen> getKitchenUnderVerification();
     List<Kitchen> getActiveKitchens();
     boolean updateKitchenStatus(Long kitchenId, boolean isApproved);
+    Kitchen updateKitchen(Long kitchenId, Kitchen updatedKitchen);
 }

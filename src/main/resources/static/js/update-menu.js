@@ -1,3 +1,27 @@
+function moveCategory(categoryId, direction) {
+    fetch(`/category/move`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            categoryId: categoryId,
+            direction: direction
+        })
+    })
+    .then(response => response.json()) // Parse JSON response
+    .then(data => {
+        if (data.redirectUrl) {
+            window.location.href = data.redirectUrl; // Redirect to the new URL
+        } else {
+            console.error('Error: No redirect URL provided');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 function removeMenuItem(menuItemId){
     const foodItemsContainerId = `food-item-template-${menuItemId}`;
     const foodItemsContainer = document.getElementById(foodItemsContainerId);
@@ -268,14 +292,13 @@ function toggleEditFoodItemInfo(button) {
     if (editButton.classList.contains('d-none')) {
         // Currently in Save mode, switch back to Edit mode
 
-        const foodItem = button.closest('.food-items-container');
         const foodItemsContainer = button.closest('.card-body').querySelector('.food-items-container');
         const categoryId = foodItemsContainer.getAttribute('data-category-id'); // Retrieve the categoryId
 
-        const dishName = foodItem.querySelector('.food-name').value;
-        const dishDescription = foodItem.querySelector('.food-description').value;
-        const price = foodItem.querySelector('#price').value;
-        const foodType = foodItem.querySelector('input[name="foodType"]:checked').value;
+        const dishName = foodItemTemplate.querySelector('.food-name').value;
+        const dishDescription = foodItemTemplate.querySelector('.food-description').value;
+        const price = foodItemTemplate.querySelector('#price').value;
+        const foodType = foodItemTemplate.querySelector('input[name="foodType"]:checked').value;
         const imageFile = foodImageUpload.files[0];
         const menuId = foodItemTemplate.getAttribute("data-menu-id");
 
@@ -565,10 +588,10 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll(".accordion-button").forEach(button => {
         button.addEventListener("click", function () {
             const icon = this.querySelector("i.fa-arrow-down, i.fa-arrow-up");
-            if (this.getAttribute("aria-expanded") === "true") {
+            if(icon.classList.contains("fa-arrow-down")){
                 icon.classList.remove("fa-arrow-down");
                 icon.classList.add("fa-arrow-up");
-            } else {
+            }else{
                 icon.classList.remove("fa-arrow-up");
                 icon.classList.add("fa-arrow-down");
             }

@@ -35,7 +35,7 @@
             alt="Restaurant"
             class="h-48 w-64 rounded-lg object-cover"
             height="200"
-            th:src="@{'/images/kitchens/' + ${kitchen.kitchenImagePath}}"
+            th:src="${kitchen.kitchenImagePath}"
             width="300"
           />
           <h2 th:text="${kitchen.kitchenName}"></h2>
@@ -113,99 +113,127 @@
           </div>
         </div>
       </div>
-      <!-- Menu -->
-      <div class="container">
-        <div class="menu">
-          <h3 class="text-center mb-4">Menu</h3>
-          <!-- Category List -->
-          <div class="category-list d-flex flex-wrap justify-content-center">
-            <button
-              th:each="category : ${menuItems}"
-              th:text="${category.key}"
-              th:data-category="${category.key}"
-              onclick="showCategory(this.getAttribute('data-category'))"
-            >
-              Category Name
-            </button>
-          </div>
-          <!-- Menu Items -->
-          <section
-            th:each="category : ${menuItems}"
-            th:id="${'category-' + category.key}"
-            class="category"
-          >
-            <div class="header-category">
-              <h4 th:text="${category.key}">Category Name</h4>
-            </div>
-            <div class="items">
-              <div th:each="foodItem : ${category.value}" class="item">
-                <div>
-                  <img
-                    th:alt="${foodItem.name}"
-                    class="card-img-top"
-                    th:src="${foodItem.imageUrl}"
-                  />
-                  <h4 th:text="${foodItem.name}"></h4>
-                  <p th:text="${foodItem.description}"></p>
+      <div class="container py-4">
+        <div class="row">
+          <!-- Check if menuItems is empty -->
+          <th:block th:if="${not menuItems.isEmpty()}">
+            <!-- Category List -->
+            <div class="col-md-3 mb-4">
+                <div class="card menu-card">
+                    <div class="card-body">
+                        <h2 class="card-title h4">Categories</h2>
+                        <ul id="categoryList" class="list-group list-group-flush">
+                          <li th:each="category : ${menuItems}"
+                              class="list-group-item list-group-item-action"
+                              th:attr="data-category-key=${category.key}"
+                              th:data-category-name="${category.key}"
+                              th:text="${category.key}"
+                              onclick="showMenuItems(this.getAttribute('data-category-key'))">
+                          </li>
+                      </ul>
+                    </div>
                 </div>
-                <div class="card-bottom-section">
-                  <div class="price-rating">
-                    <div class="price">
-                      <span th:text="'Rs ' + ${foodItem.price}"></span>
-                    </div>
-                    <div class="rating">
-                      <i class="fas fa-star"></i>
-                      <span th:text="${foodItem.overallRating}"></span>
-                      <span
-                        >(<span th:text="${foodItem.ratingCount}"></span>)</span
-                      >
-                    </div>
-                  </div>
-                  <div th:id="'cart-button-container-' + ${foodItem.id}">
-                    <div th:id="'inner-cart-button-container-' + ${foodItem.id}">
-                      <th:block th:if="${cartItems.containsKey(foodItem.id)}">
-                        <button
-                          class="cart-btn"
-                          th:data-item-id="${foodItem.id}"
-                          onclick="decreaseCount(this.getAttribute('data-item-id'))"
-                        >
-                          -
-                        </button>
-                        <span
-                          th:id="'itemCount-' + ${foodItem.id}"
-                          class="count"
-                          th:text="${cartItems.get(foodItem.id)}"
-                        ></span>
-                        <button
-                          class="cart-btn"
-                          th:data-item-id="${foodItem.id}"
-                          onclick="increaseCount(this.getAttribute('data-item-id'))"
-                        >
-                          +
-                        </button>
-                      </th:block>
-                      <th:block
-                        th:unless="${cartItems.containsKey(foodItem.id)}"
-                      >
-                        <button
-                          th:id="'addToCart-' + ${foodItem.id}"
-                          class="add-to-cart"
-                          th:data-item-id="${foodItem.id}"
-                          onclick="toggleCart(this.getAttribute('data-item-id'))"
-                        >
-                          Add to Cart
-                        </button>
-                      </th:block>
-                    </div>
-                    <span
-                      th:class="${foodItem.isVeg} ? 'status veg' : 'status non-veg'"
-                      th:text="${foodItem.isVeg} ? 'Veg' : 'Non-Veg'"
-                    ></span>
-                  </div>
-                </div>
-              </div>
             </div>
-          </section>
+    
+            <!-- Menu Items -->
+            <div class="col-md-9">
+                <div class="card menu-card">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Dynamic Menu Title -->
+                        <h2 id="menuTitle" class="card-title h4 align-self-center"></h2>
+                        <div id="menuItems" class="menu-items-outer">
+                            <div class="menu-items-inner">
+                                <section
+                                    th:each="category : ${menuItems}"
+                                    th:id="${'category-' + category.key}"
+                                    class="menu"
+                                >
+                                    <div class="items">
+                                        <div th:each="foodItem : ${category.value}" class="item">
+                                            <div>
+                                                <img
+                                                    th:alt="${foodItem.name}"
+                                                    class="card-img-top"
+                                                    th:src="${foodItem.imageUrl}"
+                                                />
+                                                <h4 th:text="${foodItem.name}"></h4>
+                                                <p th:text="${foodItem.description}"></p>
+                                            </div>
+                                            <div class="card-bottom-section">
+                                                <div class="price-rating">
+                                                    <div class="price">
+                                                        <span th:text="'Rs ' + ${foodItem.price}"></span>
+                                                    </div>
+                                                    <div class="rating">
+                                                        <i class="fas fa-star"></i>
+                                                        <span th:text="${foodItem.overallRating}"></span>
+                                                        <span>(<span th:text="${foodItem.ratingCount}"></span>)</span>
+                                                    </div>
+                                                </div>
+                                                <div th:id="'cart-button-container-' + ${foodItem.id}">
+                                                    <div th:id="'inner-cart-button-container-' + ${foodItem.id}">
+                                                        <th:block th:if="${cartItems.containsKey(foodItem.id)}">
+                                                            <button
+                                                                class="cart-btn"
+                                                                th:data-item-id="${foodItem.id}"
+                                                                onclick="decreaseCount(this.getAttribute('data-item-id'))"
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <span
+                                                                th:id="'itemCount-' + ${foodItem.id}"
+                                                                class="count"
+                                                                th:text="${cartItems.get(foodItem.id)}"
+                                                            ></span>
+                                                            <button
+                                                                class="cart-btn"
+                                                                th:data-item-id="${foodItem.id}"
+                                                                onclick="increaseCount(this.getAttribute('data-item-id'))"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </th:block>
+                                                        <th:block th:unless="${cartItems.containsKey(foodItem.id)}">
+                                                            <button
+                                                                th:id="'addToCart-' + ${foodItem.id}"
+                                                                class="add-to-cart"
+                                                                th:data-item-id="${foodItem.id}"
+                                                                onclick="toggleCart(this.getAttribute('data-item-id'))"
+                                                            >
+                                                                Add to Cart
+                                                            </button>
+                                                        </th:block>
+                                                    </div>
+                                                    <span
+                                                        th:class="${foodItem.isVeg} ? 'status veg' : 'status non-veg'"
+                                                        th:text="${foodItem.isVeg} ? 'Veg' : 'Non-Veg'"
+                                                    ></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </th:block>
+          <!-- Show this if menuItems is empty -->
+          <th:block th:unless="${not menuItems.isEmpty()}">
+            <div class="col-12 p-0">
+                <div class="card text-center">
+                    <div class="card-body py-5">
+                        <i class="fas fa-utensils fa-4x mb-4 text-muted"></i>
+                        <h3 class="card-title">Our Chef is currently working on new recipes!</h3>
+                        <p class="card-text text-muted">We're preparing something delicious for you. Please check back soon.</p>
+                        <button class="btn bg-warning mt-3" onclick="location.reload()">
+                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        </button>
+                    </div>
+                </div>
+            </div>
+          </th:block>
         </div>
       </div>
       <!-- Bootstrap Modal -->
@@ -259,23 +287,46 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script>
-      function showCategory(categoryName) {
-        // Hide all categories
-        document.querySelectorAll(".category").forEach((category) => {
-          category.style.display = "none";
-        });
-        // Show the selected category
-        document.getElementById(`category-${categoryName}`).style.display =
-          "block";
-        // Highlight the active button
-        document.querySelectorAll(".category-list button").forEach((button) => {
-          button.classList.remove("active");
-        });
-        document
-          .querySelector(
-            `.category-list button[data-category="${categoryName}"]`
-          )
-          .classList.add("active");
+      document.addEventListener("DOMContentLoaded", function () {
+        // Get the first category list item
+        const firstCategoryItem = document.querySelector("#categoryList .list-group-item");
+    
+        if (firstCategoryItem) {
+            // Get the category name from the data attribute
+            const categoryName = firstCategoryItem.getAttribute("data-category-name");
+    
+            // Set the menu title to the category name
+            const menuTitle = document.getElementById("menuTitle");
+            menuTitle.textContent = categoryName;
+    
+            // Trigger the click event on the first category to show its items
+            firstCategoryItem.click();
+          }
+      });
+      
+      // Function to show menu items for a category
+      function showMenuItems(categoryKey) {
+          // Hide all menu sections
+          const menuSections = document.querySelectorAll(".menu");
+          menuSections.forEach((section) => {
+              section.style.display = "none";
+          });
+      
+          // Show the selected category's menu section
+          const selectedSection = document.getElementById(`category-${categoryKey}`);
+          if (selectedSection) {
+              selectedSection.style.display = "block";
+          }
+      
+          // Update the menu title with the selected category name
+          const selectedCategoryItem = document.querySelector(
+              `#categoryList .list-group-item[onclick*="${categoryKey}"]`
+          );
+          if (selectedCategoryItem) {
+              const categoryName = selectedCategoryItem.getAttribute("data-category-name");
+              const menuTitle = document.getElementById("menuTitle");
+              menuTitle.textContent = categoryName;
+          }
       }
     </script>
 

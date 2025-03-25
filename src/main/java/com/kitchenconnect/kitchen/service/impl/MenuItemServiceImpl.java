@@ -49,4 +49,8 @@ public class MenuItemServiceImpl implements MenuItemService {
     public List<MenuItem> getMenuItemsByIds(List<Long> ids){
         return menuItemRepository.findAllById(ids);
     }
+
+    public List<MenuItem> getFeaturedMenuItems() {
+        return menuItemRepository.findTop4ByOrderByOverallRatingDesc();
+    }
 }

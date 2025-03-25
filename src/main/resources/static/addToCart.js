@@ -69,13 +69,13 @@ function clearCartAndAddItem(foodItemId, quantity) {
         window.location.reload();
     })
     .catch(error => console.error("Error clearing cart:", error));
-  }
+}
 
-  // Function for Cancel button to just close the modal and keep cart unchanged
-  function cancelAddToCart() {
-    // Hide modal correctly
-    hideModal();
-  }
+// Function for Cancel button to just close the modal and keep cart unchanged
+function cancelAddToCart() {
+// Hide modal correctly
+hideModal();
+}
 
   function hideModal() {
     let modal = document.getElementById("cartModal");
@@ -88,4 +88,46 @@ function clearCartAndAddItem(foodItemId, quantity) {
     if (modalBackdrop) {
         modalBackdrop.remove();
     }
+}
+
+function buildCart(orderId) {
+    fetch(`/cart/build?orderId=${orderId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "error") {
+            // Show the confirmation modal
+            let cartModal = new bootstrap.Modal(document.getElementById("cartModal"));            
+            cartModal && cartModal.show();
+
+            // Store the order ID for later use when confirmed
+            document.getElementById("confirmAdd")?.setAttribute("onclick", `buildNew(${orderId})`);
+        } else if (data.status === "success") {
+            // Redirect to the cart page or show a success message
+            window.location.href = "/cart";
+        }
+    })
+    .catch(error => console.error("Error updating cart:", error));
+}
+
+function buildNew(orderId) {
+    // Clear the cart and build it with the new order items
+    fetch(`/cart/build?orderId=${orderId}&clearCart=true`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            // Redirect to the cart page or show a success message
+            window.location.href = "/cart";
+        }
+    })
+    .catch(error => console.error("Error updating cart:", error));
 }

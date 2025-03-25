@@ -85,7 +85,9 @@ public class MenuItemController {
                 if (imageFile != null && !imageFile.isEmpty()) {
                     menuItem.setImageUrl(imagePath);
                 }
-                menuItem.setIsVeg(foodType == "veg" ? true : false);
+                
+
+                menuItem.setIsVeg(foodType.equals("veg"));
                 MenuItem savedMenuItem = menuItemService.createMenuItem(menuItem);
 
                 return ResponseEntity.ok(Map.of("status", "success", "message", "Food item saved successfully.", "menuId", savedMenuItem.getId(), "imageUrl", savedMenuItem.getImageUrl()));

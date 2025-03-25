@@ -25,9 +25,19 @@ public class Category {
     @Transient // This field is not persisted in the database
     private int itemCount = 0; // Default to 0
 
+    private int position;
+
     // Constructors
     public Category() {
         // Default constructor
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public Category(String name, Kitchen kitchen) {

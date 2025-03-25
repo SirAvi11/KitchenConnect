@@ -1,19 +1,23 @@
 package com.kitchenconnect.kitchen.service.impl;
 
 import com.kitchenconnect.kitchen.DTO.OrderRequest;
-import com.kitchenconnect.kitchen.entity.FoodItem;
+import com.kitchenconnect.kitchen.entity.ItemRating;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.entity.OrderDetails;
+import com.kitchenconnect.kitchen.entity.Rating;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
+import com.kitchenconnect.kitchen.repository.ItemRatingRepository;
 import com.kitchenconnect.kitchen.repository.KitchenRepository;
 import com.kitchenconnect.kitchen.repository.MenuItemRepository;
 import com.kitchenconnect.kitchen.repository.OrderDetailsRepository;
 import com.kitchenconnect.kitchen.repository.OrderRepository;
+import com.kitchenconnect.kitchen.repository.RatingRepository;
 import com.kitchenconnect.kitchen.repository.UserRepository;
 import com.kitchenconnect.kitchen.service.OrderService;
+import com.kitchenconnect.kitchen.service.RatingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,7 +44,16 @@ public class OrderServiceImpl implements OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
+    private RatingRepository ratingRepository;
+
+    @Autowired
+    private  ItemRatingRepository itemRatingRepository;
+
+    @Autowired
     private OrderDetailsRepository orderDetailsRepository;
+
+    @Autowired
+    private RatingService ratingService;
 
     // Create a new order
     @Transactional
@@ -78,6 +91,26 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
 
         orderDetailsRepository.saveAll(orderDetails);
+
+        // // Create and save default Rating
+        Rating rating = new Rating();
+        rating.setOrderId(savedOrder.getId()); // Use the savedOrder's ID
+        rating.setKitchenRating(0); // Default kitchen rating
+        rating.setUserNote("Default rating"); // Default user note
+        Rating savedRating = ratingRepository.save(rating);
+
+        //Create and save default ItemRatings for each menu item in the order
+        List<ItemRating> itemRatings = orderDetails.stream()
+                .map(detail -> {
+                    ItemRating itemRating = new ItemRating();
+                    itemRating.setItemName(detail.getMenuItem().getName()); // Use the menu item's name
+                    itemRating.setRatingValue(0); // Default item rating value
+                    itemRating.setParentRating(savedRating); // Link to the saved Rating
+                    return itemRating;
+                })
+                .collect(Collectors.toList());
+
+        itemRatingRepository.saveAll(itemRatings);
 
         return savedOrder;
     }

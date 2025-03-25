@@ -1,6 +1,8 @@
 package com.kitchenconnect.kitchen.controller;
 
 import com.kitchenconnect.kitchen.DTO.OrderRequest;
+import com.kitchenconnect.kitchen.DTO.RatingRequest;
+import com.kitchenconnect.kitchen.DTO.RatingResponse;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.entity.OrderDetails;
@@ -8,7 +10,9 @@ import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
 import com.kitchenconnect.kitchen.service.KitchenService;
 import com.kitchenconnect.kitchen.service.OrderService;
+import com.kitchenconnect.kitchen.service.RatingService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +32,9 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private RatingService ratingService;
 
     // Get all orders
     // @GetMapping
@@ -59,6 +68,13 @@ public class OrderController {
         return ResponseEntity.ok(updatedOrder);
     }
 
+    @PostMapping("/{id}/cancel")
+    public String cancelOrder(@PathVariable Long id, HttpServletRequest request) {
+         // Update the order status to CANCELLED
+         orderService.updateOrderStatus(id, OrderStatus.CANCELLED);
+         return "redirect:/dashboard?tab=my-orders";
+    }
+
     // Delete an order
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
@@ -87,5 +103,26 @@ public class OrderController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update order status");
         }
+    }
+
+    @GetMapping("/{orderId}/get-ratings")
+    public ResponseEntity<RatingResponse> getOrderRatings(@PathVariable Long orderId) {
+        RatingResponse ratingResponse = ratingService.getRatingsForOrder(orderId);
+        if (ratingResponse == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ratingResponse);
+    }
+
+    @PostMapping("/{orderId}/ratings")
+    public ResponseEntity<Map<String, String>> saveOrderRatings(
+        @PathVariable Long orderId,
+        @RequestBody RatingRequest ratingRequest
+    ) {
+        ratingService.saveOrUpdateRatings(orderId, ratingRequest);
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Ratings saved successfully.");
+        return ResponseEntity.ok(response);
     }
 }

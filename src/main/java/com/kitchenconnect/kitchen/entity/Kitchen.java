@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.kitchenconnect.kitchen.enums.KitchenStatus;
 
 @Entity
@@ -25,7 +27,11 @@ public class Kitchen {
     private KitchenStatus status = KitchenStatus.UNDER_VERIFICATION;
 
     @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<FoodItem> foodItems = new ArrayList<>();
+    @JsonBackReference // Prevents circular reference
+    private List<Category> categories;
+
+    @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
 
     @Column(name = "kitchen_name", length = 35, nullable = false)
     private String kitchenName;
@@ -130,15 +136,7 @@ public class Kitchen {
     public void setStatus(KitchenStatus status) {
         this.status = status;
     }
-
-    public List<FoodItem> getFoodItems() {
-        return new ArrayList<>(foodItems); // Return a mutable copy
-    }
-
-    public void setFoodItems(List<FoodItem> foodItems) {
-        this.foodItems = new ArrayList<>(foodItems); // Set a mutable copy
-    }
-
+    
     public String getKitchenName() {
         return kitchenName;
     }

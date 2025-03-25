@@ -27,31 +27,45 @@
                 <div th:unless="${#lists.isEmpty(session.categories)}" th:each="category : ${session.categories}" class="card">
                     <div class="card-header" th:id="${'category-' + category.id}">
                         <h2 class="mb-0 d-flex">
+                            <!-- Accordion Button -->
                             <button class="btn btn-link text-warning font-weight-bold accordion-button d-flex justify-content-start w-100 align-items-center"
                                     type="button"
                                     data-toggle="collapse"
                                     th:data-target="${'#collapse-' + category.id}"
                                     aria-expanded="true"
                                     th:aria-controls="${'collapse-' + category.id}">
-
                                 <span class="d-flex align-items-center justify-content-between header-icon-name">
                                     <i class="fas fa-arrow-down me-2"></i>
                                     <span class="flex-grow-1 text-center" th:text="${category.name + ' (' + category.itemCount + ')'}"></span>
                                 </span>
                             </button>
-                            <div class="header-buttons">
+                
+                            <!-- Edit, Delete, and Move Buttons -->
+                            <div class="header-buttons d-flex align-items-center">
+                                <!-- Edit and Save Buttons -->
                                 <button id="edit-info-button" class="btn btn-warning text-white cus-btn" th:onclick="'toggleHeaderName(this, ' + ${category.id} + ')'">
                                     <i class="fas fa-edit"></i>
                                 </button>
                                 <button id="save-info-button" class="btn btn-warning text-white cus-btn d-none" th:onclick="'toggleHeaderName(this, ' + ${category.id} + ')'">
                                     <i class="fas fa-save"></i>
                                 </button>
+                                <!-- Delete Button -->
                                 <button class="btn btn-danger btn-sm delete-accordion cus-btn" th:onclick="'deleteAccordion(this, ' + ${category.id} + ')'">
                                     <i class="fas fa-minus"></i>
                                 </button>
+                                <!-- Move Up and Down Buttons -->
+                                <div class="move-buttons d-flex flex-column ms-2">
+                                    <button class="btn btn-sm btn-outline-primary move-up" th:onclick="'moveCategory(' + ${category.id} + ', \'up\')'">
+                                        <i class="fas fa-arrow-up"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary move-down" th:onclick="'moveCategory(' + ${category.id} + ', \'down\')'">
+                                        <i class="fas fa-arrow-down"></i>
+                                    </button>
+                                </div>
                             </div>
                         </h2>
                     </div>
+                    <!-- Collapsible Body -->
                     <div th:id="${'collapse-' + category.id}" class="collapse" th:aria-labelledby="${'category-' + category.id}" data-parent="#categoriesContainer">
                         <div class="card-body">
                             <button class="btn btn-success add-food-item mb-2">Add Item +</button>
@@ -74,7 +88,7 @@
                                         </div>
                                         <div class="inner-menu-content d-flex align-items-center">
                                             <!-- Image Upload (Left Side) -->
-                                            <div class="food-image-wrapper has-image flex-shrink-0" th:onclick="'document.getElementById(\'foodImageUpload\').click()'">
+                                            <div class="food-image-wrapper has-image flex-shrink-0" th:onclick="'document.getElementById(\'foodImageUpload-\' + ' + ${menuItem.id} + ').click()'">
                                                 <i class="fas fa-plus mb-2 upload-icon"></i>
                                                 <p class="upload-text">Upload Image</p>
                                                 <img th:src="${menuItem.imageUrl}" alt="Food Image" class="food-image-preview" th:id="'food-image-preview-' + ${menuItem.id}">
@@ -104,16 +118,16 @@
                                                     </div>
                                                     <div class="veg-nonveg-section d-flex flex-column">
                                                         <!-- Info field for selected option (View mode) -->
-                                                        <p class="info-field bg-light p-2 rounded active" th:text="${menuItem.isVeg ? 'Non-Veg' : 'Veg'}"></p>
+                                                        <p class="info-field bg-light p-2 rounded active" th:text="${menuItem.isVeg ? 'Veg' : 'Non-Veg'}"></p>
                             
                                                         <!-- Radio buttons (Edit mode) -->
                                                         <div class="info-input">
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg" th:checked="${!menuItem.isVeg}">
+                                                                <input class="form-check-input" type="radio" name="foodType" id="veg" value="veg" th:checked="${menuItem.isVeg}">
                                                                 <label class="form-check-label text-success" for="veg">Veg</label>
                                                             </div>
                                                             <div class="form-check form-check-inline">
-                                                                <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg" th:checked="${menuItem.isVeg}">
+                                                                <input class="form-check-input" type="radio" name="foodType" id="nonVeg" value="non-veg" th:checked="${!menuItem.isVeg}">
                                                                 <label class="form-check-label text-danger" for="nonVeg">Non-Veg</label>
                                                             </div>
                                                         </div>
