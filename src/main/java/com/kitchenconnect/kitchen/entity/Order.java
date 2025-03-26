@@ -23,6 +23,28 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
+    @Column(nullable = false)
+    private String deliveryAddress;
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    @Column(nullable=false)
+    private String contactNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;

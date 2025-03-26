@@ -5,8 +5,22 @@ import java.util.List;
 public class OrderRequest {
     private Long userId;
     private Long kitchenId;
+    private String deliveryAddress;
+    private String contactNumber;
     public Long getUserId() {
         return userId;
+    }
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+    public String getContactNumber() {
+        return contactNumber;
+    }
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
     }
     public void setUserId(Long userId) {
         this.userId = userId;

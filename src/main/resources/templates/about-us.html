@@ -6,13 +6,136 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/about-us.css}">
+
     <link rel="icon" type="image/png" th:href="@{/images/favicon_io/favicon-16x16.png}">
 </head>
 <body>
     <!-- Include Header -->
     <div th:replace="~{fragments/header :: header}"></div>
     
-    <div>ABout us</div>
+    <!-- About Section -->
+    <section class="py-5">
+        <div class="container py-4">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2 class="section-title">Our Story</h2>
+                    <p>Kitchen Connect was founded in 2025 with a simple mission: to bridge the gap between talented home chefs and food enthusiasts in their community.</p>
+                    <p>We believe everyone deserves access to authentic, homemade meals prepared with love and care. Our platform makes it easy for chefs to share their culinary creations and for food lovers to discover unique dining experiences.</p>
+                    <div class="d-flex mt-4">
+                        <a href="/kitchens" class="btn btn-outline-secondary">Find a Kitchen</a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Fresh food" class="food-img">
+                        </div>
+                        <div class="col-6">
+                            <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Chef cooking" class="food-img">
+                        </div>
+                        <div class="col-6 mt-3">
+                            <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Delicious pizza" class="food-img">
+                        </div>
+                        <div class="col-6 mt-3">
+                            <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Food preparation" class="food-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-light">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Why Choose Us</h2>
+                <p>We're changing the way people experience home cooking</p>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <h4>Authentic Home Cooking</h4>
+                            <p>Enjoy meals made with love in real home kitchens.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <h4>Diverse Cuisines</h3>
+                            <p>Discover hidden culinary gems from around the world.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="feature-card card h-100">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon">
+                                <i class="fas fa-hand-holding-heart"></i>
+                            </div>
+                            <h4>Support Local Chefs</h3>
+                            <p>Your orders directly support chefs in your community.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-5">
+        <div class="container py-4">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stats-item">
+                        <div class="stats-number" data-count="500">0</div>
+                        <p>Home Chefs</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stats-item">
+                        <div class="stats-number" data-count="10000">0</div>
+                        <p>Happy Customers</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="stats-item">
+                        <div class="stats-number" data-count="50">0</div>
+                        <p>Cuisine Types</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-item">
+                        <div class="stats-number" data-count="100">0</div>
+                        <p>Cities</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Are You a Chef Section -->
+    <section class="are-you-a-chef">
+        <div class="container">
+            <div class="text-content">
+                <h2>Are You a Chef?</h2>
+                <p>Join our platform and start selling your specialties to hungry customers in your area.</p>
+                <a href="/accounts/register"><button class="btn btn-register">Register as Chef</button></a>
+            </div>
+            <div class="image-content">
+                <img src="/images/homepage/ChefCooking.jpg" alt="Chef preparing food in kitchen">
+            </div>
+        </div>
+    </section>
 
     <!-- Include Footer -->
     <div th:replace="~{fragments/footer :: footer}"></div>
@@ -21,5 +144,25 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Simple counter animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const counters = document.querySelectorAll('.stats-number');
+            const speed = 200;
+            
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-count');
+                const count = +counter.innerText;
+                const increment = target / speed;
+                
+                if(count < target) {
+                    counter.innerText = Math.ceil(count + increment);
+                    setTimeout(arguments.callee, 1);
+                } else {
+                    counter.innerText = target;
+                }
+            });
+        });
+    </script>
 </body>
 </html>

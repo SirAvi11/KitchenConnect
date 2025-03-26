@@ -71,6 +71,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
         order.setTotalAmount(orderRequest.getTotalAmount());
+        order.setDeliveryAddress(orderRequest.getDeliveryAddress());
+        order.setContactNumber(orderRequest.getContactNumber());
 
         // Save the order
         Order savedOrder = orderRepository.save(order);

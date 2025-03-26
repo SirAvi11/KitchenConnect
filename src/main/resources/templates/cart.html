@@ -137,29 +137,57 @@
             th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'ADMIN'}"
           >
             <div class="mb-4">
-              <h3 class="h6 d-flex justify-content-between align-items-center">
-                <b>Delivery Address</b>
-                <button class="btn btn-link p-0">
-                  <i class="fas fa-edit"></i>
-                </button>
-              </h3>
-              <p th:text="${session.loggedInUser.address}">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="h6 mb-0"><b>Delivery Address</b></h3>
+                  <div>
+                    <!-- Edit Button (visible by default) -->
+                    <button id="address-edit-button" class="btn btn-warning text-white">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <!-- Save Button (hidden by default) -->
+                    <button id="address-save-button" class="btn btn-warning text-white d-none">
+                      <i class="fas fa-save"></i>
+                    </button>
+                  </div>
+              </div>
+              
+              <!-- Display Mode -->
+              <p id="delivery-address" th:text="${session.loggedInUser?.address} ?: 'No address provided'">
                 123 Main Street, City, Country
               </p>
+            
+              <!-- Edit Mode (hidden initially) -->
+              <textarea id="address-input" class="form-control d-none" 
+                        th:text="${session.loggedInUser?.address}"></textarea>
             </div>
             <div class="mb-4">
-              <h3 class="h6 d-flex justify-content-between align-items-center">
-                <b>Contact Information</b>
-                <button class="btn btn-link p-0">
-                  <i class="fas fa-edit"></i>
-                </button>
-              </h3>
-              <p>
-                Phone:
-                <span th:text="${session.loggedInUser.phoneNumber}"
-                  >+123 456 7890</span
-                >
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="h6 mb-0"><b>Contact Information</b></h3>
+                <div>
+                  <!-- Edit Button (visible by default) -->
+                  <button id="contact-edit-button" class="btn btn-warning text-white">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <!-- Save Button (hidden by default) -->
+                  <button id="contact-save-button" class="btn btn-warning text-white d-none">
+                    <i class="fas fa-save"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Display Mode -->
+              <p id="contact-display">
+                <span id="contact-number" th:text="${session.loggedInUser?.phoneNumber} ?: 'Not provided'">+123 456 7890</span>
               </p>
+              
+              <!-- Edit Mode (hidden initially) -->
+              <div id="contact-edit" class="d-none">
+                <div class="input-group mb-2">
+                  <input type="tel" id="phone-input" class="form-control" 
+                         th:value="${session.loggedInUser?.phoneNumber}"
+                         placeholder="+123 456 7890">
+                </div>
+              </div>
             </div>
           </div>
           <div class="text-dark">
@@ -235,8 +263,11 @@
                       ></i>
                     </div>
                   </div>
-                  <p class="h5">Hey Anup Srivastava,</p>
-                  <h1 class="h3 font-weight-bold mt-2">
+                  <p class="h5">
+                    Hey <span th:text="${session.loggedInUser != null ? 
+                                        (session.loggedInUser.firstname + ' ' + session.loggedInUser.lastname) : 
+                                        'Guest'}"></span>
+                  </p>                  <h1 class="h3 font-weight-bold mt-2">
                     Your Order is Confirmed!
                   </h1>
                   <p class="text-muted mt-2">
@@ -271,9 +302,13 @@
         const dataElement = document.getElementById("data");
         const userId = dataElement.getAttribute("data-user-id");
         const kitchenId = dataElement.getAttribute("data-kitchen-id");
+        const deliveryAddress = document.getElementById('delivery-address').textContent;
+        const contactNumber = document.getElementById('contact-display').textContent;
         let orderRequest = {
           userId: userId,
           kitchenId: kitchenId,
+          deliveryAddress: deliveryAddress,
+          contactNumber: contactNumber,
           totalAmount: parseFloat(
             document
               .querySelector(".order-summary-total-price")
@@ -387,6 +422,96 @@
           })
           .catch((error) => console.error("Error updating cart:", error));
       }
+
+      function setupAddressEditing() {
+        const editBtn = document.getElementById('address-edit-button');
+        const saveBtn = document.getElementById('address-save-button');
+        const display = document.getElementById('delivery-address');
+        const input = document.getElementById('address-input');
+        
+        let originalAddress = display.textContent.trim();
+      
+        // Edit button click handler
+        editBtn.addEventListener('click', function() {
+          // Switch to edit mode
+          display.classList.add('d-none');
+          input.classList.remove('d-none');
+          input.value = originalAddress;
+          input.focus();
+          
+          // Toggle buttons
+          editBtn.classList.add('d-none');
+          saveBtn.classList.remove('d-none');
+        });
+      
+        // Save button click handler
+        saveBtn.addEventListener('click', function() {
+          const newAddress = input.value.trim();
+          
+          if (newAddress) {
+            // Update display
+            display.textContent = newAddress;
+            originalAddress = newAddress;
+
+          }
+          
+          // Switch back to view mode
+          display.classList.remove('d-none');
+          input.classList.add('d-none');
+          
+          // Toggle buttons
+          saveBtn.classList.add('d-none');
+          editBtn.classList.remove('d-none');
+        });
+      }
+
+      function setupContactEditing() {
+        const editBtn = document.getElementById('contact-edit-button');
+        const saveBtn = document.getElementById('contact-save-button');
+        const display = document.getElementById('contact-display');
+        const editDiv = document.getElementById('contact-edit');
+        const phoneInput = document.getElementById('phone-input');
+        const phoneDisplay = display.querySelector('span');
+        
+        let originalPhone = phoneDisplay.textContent.trim();
+      
+        // Edit button click handler
+        editBtn.addEventListener('click', function() {
+          // Switch to edit mode
+          display.classList.add('d-none');
+          editDiv.classList.remove('d-none');
+          phoneInput.value = originalPhone;
+          phoneInput.focus();
+          
+          // Toggle buttons
+          editBtn.classList.add('d-none');
+          saveBtn.classList.remove('d-none');
+        });
+      
+        // Save button click handler
+        saveBtn.addEventListener('click', function() {
+          const newPhone = phoneInput.value.trim();
+          
+          if (newPhone) {
+            // Update display
+            phoneDisplay.textContent = newPhone;
+            originalPhone = newPhone;
+          }
+          
+          // Switch back to view mode
+          display.classList.remove('d-none');
+          editDiv.classList.add('d-none');
+          
+          // Toggle buttons
+          saveBtn.classList.add('d-none');
+          editBtn.classList.remove('d-none');
+        });
+      }
+      document.addEventListener('DOMContentLoaded', function(){
+        setupAddressEditing();
+        setupContactEditing();
+      });
+
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
