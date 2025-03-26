@@ -33,10 +33,15 @@
                         <a class="nav-link" th:href="@{/about-us}">About Us</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" th:href="@{/cart}"><i class="fas fa-shopping-cart"></i> Cart</a>
+                        <a class="nav-link position-relative" th:href="@{/cart}">
+                            <i class="fas fa-shopping-cart"></i> Cart
+                            <!-- Small orange dot indicator -->
+                            <span th:if="${session.cart != null and not session.cart.empty}"
+                                  class="position-absolute top-0 start-100 translate-middle p-1 bg-warning border border-light rounded-circle"
+                                  style="font-size: 0.3em;">
+                            </span>
+                        </a>
                     </li>
-
-
 
                     <!-- If user is logged in, show profile picture and username -->
                     <li class="nav-item dropdown" th:if="${session.loggedInUser}">

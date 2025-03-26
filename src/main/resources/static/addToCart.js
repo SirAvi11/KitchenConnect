@@ -17,6 +17,7 @@ function decreaseCount(foodItemId) {
             </button>
         `;
         updateCart(foodItemId, 0);
+        window.location.reload();
     }
 }
 
@@ -53,6 +54,7 @@ function updateCart(foodItemId, quantity) {
                     <span id="itemCount-${foodItemId}" class="count">${quantity}</span>
                     <button class="cart-btn" onclick="increaseCount(${foodItemId})">+</button>
                 `;
+                window.location.reload();
             }
         }
     })
