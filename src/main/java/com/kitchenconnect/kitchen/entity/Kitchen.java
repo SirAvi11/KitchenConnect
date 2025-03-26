@@ -26,11 +26,11 @@ public class Kitchen {
     @Column(name = "status", nullable = false)
     private KitchenStatus status = KitchenStatus.UNDER_VERIFICATION;
 
-    @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kitchen", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonBackReference // Prevents circular reference
     private List<Category> categories;
 
-    @OneToMany(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "kitchen", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Order> orders;
 
     @Column(name = "kitchen_name", length = 35, nullable = false)

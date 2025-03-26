@@ -75,7 +75,9 @@ public class KitchenController {
     @GetMapping("/kitchen-registration")
     public String showKitchenRegistration(Model model, HttpSession session) {
         // Get the logged-in user from session
+
         User sessionUser = (User) session.getAttribute("loggedInUser");
+
         model.addAttribute("kitchenRequest", new KitchenRequest());
 
         if(checkKitchenStatus(sessionUser)){
@@ -284,7 +286,15 @@ public class KitchenController {
     // Helper method to check kitchen status
     private Boolean checkKitchenStatus(User sessionUser) {
         
+        System.out.println("checking kitchen : " + sessionUser.getId());
+
         Kitchen kitchen = kitchenService.findKitchenByUser(sessionUser);
+
+        if(kitchen != null){
+            System.out.println("StatusofKitchen : " + kitchen.getStatus());
+
+        }
+
         
         boolean underVerification = kitchen != null && kitchen.getStatus() == KitchenStatus.UNDER_VERIFICATION;
         

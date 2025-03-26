@@ -42,7 +42,7 @@ function loadTrackingModal(button) {
 
     // Update modal content with the data
     document.getElementById('tracking-orderId').innerText = orderId;
-    document.getElementById('tracking-expectedDeliveryTime').innerText = expectedDeliveryTime;
+    document.getElementById('tracking-expectedDeliveryTime').innerText = expectedDeliveryTime + ' minutes';
     document.getElementById('tracking-deliveryAddress').innerText = deliveryAddress;
     document.getElementById('tracking-contactInfo').innerText = contactInfo;
 
