@@ -7,8 +7,22 @@ public class OrderRequest {
     private Long kitchenId;
     private String deliveryAddress;
     private String contactNumber;
+    private String upiId;
+    private String upiTransactionId;
     public Long getUserId() {
         return userId;
+    }
+    public String getUpiId() {
+        return upiId;
+    }
+    public void setUpiId(String upiId) {
+        this.upiId = upiId;
+    }
+    public String getUpiTransactionId() {
+        return upiTransactionId;
+    }
+    public void setUpiTransactionId(String upiTransactionId) {
+        this.upiTransactionId = upiTransactionId;
     }
     public String getDeliveryAddress() {
         return deliveryAddress;

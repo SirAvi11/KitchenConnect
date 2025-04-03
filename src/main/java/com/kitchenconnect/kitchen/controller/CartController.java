@@ -143,12 +143,18 @@ public class CartController {
     }
 
     @PostMapping("/place")
-    public ResponseEntity<Order> placeOrder(@RequestBody OrderRequest orderRequest, HttpSession session){
+    public ResponseEntity<?> placeOrder(@RequestBody OrderRequest orderRequest, HttpSession session){
         Order placedOrder = orderService.placeOrder(orderRequest);
         if(placedOrder != null){
             clearCart(session);
         }
-        return ResponseEntity.ok(placedOrder);
+        // Return response
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("orderId", placedOrder.getId());
+        response.put("transactionId", orderRequest.getUpiTransactionId());
+        
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/build")
