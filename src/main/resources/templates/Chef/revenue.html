@@ -5,93 +5,286 @@
   th:classappend="${param.tab == 'revenue'} ? 'active-content' : 'd-none'"
 >
     <link rel="stylesheet" th:href="@{/css/revenue.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="h4 font-weight-bold ">Revenue</h4>
-        <select class="form-control rounded-full" style="width: auto;">
-            <option>Weekly</option>
-            <option>Monthly</option>
-            <option>Yearly</option>
+        <h4 class="h4 font-weight-bold">Revenue</h4>
+        <select id="periodSelect" class="form-control rounded-full" style="width: auto;">
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
         </select>
     </div>
+    
     <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="h6 font-weight-semibold">
-                <strong>Report<strong>
+                <strong>Report</strong>
             </h2>
             <div class="d-flex align-items-center">
-                <i class="fas fa-chevron-left text-muted mr-2"></i>
+                <i id="prevPeriod" class="fas fa-chevron-left text-muted mr-2 cursor-pointer"></i>
                 <i class="fas fa-calendar-alt text-muted mr-2"></i>
-                <span class="text-muted">
-                    17 Nov 2022 - 23 Nov 2022
+                <span id="dateRange" class="text-muted">
+                    Loading...
                 </span>
-                <i class="fas fa-chevron-right text-muted ml-2"></i>
+                <i id="nextPeriod" class="fas fa-chevron-right text-muted ml-2 cursor-pointer"></i>
             </div>
         </div>
         <div class="position-relative">
-            <div class="w-100 h-64 bg-light d-flex align-items-center justify-content-center">
-                <span class="text-muted">Graph showing sales report from Nov 17 to Nov 23 with a tooltip showing $26,320.00 on Nov 17</span>
-            </div>
+            <canvas id="revenueChart" height="300"></canvas>
         </div>
     </div>
+    
     <div class="row">
         <div class="col-md-4 mb-4">
             <div class="bg-white p-4 rounded-lg shadow-sm">
-                <h3 class="h6 font-weight-semibold">
-                    Earnings
-                </h3>
-                <p class="h4 font-weight-bold mt-2">
-                    $ 47,832.00
-                </p>
+                <h3 class="h6 font-weight-semibold">Earnings</h3>
+                <p id="earningsValue" class="h4 font-weight-bold mt-2">$ 0.00</p>
                 <div class="d-flex align-items-center mt-2">
-                    <span class="bg-red-100 text-red-700 py-1 px-2 rounded-full small">
-                        ↓ 1.2%
-                    </span>
-                    <span class="text-muted ml-2">
-                        Lower than last week
-                    </span>
+                    <span id="earningsTrend" class="py-1 px-2 rounded-full small"></span>
+                    <span id="earningsComparison" class="text-muted ml-2"></span>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
             <div class="bg-white p-4 rounded-lg shadow-sm">
-                <h3 class="h6 font-weight-semibold">
-                    Product Sales
-                </h3>
-                <p class="h4 font-weight-bold mt-2">
-                    255
-                    <span class="small text-muted">Items</span>
-                </p>
+                <h3 class="h6 font-weight-semibold">Product Sales</h3>
+                <p id="productSalesValue" class="h4 font-weight-bold mt-2">0 <span class="small text-muted">Items</span></p>
                 <div class="d-flex align-items-center mt-2">
-                    <span class="bg-green-100 text-green-700 py-1 px-2 rounded-full small">
-                        ↑ 0.5%
-                    </span>
-                    <span class="text-muted ml-2">
-                        Higher than last week
-                    </span>
+                    <span id="salesTrend" class="py-1 px-2 rounded-full small"></span>
+                    <span id="salesComparison" class="text-muted ml-2"></span>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-4">
             <div class="bg-white p-4 rounded-lg shadow-sm">
-                <h3 class="h6 font-weight-semibold">
-                    All Insight
-                </h3>
-                <p class="h4 font-weight-bold mt-2">
-                    5,440,121
-                    <span class="small text-muted">People</span>
-                </p>
+                <h3 class="h6 font-weight-semibold">All Insight</h3>
+                <p id="visitorsValue" class="h4 font-weight-bold mt-2">0 <span class="small text-muted">People</span></p>
                 <div class="d-flex align-items-center mt-2">
-                    <span class="bg-green-100 text-green-700 py-1 px-2 rounded-full small">
-                        ↑ 0.8%
-                    </span>
-                    <span class="text-muted ml-2">
-                        Higher than last week
-                    </span>
+                    <span id="visitorsTrend" class="py-1 px-2 rounded-full small"></span>
+                    <span id="visitorsComparison" class="text-muted ml-2"></span>
                 </div>
             </div>
         </div>
     </div>
   
-    <script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // Global variables
+        let revenueChart;
+        let currentStartDate, currentEndDate;
+        let currentPeriod = 'weekly';
+        
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            
+            // Event listeners
+            document.getElementById('periodSelect').addEventListener('change', function() {
+                currentPeriod = this.value;
+                resetDateRange();
+                fetchRevenueData();
+            });
+            
+            document.getElementById('prevPeriod').addEventListener('click', function() {
+                navigatePeriod('prev');
+            });
+            
+            document.getElementById('nextPeriod').addEventListener('click', function() {
+                navigatePeriod('next');
+            });
+        });
+        
+        function initializeDashboard() {
+            // Set initial period from dropdown
+            currentPeriod = document.getElementById('periodSelect').value;
+            resetDateRange();
+            
+            // Initialize chart
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [],
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: true,
+                        backgroundColor: 'rgba(75, 192, 192, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.parsed.y.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Fetch initial data
+            fetchRevenueData();
+        }
+        
+        function resetDateRange() {
+            const today = new Date();
+            if (currentPeriod === 'weekly') {
+                // Start from Monday of current week
+                const day = today.getDay();
+                const diff = today.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
+                const monday = new Date(today.setDate(diff));
+                currentStartDate = new Date(monday);
+                currentEndDate = new Date(monday);
+                currentEndDate.setDate(monday.getDate() + 6);
+            } else if (currentPeriod === 'monthly') {
+                // Start from first day of current month
+                currentStartDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                currentEndDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            } else { // yearly
+                // Start from first day of current year
+                currentStartDate = new Date(today.getFullYear(), 0, 1);
+                currentEndDate = new Date(today.getFullYear(), 11, 31);
+            }
+        }
+        
+        function navigatePeriod(direction) {
+            const increment = direction === 'next' ? 1 : -1;
+            
+            if (currentPeriod === 'weekly') {
+                currentStartDate.setDate(currentStartDate.getDate() + (7 * increment));
+                currentEndDate.setDate(currentEndDate.getDate() + (7 * increment));
+            } else if (currentPeriod === 'monthly') {
+                currentStartDate.setMonth(currentStartDate.getMonth() + increment);
+                currentEndDate = new Date(
+                    currentStartDate.getFullYear(), 
+                    currentStartDate.getMonth() + 1, 
+                    0
+                );
+            } else { // yearly
+                currentStartDate.setFullYear(currentStartDate.getFullYear() + increment);
+                currentEndDate = new Date(currentStartDate.getFullYear(), 11, 31);
+            }
+            
+            fetchRevenueData();
+        }
+        
+        function fetchRevenueData() {
+            // Format dates for display
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            document.getElementById('dateRange').textContent = 
+                currentStartDate.toLocaleDateString('en-US', options) + ' - ' + 
+                currentEndDate.toLocaleDateString('en-US', options);
+            
+            // Format dates for API
+            const startDateStr = formatDateForAPI(currentStartDate);
+            const endDateStr = formatDateForAPI(currentEndDate);
+            
+            // Fetch data from backend
+            fetch(`/revenue/data?period=${currentPeriod}&startDate=${startDateStr}&endDate=${endDateStr}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateChart(data);
+                    updateMetrics(data);
+                })
+                .catch(error => console.error('Error fetching revenue data:', error));
+        }
+        
+        function formatDateForAPI(date) {
+            return date.toISOString().split('T')[0];
+        }
+        
+        function updateChart(data) {
+            // Update chart data
+            revenueChart.data.labels = data.labels;
+            revenueChart.data.datasets[0].data = data.values;
+            
+            // Update time unit based on period
+            revenueChart.options.scales.x.time.unit = 
+                currentPeriod === 'yearly' ? 'month' : 
+                currentPeriod === 'monthly' ? 'week' : 'day';
+            
+            revenueChart.update();
+        }
+        
+        function updateMetrics(data) {
+            // Update earnings
+            document.getElementById('earningsValue').textContent = 
+                '$ ' + data.earnings.toLocaleString('en-US', {maximumFractionDigits: 2});
+            
+            // Update product sales
+            document.getElementById('productSalesValue').innerHTML = 
+                data.productSales.toLocaleString() + ' <span class="small text-muted">Items</span>';
+            
+            // Update visitors
+            document.getElementById('visitorsValue').innerHTML = 
+                data.visitors.toLocaleString() + ' <span class="small text-muted">People</span>';
+            
+            // Update trends
+            updateTrendIndicator(
+                'earningsTrend', 
+                'earningsComparison', 
+                data.percentageChange, 
+                data.isIncrease,
+                'Earnings'
+            );
+            
+            // Note: You might want to add separate percentage changes for sales and visitors
+            // For now using the same as earnings
+            updateTrendIndicator(
+                'salesTrend', 
+                'salesComparison', 
+                data.percentageChange, 
+                data.isIncrease,
+                'Sales'
+            );
+            
+            updateTrendIndicator(
+                'visitorsTrend', 
+                'visitorsComparison', 
+                data.percentageChange, 
+                data.isIncrease,
+                'Visitors'
+            );
+        }
+        
+        function updateTrendIndicator(elementId, comparisonId, percentage, isIncrease, metricName) {
+            const trendElement = document.getElementById(elementId);
+            const comparisonElement = document.getElementById(comparisonId);
+            
+            trendElement.className = `py-1 px-2 rounded-full small ${
+                isIncrease ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+            }`;
+            trendElement.textContent = isIncrease ? `↑ ${percentage}%` : `↓ ${Math.abs(percentage)}%`;
+            
+            comparisonElement.textContent = isIncrease 
+                ? `Higher than last ${currentPeriod.slice(0, -2)}` 
+                : `Lower than last ${currentPeriod.slice(0, -2)}`;
+        }
+        /*]]>*/
     </script>
 </div>

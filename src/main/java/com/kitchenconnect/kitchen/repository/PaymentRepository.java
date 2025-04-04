@@ -13,23 +13,65 @@ import com.kitchenconnect.kitchen.enums.PaymentStatus;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-
-    // Find payment by order ID
-    Payment findByOrderId(Long orderId);
     
-    // Check if payment exists for an order
-    boolean existsByOrderId(Long orderId);
+    // Get payments for a specific chef (through kitchen->user->chef relationship)
+    @Query("SELECT p FROM Payment p " +
+           "JOIN p.order o " +
+           "JOIN o.kitchen k " +
+           "JOIN k.user ku " +
+           "JOIN Chef c ON ku.id = c.user.id " +
+           "WHERE c.id = :chefId " +
+           "AND p.paymentDate BETWEEN :start AND :end " +
+           "AND p.paymentStatus = :status")
+    List<Payment> findByChefIdAndPaymentDateBetweenAndPaymentStatus(
+        @Param("chefId") Long chefId,
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
     
-    // Count payments by status
-    long countByPaymentStatus(PaymentStatus status);
+    // Count payments for a specific chef
+    @Query("SELECT COUNT(p) FROM Payment p " +
+           "JOIN p.order o " +
+           "JOIN o.kitchen k " +
+           "JOIN k.user ku " +
+           "JOIN Chef c ON ku.id = c.user.id " +
+           "WHERE c.id = :chefId " +
+           "AND p.paymentDate BETWEEN :start AND :end " +
+           "AND p.paymentStatus = :status")
+    int countByChefIdAndPaymentDateBetweenAndPaymentStatus(
+        @Param("chefId") Long chefId,
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
     
-    // Find payments within a date range
-    List<Payment> findByPaymentDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+    // Count distinct customers for a specific chef
+    @Query("SELECT COUNT(DISTINCT o.user.id) FROM Payment p " +
+           "JOIN p.order o " +
+           "JOIN o.kitchen k " +
+           "JOIN k.user ku " +
+           "JOIN Chef c ON ku.id = c.user.id " +
+           "WHERE c.id = :chefId " +
+           "AND p.paymentDate BETWEEN :start AND :end " +
+           "AND p.paymentStatus = :status")
+    int countDistinctCustomersByChefIdAndPaymentDateBetweenAndPaymentStatus(
+        @Param("chefId") Long chefId,
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
     
-    // Find payments by status and date range
-    List<Payment> findByPaymentStatusAndPaymentDateBetween(
-        PaymentStatus status, 
-        LocalDateTime startDate, 
-        LocalDateTime endDate
-    );
+    // Sum payment amounts for a specific chef
+    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p " +
+           "JOIN p.order o " +
+           "JOIN o.kitchen k " +
+           "JOIN k.user ku " +
+           "JOIN Chef c ON ku.id = c.user.id " +
+           "WHERE c.id = :chefId " +
+           "AND p.paymentDate BETWEEN :start AND :end " +
+           "AND p.paymentStatus = :status")
+    double sumAmountByChefIdAndPaymentDateBetweenAndPaymentStatus(
+        @Param("chefId") Long chefId,
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
+    
 }

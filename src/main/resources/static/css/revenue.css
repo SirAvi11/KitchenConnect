@@ -31,3 +31,28 @@
 .mt-2 {
     margin-top: 0.5rem;
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.bg-green-100 {
+    background-color: #dcfce7;
+}
+
+.text-green-700 {
+    color: #15803d;
+}
+
+.bg-red-100 {
+    background-color: #fee2e2;
+}
+
+.text-red-700 {
+    color: #b91c1c;
+}
+
+#revenueChart {
+    width: 100% !important;
+    height: 300px !important;
+}
