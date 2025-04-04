@@ -84,5 +84,11 @@
             </div>
             <span>Update Menu</span>
         </li>
+        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="revenue" th:classappend="${param.tab == 'revenue'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <i class="fas fa-money-bill text-dark tab-icon" th:classappend="${param.tab == 'revenue'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <span>Revenue</span>
+        </li>
     </ul>
 </div>
