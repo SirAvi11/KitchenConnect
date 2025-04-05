@@ -54,5 +54,58 @@
 
 #revenueChart {
     width: 100% !important;
-    height: 300px !important;
+}
+
+.chart-container {
+    margin: 0 auto;
+    max-width: 100%;
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+}
+
+/* For better responsive behavior */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+}
+
+.status-badge {
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.status-completed {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-failed {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-refunded {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-pending {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+#paymentRecordsTable {
+    font-size: 14px;
+}
+
+#paymentRecordsTable th {
+    font-weight: 600;
+    color: #6c757d;
+    border-top: none;
 }

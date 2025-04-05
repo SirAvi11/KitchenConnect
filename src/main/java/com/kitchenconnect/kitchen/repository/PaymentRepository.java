@@ -13,8 +13,21 @@ import com.kitchenconnect.kitchen.enums.PaymentStatus;
 
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
+
+    // Get all payments for a specific chef (through kitchen->user->chef relationship)
+    @Query("SELECT p FROM Payment p " +
+           "JOIN p.order o " +
+           "JOIN o.kitchen k " +
+           "JOIN k.user ku " +
+           "JOIN Chef c ON ku.id = c.user.id " +
+           "WHERE c.id = :chefId " +
+           "AND p.paymentDate BETWEEN :start AND :end ")
+    List<Payment> findByChefIdAndPaymentDateBetween(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("chefId") Long chefId);
     
-    // Get payments for a specific chef (through kitchen->user->chef relationship)
+    // Get payments for a specific chef based on status (through kitchen->user->chef relationship)
     @Query("SELECT p FROM Payment p " +
            "JOIN p.order o " +
            "JOIN o.kitchen k " +

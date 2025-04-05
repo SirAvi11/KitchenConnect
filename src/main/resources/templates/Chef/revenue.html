@@ -33,7 +33,9 @@
             </div>
         </div>
         <div class="position-relative">
-            <canvas id="revenueChart" height="300"></canvas>
+            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                <canvas id="revenueChart"></canvas>
+            </div>
         </div>
     </div>
     
@@ -69,6 +71,33 @@
             </div>
         </div>
     </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="h6 font-weight-semibold">
+                <strong>Payment Records</strong>
+            </h2>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover" id="paymentRecordsTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Credited</th>
+                        <th>Platform Fee</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <div class="text-muted small mt-2" id="recordsInfo">
+            Showing records for selected period
+        </div>
+    </div>
   
     <script th:inline="javascript">
         /*<![CDATA[*/
@@ -80,6 +109,7 @@
         // Initialize the dashboard
         document.addEventListener('DOMContentLoaded', function() {
             initializeDashboard();
+            initializePaymentRecords();
             
             // Event listeners
             document.getElementById('periodSelect').addEventListener('change', function() {
@@ -111,19 +141,45 @@
                     datasets: [{
                         label: 'Revenue',
                         data: [],
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 2,
+                        tension: 0.4,
                         fill: true,
-                        backgroundColor: 'rgba(75, 192, 192, 0.1)'
+                        pointBackgroundColor: 'rgba(75, 192, 192, 1)',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // This gives you control over dimensions
                     plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 12,
+                                    family: "'Segoe UI', Roboto, sans-serif"
+                                },
+                                padding: 20
+                            }
+                        },
                         tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                            titleFont: {
+                                size: 14
+                            },
+                            bodyFont: {
+                                size: 12
+                            },
+                            padding: 10,
+                            cornerRadius: 4,
+                            displayColors: true,
                             callbacks: {
                                 label: function(context) {
-                                    return '$' + context.parsed.y.toFixed(2);
+                                    return '$' + context.parsed.y.toLocaleString();
                                 }
                             }
                         }
@@ -132,16 +188,53 @@
                         x: {
                             type: 'time',
                             time: {
-                                unit: 'day'
+                                unit: 'day',
+                                tooltipFormat: 'MMM d, yyyy',
+                                displayFormats: {
+                                    day: 'MMM d',
+                                    week: 'MMM d',
+                                    month: 'MMM yyyy',
+                                    year: 'yyyy'
+                                }
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 11,
+                                    family: "'Segoe UI', Roboto, sans-serif"
+                                },
+                                maxRotation: 45,
+                                minRotation: 45,
+                                padding: 10
                             }
                         },
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.05)',
+                                drawBorder: false
+                            },
                             ticks: {
+                                font: {
+                                    size: 11,
+                                    family: "'Segoe UI', Roboto, sans-serif"
+                                },
+                                padding: 10,
                                 callback: function(value) {
-                                    return '$' + value;
+                                    return '$' + value.toLocaleString();
                                 }
                             }
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 20,
+                            bottom: 20,
+                            left: 20
                         }
                     }
                 }
@@ -284,6 +377,62 @@
             comparisonElement.textContent = isIncrease 
                 ? `Higher than last ${currentPeriod.slice(0, -2)}` 
                 : `Lower than last ${currentPeriod.slice(0, -2)}`;
+        }
+
+        function initializePaymentRecords() {
+            fetchPaymentRecords();
+        }
+        
+        function fetchPaymentRecords() {
+            const startDateStr = formatDateForAPI(currentStartDate);
+            const endDateStr = formatDateForAPI(currentEndDate);
+            
+            fetch(`/revenue/payments?startDate=${startDateStr}&endDate=${endDateStr}`)
+                .then(response => response.json())
+                .then(data => {
+                    renderPaymentRecords(data);
+                })
+                .catch(error => console.error('Error fetching payment records:', error));
+        }
+        
+        function renderPaymentRecords(payments) {
+            const tbody = document.querySelector('#paymentRecordsTable tbody');
+            tbody.innerHTML = '';
+            
+            if (payments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            No payment records found for the selected period
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('recordsInfo').textContent = 'No records found';
+                return;
+            }
+            
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                const statusClass = `status-${payment.status.toLowerCase()}`;
+                const formattedDate = new Date(payment.paymentDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                });
+                
+                row.innerHTML = `
+                    <td>${formattedDate}</td>
+                    <td>${payment.orderId}</td>
+                    <td>₹${payment.amount.toFixed(2)}</td>
+                    <td>₹${payment.platformFee.toFixed(2)}</td>
+                    <td><span class="status-badge ${statusClass}">${payment.status}</span></td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('recordsInfo').textContent = 
+                `Showing ${payments.length} records for selected period`;
         }
         /*]]>*/
     </script>

@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kitchenconnect.kitchen.DTO.PaymentRecordRequest;
 import com.kitchenconnect.kitchen.DTO.RevenueData;
 import com.kitchenconnect.kitchen.entity.Chef;
 import com.kitchenconnect.kitchen.entity.Payment;
@@ -51,7 +53,10 @@ public class RevenueServiceImpl implements RevenueService {
         
         RevenueData data = new RevenueData();
         List<String> labels = generateDateLabels(period, startDate, endDate);
-        data.setLabels(labels);
+        // Ensure dates are formatted as ISO strings (YYYY-MM-DD)
+        data.setLabels(labels.stream()
+        .map(date -> date.toString()) // LocalDate.toString() gives ISO format
+        .collect(Collectors.toList()));
         
         List<Double> values = getRevenueValues(period, startDate, endDate, chefId);
         data.setValues(values);
@@ -65,6 +70,31 @@ public class RevenueServiceImpl implements RevenueService {
         data.setIncrease(percentageChange >= 0);
         
         return data;
+    }
+
+    @Override
+    public List<PaymentRecordRequest> getPaymentsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        Long chefId = getCurrentChefId();
+        
+        return paymentRepository.findByChefIdAndPaymentDateBetween(
+            startDate.atStartOfDay(),
+            endDate.atTime(23, 59, 59),
+            chefId
+        ).stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    private PaymentRecordRequest convertToDto(Payment payment) {
+        PaymentRecordRequest dto = new PaymentRecordRequest();
+        
+        // Map all necessary fields from Payment to PaymentRecordRequest
+        dto.setId(payment.getId());
+        dto.setOrderId(payment.getOrder().getId());
+        dto.setAmount(payment.getAmount());
+        dto.setPlatformFee(payment.getPlatformFee());
+        dto.setStatus(payment.getPaymentStatus().toString());
+        dto.setPaymentDate(payment.getPaymentDate());
+        
+        return dto;
     }
     
     @Override
