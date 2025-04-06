@@ -48,11 +48,11 @@
             </div>
             <span>Personal Information</span>
         </li>
-        <li data-tab="view-kitchens" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}" th:classappend="${param.tab == 'view-kitchens'} ? 'active-tab' : ''">
+        <li data-tab="manage-all-kitchens" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}" th:classappend="${param.tab == 'manage-all-kitchens'} ? 'active-tab' : ''">
             <div class="dashboard-icon">
-                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'view-kitchens'} ? 'theme-text' : 'text-muted'"></i>
+                <i class="fas fa-cogs text-dark tab-icon" th:classappend="${param.tab == 'manage-all-kitchens'} ? 'theme-text' : 'text-muted'"></i>
             </div>
-            <span>View Kitchens</span>
+            <span>Manage Kitchens</span>
         </li>
         <li data-tab="manage-users" class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'ADMIN'}" th:classappend="${param.tab == 'manage-users'} ? 'active-tab' : ''">
             <div class="dashboard-icon">

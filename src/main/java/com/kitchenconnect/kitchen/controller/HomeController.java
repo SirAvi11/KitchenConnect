@@ -202,12 +202,15 @@ public class HomeController {
         List<Kitchen> underVerificationKitchens = kitchenService.getKitchenUnderVerification();
         List<Kitchen> activeKitchens = kitchenService.getActiveKitchens();
         List<Kitchen> allKitchens = kitchenService.getAllKitchens();
-
-        kitchenData.put("underVerificationKitchens", underVerificationKitchens);
+        List<Kitchen> rejectedKitchens = allKitchens.stream()
+            .filter(kitchen -> kitchen.getStatus() == KitchenStatus.REJECTED)
+            .collect(Collectors.toList());
+        
         kitchenData.put("underVerificationCount", underVerificationKitchens.size());
 
-        kitchenData.put("activeKitchens", activeKitchens);
         kitchenData.put("activeCount", activeKitchens.size());
+
+        kitchenData.put("rejectedKitchenCount", rejectedKitchens.size());
 
         kitchenData.put("allKitchens", allKitchens);
         kitchenData.put("allCount", allKitchens.size());
