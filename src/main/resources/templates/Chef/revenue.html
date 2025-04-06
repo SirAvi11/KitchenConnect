@@ -189,6 +189,7 @@
                             type: 'time',
                             time: {
                                 unit: 'day',
+                                parser: 'YYYY-MM-DD',
                                 tooltipFormat: 'MMM d, yyyy',
                                 displayFormats: {
                                     day: 'MMM d',
@@ -208,7 +209,8 @@
                                 },
                                 maxRotation: 45,
                                 minRotation: 45,
-                                padding: 10
+                                padding: 10,
+                                source: 'data'
                             }
                         },
                         y: {
@@ -312,14 +314,39 @@
         }
         
         function updateChart(data) {
+            // Convert ISO strings to Date objects with proper time
+            const dateObjects = data.labels.map(label => {
+                // Add noon time to avoid timezone issues
+                return new Date(label + 'T12:00:00');
+            });
+        
             // Update chart data
-            revenueChart.data.labels = data.labels;
+            revenueChart.data.labels = dateObjects;
             revenueChart.data.datasets[0].data = data.values;
             
-            // Update time unit based on period
-            revenueChart.options.scales.x.time.unit = 
-                currentPeriod === 'yearly' ? 'month' : 
-                currentPeriod === 'monthly' ? 'week' : 'day';
+            // Configure time scale based on period
+            const timeScale = revenueChart.options.scales.x;
+            timeScale.time.unit = currentPeriod === 'yearly' ? 'month' : 
+                                 currentPeriod === 'monthly' ? 'week' : 'day';
+            
+            // For weekly view, force daily ticks with proper formatting
+            if (currentPeriod === 'weekly') {
+                timeScale.time.displayFormats.day = 'MMM d'; // Format as "Mar 31"
+                timeScale.ticks = {
+                    callback: function(value) {
+                        // Custom formatter to ensure proper dates
+                        const date = new Date(value);
+                        return date.toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric'
+                        });
+                    }
+                };
+            }
+            
+            // Set explicit bounds for the axis
+            timeScale.min = dateObjects[0];
+            timeScale.max = dateObjects[dateObjects.length - 1];
             
             revenueChart.update();
         }
