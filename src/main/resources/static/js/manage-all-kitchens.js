@@ -1,25 +1,43 @@
 function updateKitchenStatus(kitchenId, isApproved) {
-    const kitchenCard = document.getElementById(`kitchen-card-${kitchenId}`);
-    
+    const statusValue = isApproved ? "APPROVED" : "REJECTED"; // enum string for backend
+    let id = kitchenId;
+
+    if(id == null || id == "" || id == undefined){
+        id = document.getElementById('hiddenKitchenId').value;
+    }
+
     fetch('/kitchens/statusUpdate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ kitchenId: kitchenId, isApproved: Boolean(isApproved) })
+        body: JSON.stringify({ kitchenId: id, status: statusValue })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.status == "success") {
-            // Replace modal body to show success message before closing the modal
-            
+        if (data.status === "success") {
+            const modalBody = document.querySelector('#kitchenDetailsModal .modal-body');
+            modalBody.innerHTML = `<div class="alert alert-success">Kitchen ${statusValue.toLowerCase()} successfully.</div>`;
+
+            setTimeout(() => {
+                const modalElement = document.getElementById('kitchenDetailsModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                if (modalInstance) {
+                    modalInstance.hide();
+                }
+
+                document.body.classList.remove('modal-open');
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                window.location.href = "/dashboard?tab=manage-all-kitchens"
+            }, 1000);
         } else {
-            // Replace modal body to show rejected message before closing the modal
             console.error("Failed to update kitchen status");
         }
     })
     .catch(error => console.error("Error updating:", error));
 }
+
+
 
 function getDocuments(kitchenId) {
 
@@ -106,3 +124,144 @@ function updateDocumentModal(documents) {
         modalBody.appendChild(panDiv);
     }
 }  
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Get all "View" buttons
+    const viewButtons = document.querySelectorAll('.view-kitchen-btn');
+
+    // Add click event listener to each button
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Extract data from the button's data attributes
+            const kitchenId = button.getAttribute('data-kitchen-id');
+            const requestedBy = button.getAttribute('data-requested-by');
+            const kitchenName = button.getAttribute('data-kitchen-name');
+            const status = button.getAttribute('data-status');
+            const description = button.getAttribute('data-kitchen-description');
+            const deliveryFees = parseFloat(button.getAttribute('data-kitchen-delivery'));
+            const address = button.getAttribute('data-address');
+            const contactNumber = button.getAttribute('data-contact-number');
+            const speciality = button.getAttribute('data-speciality');
+            const openDays = button.getAttribute('data-open-days');
+            const openTime = button.getAttribute('data-open-time');
+            const closeTime = button.getAttribute('data-close-time');
+            const fssaiNumber = button.getAttribute('data-fssai-number');
+            const fssaiExpiry = button.getAttribute('data-fssai-expiry');
+            const panNumber = button.getAttribute('data-pan-number');
+
+            // Populate the modal with the extracted data
+            document.getElementById('hiddenKitchenId').value = kitchenId;
+
+            document.getElementById('requestedBy').textContent = requestedBy;
+            document.getElementById('kitchenName').textContent = kitchenName;
+            document.getElementById('status').textContent = status;
+            document.getElementById('description').textContent = description;
+            document.getElementById('address').textContent = address;
+            document.getElementById('deliveryFees').textContent = deliveryFees;
+            document.getElementById('speciality').textContent = speciality;
+
+            document.getElementById('contactNumber').textContent = contactNumber;
+            document.getElementById('openDays').textContent = openDays;
+            document.getElementById('openTime').textContent = openTime;
+            document.getElementById('closeTime').textContent = closeTime;
+            document.getElementById('fssaiNumber').textContent = fssaiNumber;
+            document.getElementById('expiryData').textContent = fssaiExpiry;
+            document.getElementById('panNumber').textContent = panNumber;
+
+            // Show the modal
+            const modal = new bootstrap.Modal(document.getElementById('kitchenDetailsModal'));
+            modal.show();
+        });
+    });
+
+     // Get all status dropdowns
+    const statusDropdowns = document.querySelectorAll('.kitchen-status-dropdown');
+
+    // Add change event listener to each dropdown
+    statusDropdowns.forEach(dropdown => {
+        dropdown.addEventListener('change', function () {
+            const kitchenId = dropdown.getAttribute('data-kitchen-id');
+            const newStatus = dropdown.value;
+            if(newStatus != "ALL"){
+                const statusValue = newStatus == "APPROVED" ? true : false;
+                updateKitchenStatus(kitchenId,statusValue);
+            }
+        });
+    });
+
+    // Get filter elements
+        const kitchenId = document.getElementById('searchKitchenId');
+        const searchButton = document.getElementById('searchButton');
+        const filterStatus = document.getElementById('filterStatus');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const refreshButton = document.getElementById('refreshButton');
+        const tableRows = document.querySelectorAll('tbody tr');
+    
+        // Function to filter table rows
+        function filterTable() {
+            const searchText = kitchenId.value.trim().toLowerCase();
+            const selectedStatus = filterStatus.value;
+            const startDateValue = startDate.value;
+            const endDateValue = endDate.value;
+    
+            tableRows.forEach(row => {
+                const orderNumber = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
+                const orderDate = row.querySelector('td:nth-child(4)').textContent.trim();
+    
+                // Convert order date to a comparable format (dd-MM-yyyy to yyyy-MM-dd)
+                const orderDateFormatted = orderDate.split('-').reverse().join('-');
+    
+                // Get the status from the dropdown or span
+                const statusCell = row.querySelector('td:nth-child(6)');
+                let status = '';
+    
+                if (statusCell.querySelector('select')) {
+                    // If the status is in a dropdown, get the selected value
+                    status = statusCell.querySelector('select').value;
+                } else if (statusCell.querySelector('span')) {
+                    // If the status is in a span, get the text content
+                    status = statusCell.querySelector('span').textContent.trim();
+                }
+    
+                // Check if the row matches the filters
+                const matchesSearch = orderNumber.includes(searchText);
+                const matchesStatus = selectedStatus === 'ALL' || status === selectedStatus;
+                const matchesDateRange = (!startDateValue || orderDateFormatted >= startDateValue) &&
+                                        (!endDateValue || orderDateFormatted <= endDateValue);
+    
+                // Show or hide the row based on the filters
+                if (matchesSearch && matchesStatus && matchesDateRange) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    
+        // Add event listeners
+        searchButton.addEventListener('click', filterTable);
+        filterStatus.addEventListener('change', filterTable);
+        startDate.addEventListener('change', filterTable);
+        endDate.addEventListener('change', filterTable);
+    
+        // Refresh button to reset filters
+        refreshButton.addEventListener('click', function () {
+            searchOrderNumber.value = '';
+            filterStatus.value = 'ALL';
+            startDate.value = '';
+            endDate.value = '';
+            filterTable(); // Reapply filters (which will show all rows)
+        });
+    
+        // Initial filter application (optional)
+        filterTable();
+
+        const kitchenModal = document.getElementById('kitchenDetailsModal');
+        kitchenModal.addEventListener('hidden.bs.modal', () => {
+            // Absolute fallback
+            document.body.classList.remove('modal-open');
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        });
+
+});

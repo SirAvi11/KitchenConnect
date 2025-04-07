@@ -194,7 +194,7 @@ public class KitchenController {
     @PostMapping("/statusUpdate")
     @ResponseBody
     public Map<String, Object> updateKitchenStatus(@RequestBody KitchenStatusUpdateRequest kitchenRequest, HttpSession session) {
-        boolean updated = kitchenService.updateKitchenStatus(kitchenRequest.getKitchenId(), kitchenRequest.getIsApproved());
+        boolean updated = kitchenService.updateKitchenStatus(kitchenRequest.getKitchenId(), kitchenRequest.getStatus());
         Map<String, Object> response = new HashMap<>();
 
         if(updated){

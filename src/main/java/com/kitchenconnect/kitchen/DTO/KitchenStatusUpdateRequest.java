@@ -1,8 +1,18 @@
 package com.kitchenconnect.kitchen.DTO;
 
+import com.kitchenconnect.kitchen.enums.KitchenStatus;
+
 public class KitchenStatusUpdateRequest {
     private Long kitchenId;
-    private Boolean isApproved;
+    private KitchenStatus status;
+
+    public KitchenStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(KitchenStatus status) {
+        this.status = status;
+    }
 
     public Long getKitchenId() {
         return kitchenId;
@@ -12,11 +22,4 @@ public class KitchenStatusUpdateRequest {
         this.kitchenId = kitchenId;
     }
 
-    public Boolean getIsApproved() {
-        return isApproved;
-    }
-
-    public void setIsApproved(Boolean isApproved) {
-        this.isApproved = isApproved;
-    }
 }

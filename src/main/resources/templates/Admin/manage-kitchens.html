@@ -11,8 +11,8 @@
             <h1 class="h4">Manage Kitchens</h1>
         </div>
         <div class="d-flex mb-4">
-            <!-- Search by Order Number -->
-            <input type="text" id="searchOrderNumber" class="form-control mr-2" placeholder="Search order number...">
+            <!-- Search by Kitchen Number -->
+            <input type="text" id="searchKitchenId" class="form-control mr-2" placeholder="Search kitchen id...">
             <button id="searchButton" class="btn btn-warning mr-2"><i class="fas fa-search"></i></button>
         
             <!-- Filter by Status -->
@@ -85,8 +85,7 @@
                                         + ', ' + (kitchen?.city ?: '')}"></td>
                                         
                         <td>
-                            <select th:if="${kitchen?.status?.name() == 'UNDER_VERIFICATION' 
-                                            or kitchen?.status?.name() == 'APPROVED'}"
+                            <select th:if="${kitchen?.status?.name() == 'UNDER_VERIFICATION'}"
                                     class="form-control form-control-sm kitchen-status-dropdown" 
                                     th:data-kitchen-id="${kitchen?.kitchenId}" 
                                     id="filterStatus">
@@ -96,13 +95,15 @@
                                     UNDER_VERIFICATION
                                 </option>
                     
-                                <option value="APPROVED"
-                                        th:selected="${kitchen?.status?.name() == 'APPROVED'}">
-                                    APPROVED
-                                </option>
+                                <option value="APPROVED">APPROVED</option>
+
                     
                                 <option value="REJECTED">REJECTED</option>
                             </select>
+
+                            <span th:if="${kitchen?.status?.name() == 'APPROVED'}" class="badge bg-green">
+                                APPROVED
+                            </span>
                     
                             <span th:if="${kitchen?.status?.name() == 'REJECTED'}" class="badge bg-danger">
                                 REJECTED
@@ -113,6 +114,7 @@
                             <button class="btn btn-primary btn-sm view-kitchen-btn"
                                     th:data-kitchen-id="${kitchen?.kitchenId}"
                                     th:data-requested-by="${(kitchen?.user?.firstname ?: '') + ' ' + (kitchen?.user?.lastname ?: '')}"
+                                    th:data-kitchen-name="${kitchen?.kitchenName ?: ''}"
                                     th:data-kitchen-description="${kitchen?.kitchenDescription ?: ''}"
                                     th:data-kitchen-delivery="${kitchen?.deliveryFees ?: ''}"
                                     th:data-address="${(kitchen?.shopName ?: '') 
@@ -150,11 +152,18 @@
                 </div>
                 <div class="modal-body">
                     <!-- Kitchen Details -->
+                    <input type="hidden" id="hiddenKitchenId">
                     <div class="mb-4">
                         <h6 class="mb-3 sub-title">Customer Details</h6>
                         <div class="row">
                             <!-- First Column -->
                             <div class="col-md-6">
+                                <p class="mb-1"><strong>Kitchen Name:</strong> 
+                                    <span id="kitchenName"></span>
+                                </p>
+                                <p class="mb-1"><strong>Status:</strong> 
+                                    <strong><span id="status"></span></strong>
+                                </p>
                                 <p class="mb-1"><strong>Requested By:</strong> 
                                     <span id="requestedBy"></span>
                                 </p>
@@ -167,15 +176,15 @@
                                 <p class="mb-1"><strong>Delivery Fees:</strong> 
                                     <span id="deliveryFees"></span>
                                 </p>
-                                <p class="mb-1"><strong>Contact Number:</strong> 
-                                    <span id="contactNumber"></span>
-                                </p>
                                 <p class="mb-1"><strong>Speciality:</strong> 
                                     <span id="speciality"></span>
                                 </p>
                             </div>                                      
                             <!-- Second Column -->
                             <div class="col-md-6">
+                                <p class="mb-1"><strong>Contact Number:</strong> 
+                                    <span id="contactNumber"></span>
+                                </p>
                                 <p class="mb-1"><strong>Open Days:</strong> 
                                     <span id="openDays"></span>
                                 </p>

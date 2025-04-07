@@ -141,13 +141,13 @@ public class KitchenServiceImpl implements KitchenService {
         return kitchenRepository.findByUser(user);
     }
 
-    public boolean updateKitchenStatus(Long kitchenId, boolean isApproved) {
+    public boolean updateKitchenStatus(Long kitchenId, KitchenStatus status) {
         Optional<Kitchen> retrievedKitchen = kitchenRepository.findById(kitchenId);
         if (retrievedKitchen.isPresent()) {
             Kitchen kitchen = retrievedKitchen.get();
-            kitchen.setStatus(isApproved ? KitchenStatus.APPROVED : KitchenStatus.REJECTED);
+            kitchen.setStatus(status);
             kitchen.getUser().setFirstLogin(true);
-            if(isApproved){
+            if(status == KitchenStatus.APPROVED){
                 kitchen.getUser().setRole(UserRole.CHEF);
                 Chef chef = new Chef();
                 chef.setBiography("Write you journey!");
