@@ -18,6 +18,7 @@ import com.kitchenconnect.kitchen.repository.KitchenRepository;
 import com.kitchenconnect.kitchen.repository.UserRepository;
 import com.kitchenconnect.kitchen.service.KitchenService;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 
@@ -136,32 +137,56 @@ public class KitchenServiceImpl implements KitchenService {
         }
     }
 
-
     public Kitchen findKitchenByUser(User user) {
         return kitchenRepository.findByUser(user);
     }
 
-    public boolean updateKitchenStatus(Long kitchenId, KitchenStatus status) {
-        Optional<Kitchen> retrievedKitchen = kitchenRepository.findById(kitchenId);
-        if (retrievedKitchen.isPresent()) {
-            Kitchen kitchen = retrievedKitchen.get();
-            kitchen.setStatus(status);
-            kitchen.getUser().setFirstLogin(true);
-            if(status == KitchenStatus.APPROVED){
-                kitchen.getUser().setRole(UserRole.CHEF);
-                Chef chef = new Chef();
-                chef.setBiography("Write you journey!");
-                chef.setFavouriteDishes(String.join(",", kitchen.getSelectedCuisines()));
-                chef.setKitchen(kitchen);
-                chef.setUser(kitchen.getUser());
-                chefRepository.save(chef);
-            }
-            userRepository.save(kitchen.getUser());
-            kitchenRepository.save(kitchen);
-            return true;
+    @Transactional
+public boolean updateKitchenStatus(Long kitchenId, KitchenStatus status) {
+    Kitchen kitchen = kitchenRepository.findById(kitchenId)
+            .orElseThrow(() -> new EntityNotFoundException("Kitchen not found"));
+
+    // First save any changes to the kitchen
+    kitchen.setStatus(status);
+    kitchen.getUser().setFirstLogin(true);
+
+    if (status == KitchenStatus.APPROVED) {
+        kitchen.getUser().setRole(UserRole.CHEF);
+        
+        if (kitchen.getChef() == null) {
+            Chef chef = new Chef();
+            chef.setBiography("Write your journey!");
+            chef.setFavouriteDishes(String.join(",", kitchen.getSelectedCuisines()));
+            chef.setUser(kitchen.getUser());
+            
+            // This is the critical part - save the chef FIRST
+            chef = chefRepository.save(chef);
+            
+            // Then establish the relationship
+            chef.setKitchen(kitchen);
+            kitchen.setChef(chef);
+        } else {
+            // Update existing chef
+            Chef chef = kitchen.getChef();
+            chef.setFavouriteDishes(String.join(",", kitchen.getSelectedCuisines()));
+            chefRepository.save(chef);
         }
-        return false;
+    } 
+    else if (status == KitchenStatus.REJECTED) {
+        kitchen.getUser().setRole(UserRole.FOOD_LOVER);
+        if (kitchen.getChef() != null) {
+            chefRepository.delete(kitchen.getChef());
+            kitchen.setChef(null);
+        }
     }
+    else if (status == KitchenStatus.UNDER_VERIFICATION) {
+        kitchen.getUser().setRole(UserRole.FOOD_LOVER);
+    }
+
+    // Finally save the kitchen
+    kitchenRepository.save(kitchen);
+    return true;
+}
     
     public Kitchen updateKitchen(Long kitchenId, Kitchen updatedKitchen) {
         Kitchen existingKitchen = kitchenRepository.findById(kitchenId)

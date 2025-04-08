@@ -215,9 +215,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="reject-btn" class="btn btn-danger me-2" th:onclick="'updateKitchenStatus(' + ${kitchen?.kitchenId} + ', false)'">Reject</button>
-                    <button id="approve-btn" class="btn btn-success" th:onclick="'updateKitchenStatus(' + ${kitchen?.kitchenId} + ', true)'">Approve</button>
+                <div class="modal-footer" id="modalFooterButtons">
+                    <!-- Buttons will be dynamically inserted here -->
                 </div>
             </div>
         </div>

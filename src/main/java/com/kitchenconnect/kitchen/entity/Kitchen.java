@@ -18,6 +18,51 @@ public class Kitchen {
     @Column(name = "kitchen_id")
     private Long kitchenId;
 
+    
+
+    @OneToOne(mappedBy = "kitchen", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Chef chef;
+
+    public Chef getChef() {
+        return chef;
+    }
+
+    // Helper method to maintain consistency
+    public void setChef(Chef chef) {
+        if (chef == null) {
+            if (this.chef != null) {
+                this.chef.setKitchen(null);
+            }
+        } else {
+            chef.setKitchen(this);
+        }
+        this.chef = chef;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public void setMenuImagePaths(String menuImagePaths) {
+        this.menuImagePaths = menuImagePaths;
+    }
+
+    public void setOpenDays(String openDays) {
+        this.openDays = openDays;
+    }
+
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true) // Foreign key reference to User
     private User user;
@@ -26,11 +71,11 @@ public class Kitchen {
     @Column(name = "status", nullable = false)
     private KitchenStatus status = KitchenStatus.UNDER_VERIFICATION;
 
-    @OneToMany(mappedBy = "kitchen", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "kitchen", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     @JsonBackReference // Prevents circular reference
     private List<Category> categories;
 
-    @OneToMany(mappedBy = "kitchen", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OneToMany(mappedBy = "kitchen", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
     private List<Order> orders;
 
     @Column(name = "kitchen_name", length = 35, nullable = false)
@@ -136,7 +181,7 @@ public class Kitchen {
     public void setStatus(KitchenStatus status) {
         this.status = status;
     }
-    
+
     public String getKitchenName() {
         return kitchenName;
     }

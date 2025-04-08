@@ -33,8 +33,12 @@ public class Chef {
         return kitchen;
     }
 
+    // Add this to properly handle the relationship
     public void setKitchen(Kitchen kitchen) {
         this.kitchen = kitchen;
+        if (kitchen != null && kitchen.getChef() != this) {
+            kitchen.setChef(this);
+        }
     }
     
     public Long getChefId() {

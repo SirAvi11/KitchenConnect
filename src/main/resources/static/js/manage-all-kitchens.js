@@ -1,11 +1,15 @@
 function updateKitchenStatus(kitchenId, isApproved) {
-    const statusValue = isApproved ? "APPROVED" : "REJECTED"; // enum string for backend
+    const statusValue = isApproved ? "APPROVED" : "REJECTED";
     let id = kitchenId;
 
     if(id == null || id == "" || id == undefined){
         id = document.getElementById('hiddenKitchenId').value;
     }
 
+    updateKitchenStatusAPI(id, statusValue);
+}
+
+function updateKitchenStatusAPI(id, statusValue) {
     fetch('/kitchens/statusUpdate', {
         method: 'POST',
         headers: {
@@ -16,25 +20,26 @@ function updateKitchenStatus(kitchenId, isApproved) {
     .then(response => response.json())
     .then(data => {
         if (data.status === "success") {
-            const modalBody = document.querySelector('#kitchenDetailsModal .modal-body');
-            modalBody.innerHTML = `<div class="alert alert-success">Kitchen ${statusValue.toLowerCase()} successfully.</div>`;
-
+            // Close the modal properly
+            const modalElement = document.getElementById('kitchenDetailsModal');
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+            
+            // Refresh the page after a short delay
             setTimeout(() => {
-                const modalElement = document.getElementById('kitchenDetailsModal');
-                const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                if (modalInstance) {
-                    modalInstance.hide();
-                }
-
-                document.body.classList.remove('modal-open');
-                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                window.location.href = "/dashboard?tab=manage-all-kitchens"
-            }, 1000);
+                window.location.href = "/dashboard?tab=manage-all-kitchens";
+            }, 500);
         } else {
             console.error("Failed to update kitchen status");
         }
     })
     .catch(error => console.error("Error updating:", error));
+}
+
+function markForReview(kitchenId) {
+    updateKitchenStatusAPI(kitchenId, "UNDER_VERIFICATION");
 }
 
 
@@ -168,11 +173,30 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('expiryData').textContent = fssaiExpiry;
             document.getElementById('panNumber').textContent = panNumber;
 
+            // Update modal footer buttons based on status
+            updateModalFooterButtons(kitchenId, status);
+
             // Show the modal
             const modal = new bootstrap.Modal(document.getElementById('kitchenDetailsModal'));
             modal.show();
         });
     });
+
+    function updateModalFooterButtons(kitchenId, status) {
+        const modalFooter = document.getElementById('modalFooterButtons');
+        modalFooter.innerHTML = ''; // Clear existing buttons
+        
+        if (status === 'UNDER_VERIFICATION') {
+            modalFooter.innerHTML = `
+                <button id="reject-btn" class="btn btn-danger me-2" onclick="updateKitchenStatus(${kitchenId}, false)">Reject</button>
+                <button id="approve-btn" class="btn btn-success" onclick="updateKitchenStatus(${kitchenId}, true)">Approve</button>
+            `;
+        } else {
+            modalFooter.innerHTML = `
+                <button id="mark-for-review-btn" class="btn btn-warning" onclick="markForReview(${kitchenId})">Mark for Review</button>
+            `;
+        }
+    }
 
      // Get all status dropdowns
     const statusDropdowns = document.querySelectorAll('.kitchen-status-dropdown');
