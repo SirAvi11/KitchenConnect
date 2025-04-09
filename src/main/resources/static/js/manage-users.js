@@ -62,67 +62,46 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Get filter elements
         const userId = document.getElementById('searchUserId');
-        const searchButton = document.getElementById('searchButton');
-        const filterStatus = document.getElementById('filterStatus');
-        const startDate = document.getElementById('startDate');
-        const endDate = document.getElementById('endDate');
-        const refreshButton = document.getElementById('refreshButton');
-        const tableRows = document.querySelectorAll('tbody tr');
+        const searchButton = document.getElementById('userSearchButton');
+        const filterUserRole = document.getElementById('filterUserRole');
+        const refreshButton = document.getElementById('userRefreshButton');
+        const tableRows = document.querySelectorAll('#userTable tbody tr');
     
         // Function to filter table rows
         function filterTable() {
             const searchText = userId.value.trim().toLowerCase();
-            const selectedStatus = filterStatus.value;
-            const startDateValue = startDate.value;
-            const endDateValue = endDate.value;
-    
+            const selectedRole = filterUserRole.value;
+        
             tableRows.forEach(row => {
-                const orderNumber = row.querySelector('td:nth-child(2)').textContent.trim().toLowerCase();
-                const orderDate = row.querySelector('td:nth-child(4)').textContent.trim();
-    
-                // Convert order date to a comparable format (dd-MM-yyyy to yyyy-MM-dd)
-                const orderDateFormatted = orderDate.split('-').reverse().join('-');
-    
-                // Get the status from the dropdown or span
-                const statusCell = row.querySelector('td:nth-child(6)');
-                let status = '';
-    
-                if (statusCell.querySelector('select')) {
-                    // If the status is in a dropdown, get the selected value
-                    status = statusCell.querySelector('select').value;
-                } else if (statusCell.querySelector('span')) {
-                    // If the status is in a span, get the text content
-                    status = statusCell.querySelector('span').textContent.trim();
-                }
-    
-                // Check if the row matches the filters
-                const matchesSearch = orderNumber.includes(searchText);
-                const matchesStatus = selectedStatus === 'ALL' || status === selectedStatus;
-                const matchesDateRange = (!startDateValue || orderDateFormatted >= startDateValue) &&
-                                        (!endDateValue || orderDateFormatted <= endDateValue);
-    
-                // Show or hide the row based on the filters
-                if (matchesSearch && matchesStatus && matchesDateRange) {
+                const viewBtn = row.querySelector('.view-user-btn');
+                const rowUserId = viewBtn.getAttribute('data-user-id').toLowerCase();
+                const rowRole = viewBtn.getAttribute('data-user-role');
+        
+                const matchesUserId = rowUserId.includes(searchText);
+                const matchesRole =
+                    selectedRole === 'ALL' ||
+                    rowRole === selectedRole ||
+                    (selectedRole === 'FOOD_LOVER' && rowRole === 'FOOD_LOVER');
+        
+                if (matchesUserId && matchesRole) {
                     row.style.display = '';
                 } else {
                     row.style.display = 'none';
                 }
             });
         }
+        
+        
     
         // Add event listeners
         searchButton.addEventListener('click', filterTable);
-        filterStatus.addEventListener('change', filterTable);
-        startDate.addEventListener('change', filterTable);
-        endDate.addEventListener('change', filterTable);
+        filterUserRole.addEventListener('change', filterTable);
     
         // Refresh button to reset filters
         refreshButton.addEventListener('click', function () {
-            searchOrderNumber.value = '';
-            filterStatus.value = 'ALL';
-            startDate.value = '';
-            endDate.value = '';
-            filterTable(); // Reapply filters (which will show all rows)
+            userId.value = '';
+            filterUserRole.value = 'ALL';
+            filterTable(); // Show all users again
         });
     
         // Initial filter application (optional)

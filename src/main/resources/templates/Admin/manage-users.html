@@ -13,17 +13,17 @@
         <div class="d-flex mb-4">
             <!-- Search by User Id -->
             <input type="text" id="searchUserId" class="form-control mr-2" placeholder="Search user id...">
-            <button id="searchButton" class="btn btn-warning mr-2"><i class="fas fa-search"></i></button>
+            <button id="userSearchButton" class="btn btn-warning mr-2"><i class="fas fa-search"></i></button>
         
             <!-- Filter by Status -->
-            <select id="filterStatus" class="form-control mr-2">
+            <select id="filterUserRole" class="form-control mr-2">
                 <option value="ALL">All</option>
                 <option value="FOOD_LOVER">FOOD LOVER</option>
                 <option value="CHEF">CHEF</option>
             </select>
         
             <!-- Refresh Button -->
-            <button id="refreshButton" class="btn btn-warning"><i class="fas fa-sync-alt"></i></button>
+            <button id="userRefreshButton" class="btn btn-warning"><i class="fas fa-sync-alt"></i></button>
         </div>
         <div class="row mb-4 text-center">
             <div class="col-md-2">
@@ -46,7 +46,7 @@
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table id="userTable" class="table table-bordered">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -70,7 +70,7 @@
 
                         <td th:text="${user?.phoneNumber ?: 'N/A'}"></td>
 
-                        <td th:text="${user?.role ?: 'N/A'}"></td>
+                        <td th:text="${user?.role.name() == 'FOOD_LOVER' ? 'FOOD LOVER' : user?.role}"></td>
                                         
                         <td>
                             <button class="btn btn-primary btn-sm view-user-btn"
