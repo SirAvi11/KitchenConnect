@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import com.kitchenconnect.kitchen.DTO.ChefRequest;
 import com.kitchenconnect.kitchen.entity.Chef;
 import com.kitchenconnect.kitchen.service.ChefService;
 
@@ -113,5 +114,22 @@ public class ChefController {
         String returnPath = "/uploads/chef/" + chefId + "/" + fileName;
         return returnPath; // Return the file path
     }
+
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<ChefRequest> getChefDetails(@PathVariable Long userId) {
+        Chef chef = chefService.getChefByUserId(userId);
+        if (chef == null) {
+            return ResponseEntity.notFound().build();
+        }
+    
+        ChefRequest dto = new ChefRequest(
+            chef.getBiography(),
+            chef.getFavouriteDishes(),
+            chef.getChefProfilePicture()
+        );
+    
+        return ResponseEntity.ok(dto);
+    }
+    
 
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -86,6 +87,7 @@ public class HomeController {
         // If the user is an ADMIN, add kitchen data
         if (loggedInUser.getRole() == UserRole.ADMIN ) {
             model.addAttribute("kitchenData", getKitchenData());
+            model.addAttribute("userData", getUserData());
         }
 
         Kitchen userKitchen = kitchenService.findKitchenByUser(loggedInUser);
@@ -216,5 +218,29 @@ public class HomeController {
         kitchenData.put("allCount", allKitchens.size());
 
         return kitchenData;
+    }
+
+    private Map<String, Object> getUserData(){
+        Map<String, Object> userData = new HashMap<>();
+
+        List<User> users = userService.getAllUsers();
+
+        List<User> foodLovers = users.stream()
+            .filter(user -> user.getRole() == UserRole.FOOD_LOVER)
+            .collect(Collectors.toList());
+
+        List<User> chefs = users.stream()
+            .filter(user -> user.getRole() == UserRole.CHEF)
+            .collect(Collectors.toList());
+
+        List<User> allUsers = Stream.concat(foodLovers.stream(), chefs.stream())
+        .collect(Collectors.toList());
+
+        userData.put("users", allUsers);
+        userData.put("customerCount", foodLovers.size());
+        userData.put("chefCount", chefs.size());
+        userData.put("totalCount", (chefs.size()+foodLovers.size()));
+
+        return userData;
     }
 }

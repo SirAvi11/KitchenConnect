@@ -1,33 +1,167 @@
-<div class="mainContent col-lg-9 mb-4 tab-content d-none" id="manage-users" th:fragment="manage-users" th:classappend="${param.tab == 'manage-users'} ? 'active-content' : 'd-none'">
-    <div class="container">
-        <div class="card shadow-sm mainCard">
-            <div class="card-body">
-                <h2 class="h4 font-weight-bold">Manage Users</h2>
-                <table class="table table-striped table-bordered">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>#</th>
-                            <th>Full Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Loop through users using Thymeleaf 
-                        <tr th:each="user, index : ${users}">
-                            <td th:text="${index.index + 1}"></td>
-                            <td th:text="${user.fullName}"></td>
-                            <td th:text="${user.email}"></td>
-                            <td th:text="${user.role}"></td>
-                            <td>
-                                <a th:href="@{/admin/view-user/{id}(id=${user.id})}" class="btn btn-primary btn-sm">
-                                    View More
-                                </a>
-                            </td>
-                        </tr>-->
-                    </tbody>
-                </table>
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="manage-users"
+  id="manage-users"
+  th:classappend="${param.tab == 'manage-users'} ? 'active-content' : 'd-none'"
+>   
+    <link rel="stylesheet" th:href="@{/css/manage-all-users.css}">
+    <script th:src="@{/js/manage-users.js}"></script>
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h4">Manage Users</h1>
+        </div>
+        <div class="d-flex mb-4">
+            <!-- Search by User Id -->
+            <input type="text" id="searchUserId" class="form-control mr-2" placeholder="Search user id...">
+            <button id="searchButton" class="btn btn-warning mr-2"><i class="fas fa-search"></i></button>
+        
+            <!-- Filter by Status -->
+            <select id="filterStatus" class="form-control mr-2">
+                <option value="ALL">All</option>
+                <option value="FOOD_LOVER">FOOD LOVER</option>
+                <option value="CHEF">CHEF</option>
+            </select>
+        
+            <!-- Refresh Button -->
+            <button id="refreshButton" class="btn btn-warning"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <div class="row mb-4 text-center">
+            <div class="col-md-2">
+                <div class="status-card bg-blue">
+                    <div class="count" id="foodLoverCount" th:text="${userData != null ? userData.customerCount : 0}"></div>
+                </div>
+                <div class="status-label">Customer</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-green">
+                    <div class="count" id="chefCount" th:text="${userData != null ? userData.chefCount : 0}"></div>
+                </div>
+                <div class="status-label">Chef</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-dark">
+                    <div class="count" id="allCount" th:text="${userData != null ? userData.totalCount : 0}"></div>
+                </div>
+                <div class="status-label">Total</div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>User Name</th>
+                        <th>Address</th>
+                        <th>Phone Number</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user, iterStat : ${userData.users}">
+                        <td th:text="${iterStat.count}"></td>
+                    
+                        <td th:text="${(user?.firstname ?: '') + ' ' + (user?.lastname ?: '')}"></td>
+
+                        <td th:text="${user?.username ?: 'N/A'}"></td>
+                    
+                        <td th:text="${user?.address ?: 'N/A'}"></td>
+
+                        <td th:text="${user?.phoneNumber ?: 'N/A'}"></td>
+
+                        <td th:text="${user?.role ?: 'N/A'}"></td>
+                                        
+                        <td>
+                            <button class="btn btn-primary btn-sm view-user-btn"
+                                    th:data-user-id="${user?.id}"
+                                    th:data-user-role="${user?.role}"
+                                    th:data-username="${user?.username}"
+                                    th:data-firstname="${user?.firstname}"
+                                    th:data-lastname="${user?.lastname}"
+                                    th:data-phonenumber="${user?.phoneNumber}"
+                                    th:data-address="${user?.address}"
+                                    th:data-email="${user?.email}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#userDetailsModal">
+                                View
+                            </button>
+                        </td>
+                    </tr>                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for User Details -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- User Details -->
+                    <div class="mb-4">
+                        <h6 class="mb-3 sub-title">Customer Details</h6>
+                        <div class="row">
+                            <!-- First Column -->
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>User Id:</strong> 
+                                    <span id="modal-userId"></span>
+                                </p>
+                                <p class="mb-1"><strong>User Name:</strong> 
+                                    <span id="modal-username"></span>
+                                </p>
+                                <p class="mb-1"><strong>First Name:</strong> 
+                                    <strong><span id="modal-firstname"></span></strong>
+                                </p>
+                                <p class="mb-1"><strong>Last Name:</strong> 
+                                    <span id="modal-lastname"></span>
+                                </p>
+                            </div>                                      
+                            <!-- Second Column -->
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Contact Number:</strong> 
+                                    <span id="modal-phonenumber"></span>
+                                </p>
+                                <p class="mb-1"><strong>Address:</strong> 
+                                    <span id="modal-address"></span>
+                                </p>
+                                <p class="mb-1"><strong>Email:</strong> 
+                                    <span id="modal-email"></span>
+                                </p>
+                                <p class="mb-1"><strong>Role:</strong> 
+                                    <span id="modal-role"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Chef Details (only visible for CHEF role) -->
+                    <div class="mb-4 d-none" id="chefDetailsSection">
+                        <h6 class="mb-3 sub-title">Chef Details</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1">
+                                    <span id="profile_image"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Biography:</strong> 
+                                    <span id="biography"></span>
+                                </p>
+                                <p class="mb-1"><strong>Favourites Dishes:</strong> 
+                                    <span id="favourites"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer" id="modalFooterButtons">
+                    <!-- Buttons will be dynamically inserted here -->
+                </div>
             </div>
         </div>
     </div>

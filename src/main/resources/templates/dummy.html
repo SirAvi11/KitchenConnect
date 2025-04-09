@@ -1,48 +1,224 @@
-function placeOrder() {
-    const dataElement = document.getElementById("data");
-    const userId = dataElement.getAttribute("data-user-id");
-    const kitchenId = dataElement.getAttribute("data-kitchen-id");
-    const deliveryAddress = document.getElementById('delivery-address').textContent;
-    const contactNumber = document.getElementById('contact-display').textContent;
-    let orderRequest = {
-      userId: userId,
-      kitchenId: kitchenId,
-      deliveryAddress: deliveryAddress,
-      contactNumber: contactNumber,
-      totalAmount: parseFloat(
-        document
-          .querySelector(".order-summary-total-price")
-          .textContent.replace("₹", "")
-      ),
-      items: Array.from(
-        document.querySelectorAll(".cart-item-container .item")
-      ).map((item) => {
-        return {
-          foodItemId: parseInt(item.id.replace("item-", "")),
-          quantity: parseInt(
-            document.getElementById(
-              `itemCount-${item.id.replace("item-", "")}`
-            ).textContent
-          ),
-        };
-      }),
-    };
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="manage-kitchens"
+  id="manage-all-kitchens"
+  th:classappend="${param.tab == 'manage-all-kitchens'} ? 'active-content' : 'd-none'"
+>   
+    <link rel="stylesheet" th:href="@{/css/manage-all-kitchens.css}">
+    <script th:src="@{/js/manage-all-kitchens.js}"></script>
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h4">Manage Kitchens</h1>
+        </div>
+        <div class="d-flex mb-4">
+            <!-- Search by Kitchen Number -->
+            <input type="text" id="searchKitchenId" class="form-control mr-2" placeholder="Search kitchen id...">
+            <button id="searchButton" class="btn btn-warning mr-2"><i class="fas fa-search"></i></button>
+        
+            <!-- Filter by Status -->
+            <select id="filterStatus" class="form-control mr-2">
+                <option value="ALL">All</option>
+                <option value="UNDER_VERIFICATION">Under Verification</option>
+                <option value="APPROVED">Approved</option>
+                <option value="REJECTED">Rejected</option>
+            </select>
+        
+            <!-- Filter by Date Range -->
+            <input type="date" id="startDate" class="form-control mr-2">
+            <input type="date" id="endDate" class="form-control mr-2">
+        
+            <!-- Refresh Button -->
+            <button id="refreshButton" class="btn btn-warning"><i class="fas fa-sync-alt"></i></button>
+        </div>
+        <div class="row mb-4 text-center">
+            <div class="col-md-2">
+                <div class="status-card bg-blue">
+                    <div class="count" id="newKitchenCount" th:text="${kitchenData != null ? kitchenData.underVerificationCount : 0}"></div>
+                </div>
+                <div class="status-label">Under Verification</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-green">
+                    <div class="count" id="activeKitchenCount" th:text="${kitchenData != null ? kitchenData.activeCount : 0}"></div>
+                </div>
+                <div class="status-label">Approved</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-red">
+                    <div class="count" id="rejectedKitchenCount" th:text="${kitchenData != null ? kitchenData.rejectedKitchenCount : 0}"></div>
+                </div>
+                <div class="status-label">Rejected</div>
+            </div>
+            <div class="col-md-2">
+                <div class="status-card bg-dark">
+                    <div class="count" id="allKitchenCount" th:text="${kitchenData != null ? kitchenData.allCount : 0}"></div>
+                </div>
+                <div class="status-label">Total</div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Kitchen Name</th>
+                        <th>Owned By</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="kitchen, iterStat : ${kitchenData.allKitchens}">
+                        <td th:text="${iterStat.count}"></td>
+                    
+                        <td th:text="${kitchen?.kitchenName ?: 'N/A'}"></td>
+                    
+                        <td th:text="${(kitchen?.user?.firstname ?: '') + ' ' + (kitchen?.user?.lastname ?: '')}"></td>
+                    
+                        <td th:text="${kitchen?.phoneNumber ?: 'N/A'}"></td>
+                    
+                        <td th:text="${(kitchen?.shopName ?: '') 
+                                        + (kitchen?.floor != null ? ', Floor: ' + kitchen.floor : '') 
+                                        + ', ' + (kitchen?.area ?: '') 
+                                        + ', ' + (kitchen?.city ?: '')}"></td>
+                                        
+                        <td>
+                            <select th:if="${kitchen?.status?.name() == 'UNDER_VERIFICATION'}"
+                                    class="form-control form-control-sm kitchen-status-dropdown" 
+                                    th:data-kitchen-id="${kitchen?.kitchenId}" 
+                                    id="filterStatus">
+                    
+                                <option value="UNDER_VERIFICATION"
+                                        th:selected="${kitchen?.status?.name() == 'UNDER_VERIFICATION'}">
+                                    UNDER_VERIFICATION
+                                </option>
+                    
+                                <option value="APPROVED">APPROVED</option>
 
-    fetch("/cart/place", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(orderRequest),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.id) {
-          let cartModal = new bootstrap.Modal(
-            document.getElementById("cartModal")
-          );
-          cartModal.show();
-        }
-      })
-      .catch((error) => console.error("Error placing order:", error));
-  }
+                    
+                                <option value="REJECTED">REJECTED</option>
+                            </select>
+
+                            <span th:if="${kitchen?.status?.name() == 'APPROVED'}" class="badge bg-green">
+                                APPROVED
+                            </span>
+                    
+                            <span th:if="${kitchen?.status?.name() == 'REJECTED'}" class="badge bg-danger">
+                                REJECTED
+                            </span>
+                        </td>
+                    
+                        <td>
+                            <button class="btn btn-primary btn-sm view-kitchen-btn"
+                                    th:data-kitchen-id="${kitchen?.kitchenId}"
+                                    th:data-requested-by="${(kitchen?.user?.firstname ?: '') + ' ' + (kitchen?.user?.lastname ?: '')}"
+                                    th:data-kitchen-name="${kitchen?.kitchenName ?: ''}"
+                                    th:data-kitchen-description="${kitchen?.kitchenDescription ?: ''}"
+                                    th:data-kitchen-delivery="${kitchen?.deliveryFees ?: ''}"
+                                    th:data-address="${(kitchen?.shopName ?: '') 
+                                                      + (kitchen?.floor != null ? ', Floor: ' + kitchen.floor : '') 
+                                                      + ', ' + (kitchen?.area ?: '') 
+                                                      + ', ' + (kitchen?.city ?: '')}"
+                                    th:data-contact-number="${kitchen?.phoneNumber ?: ''}"
+                                    th:data-speciality="${kitchen?.selectedCuisines ?: ''}"
+                                    th:data-open-days="${kitchen?.openDays ?: ''}"
+                                    th:data-open-time="${kitchen?.openTime ?: ''}"
+                                    th:data-close-time="${kitchen?.closeTime ?: ''}"
+                                    th:data-fssai-number="${kitchen?.fssaiNumber ?: ''}"
+                                    th:data-fssai-expiry="${kitchen?.fssaiExpiryDate ?: ''}"
+                                    th:data-pan-number="${kitchen?.panNumber ?: ''}"
+                                    th:data-status="${kitchen?.status ?: ''}"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#kitchenDetailsModal"
+                                    th:onclick="'getDocuments(' + ${kitchen?.kitchenId} + ')'">
+                                View
+                            </button>
+                        </td>
+                    </tr>                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for Kitchen Details -->
+    <div class="modal fade" id="kitchenDetailsModal" tabindex="-1" aria-labelledby="kitchenDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="kitchenDetailsModalLabel">Kitchen Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Kitchen Details -->
+                    <input type="hidden" id="hiddenKitchenId">
+                    <div class="mb-4">
+                        <h6 class="mb-3 sub-title">Customer Details</h6>
+                        <div class="row">
+                            <!-- First Column -->
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Kitchen Name:</strong> 
+                                    <span id="kitchenName"></span>
+                                </p>
+                                <p class="mb-1"><strong>Status:</strong> 
+                                    <strong><span id="status"></span></strong>
+                                </p>
+                                <p class="mb-1"><strong>Requested By:</strong> 
+                                    <span id="requestedBy"></span>
+                                </p>
+                                <p class="mb-1"><strong>Description:</strong> 
+                                    <span id="description"></span>
+                                </p>
+                                <p class="mb-1"><strong>Address:</strong> 
+                                    <span id="address"></span>
+                                </p>
+                                <p class="mb-1"><strong>Delivery Fees:</strong> 
+                                    <span id="deliveryFees"></span>
+                                </p>
+                                <p class="mb-1"><strong>Speciality:</strong> 
+                                    <span id="speciality"></span>
+                                </p>
+                            </div>                                      
+                            <!-- Second Column -->
+                            <div class="col-md-6">
+                                <p class="mb-1"><strong>Contact Number:</strong> 
+                                    <span id="contactNumber"></span>
+                                </p>
+                                <p class="mb-1"><strong>Open Days:</strong> 
+                                    <span id="openDays"></span>
+                                </p>
+                                <p class="mb-1"><strong>Open Time:</strong> 
+                                    <span id="openTime"></span>
+                                </p>
+                                <p class="mb-1"><strong>Close Time:</strong> 
+                                    <span id="closeTime"></span>
+                                </p>
+                                <p class="mb-1"><strong>FSSAI Number:</strong> 
+                                    <span id="fssaiNumber"></span>
+                                </p>
+                                <p class="mb-1"><strong>FSSAI Expiry Date:</strong> 
+                                    <span id="expiryData"></span>
+                                </p>
+                                <p class="mb-1"><strong>PAN Number:</strong> 
+                                    <span id="panNumber"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents section -->
+                    <div>
+                        <h6 class="mb-3 sub-title">Uploaded Documents</h6>
+                        <div id="documentSection">
+                            <!--Dynamically generated contents-->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="modalFooterButtons">
+                    <!-- Buttons will be dynamically inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
