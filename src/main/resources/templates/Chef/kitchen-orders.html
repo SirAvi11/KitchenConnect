@@ -94,19 +94,25 @@
                         <td th:text="${order.user.phoneNumber}"></td>
                         <td th:text="'Rs ' + ${order.totalAmount}"></td>
                         <td>Paid</td>
-                        <td>
-                            <select th:if="${order.status.name() == 'PENDING' or order.status.name() == 'PREPARING'}" 
-                                    class="form-control form-control-sm order-status-dropdown" 
-                                    th:data-order-id="${order.id}" id="filterStatus">
+                        <td class="status-cell">
+                            <!-- Status badge (always visible) -->
+                            <span th:switch="${order.status.name()}">
+                                <span th:case="'PENDING'" class="status-badge badge-pending" th:text="PENDING"></span>
+                                <span th:case="'PREPARING'" class="status-badge badge-preparing" th:text="PREPARING"></span>
+                                <span th:case="'READY'" class="status-badge badge-ready" th:text="READY"></span>
+                                <span th:case="'DELIVERED'" class="status-badge badge-delivered" th:text="DELIVERED"></span>
+                                <span th:case="'CANCELLED'" class="status-badge badge-cancelled" th:text="CANCELLED"></span>
+                            </span>
+                            
+                            <!-- Dropdown (hidden until hover) -->
+                            <select class="order-status-dropdown form-control form-control-sm" 
+                                    th:data-order-id="${order.id}">
                                 <option value="PENDING" th:selected="${order.status.name() == 'PENDING'}">PENDING</option>
                                 <option value="PREPARING" th:selected="${order.status.name() == 'PREPARING'}">PREPARING</option>
-                                <option value="READY">READY</option>
-                                <option value="CANCELLED">CANCELLED</option>
-                                <option value="DELIVERED">DELIVERED</option>
+                                <option value="READY" th:selected="${order.status.name() == 'READY'}">READY</option>
+                                <option value="DELIVERED" th:selected="${order.status.name() == 'DELIVERED'}">DELIVERED</option>
+                                <option value="CANCELLED" th:selected="${order.status.name() == 'CANCELLED'}">CANCELLED</option>
                             </select>
-                            <span th:if="${order.status.name() == 'READY'}" class="badge bg-green">READY</span>
-                            <span th:if="${order.status.name() == 'CANCELLED'}" class="badge bg-danger">CANCELLED</span>
-                            <span th:if="${order.status.name() == 'DELIVERED'}" class="badge bg-primary">DELIVERED</span>
                         </td>
                         <td>
                             <button class="btn btn-primary btn-sm view-order-btn" th:data-order-id="${order.id}"

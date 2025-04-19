@@ -90,16 +90,26 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-     // Get all status dropdowns
-    const statusDropdowns = document.querySelectorAll('.order-status-dropdown');
+     
 
-    // Add change event listener to each dropdown
+    // Initialize all status dropdowns
+    const statusDropdowns = document.querySelectorAll('.order-status-dropdown');
+    
     statusDropdowns.forEach(dropdown => {
-        dropdown.addEventListener('change', function () {
+        const statusCell = dropdown.closest('.status-cell');
+        const statusBadge = statusCell.querySelector('.status-badge');
+        
+        // Store initial status
+        const initialStatus = dropdown.value;
+        
+        dropdown.addEventListener('change', function() {
             const orderId = dropdown.getAttribute('data-order-id');
             const newStatus = dropdown.value;
-
-            // Send an AJAX request to update the order status
+            
+            // Optimistically update the UI
+            updateStatusBadge(statusBadge, newStatus);
+            
+            // Send update to server
             fetch('/orders/update-order-status', {
                 method: 'POST',
                 headers: {
@@ -111,51 +121,70 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             })
             .then(response => {
-                if (response.ok) {
-                    // Optionally, refresh the page or update the UI dynamically
-                    // If the new status is COMPLETED, CANCELLED, or DELIVERED, replace the dropdown with a span
-                window.location.href = window.location.pathname + '?tab=kitchen-orders';
-                if (newStatus === 'READY' || newStatus === 'CANCELLED' || newStatus === 'DELIVERED') {
-                    const statusCell = dropdown.closest('td');
-                    let badgeClass = '';
-                    let statusText = '';
-
-                    switch (newStatus) {
-                        case 'READY':
-                            badgeClass = 'bg-green';
-                            statusText = 'READY';
-                            break;
-                        case 'CANCELLED':
-                            badgeClass = 'bg-danger';
-                            statusText = 'CANCELLED';
-                            break;
-                        case 'DELIVERED':
-                            badgeClass = 'bg-primary';
-                            statusText = 'DELIVERED';
-                            break;
-                    }
-
-                    // Replace the dropdown with a span
-                    statusCell.innerHTML = `<span class="badge ${badgeClass}">${statusText}</span>`;
-                } else {
-                    const selectElement = document.getElementById('filterStatus');
-                    // Replace the dropdown with a span
-                    selectElement.innerHTML = `<span class="badge">${newStatus}</span>`;
-                    // Show success toast
-                    successToast.show();
-
+                if (!response.ok) {
+                    // Revert if update failed
+                    updateStatusBadge(statusBadge, initialStatus);
+                    dropdown.value = initialStatus;
+                    throw new Error('Status update failed');
                 }
-                } else {
-                    // Show error toast
-                    errorToast.show();
-                }
+                // Show success notification
+                showToast('success', 'Order status updated successfully!');
+                
+                // Optionally refresh counts without full page reload
+                updateStatusCounts();
             })
             .catch(error => {
                 console.error('Error:', error);
-                errorToast.show();
+                showToast('error', 'Failed to update order status');
             });
         });
     });
+    
+    // Helper function to update status badge
+    function updateStatusBadge(badgeElement, newStatus) {
+        // Remove all existing badge classes
+        badgeElement.classList.remove(
+            'badge-pending', 'badge-preparing', 'badge-ready', 
+            'badge-delivered', 'badge-cancelled'
+        );
+        
+        // Add appropriate class based on status
+        switch(newStatus) {
+            case 'PENDING':
+                badgeElement.classList.add('badge-pending');
+                break;
+            case 'PREPARING':
+                badgeElement.classList.add('badge-preparing');
+                break;
+            case 'READY':
+                badgeElement.classList.add('badge-ready');
+                break;
+            case 'DELIVERED':
+                badgeElement.classList.add('badge-delivered');
+                break;
+            case 'CANCELLED':
+                badgeElement.classList.add('badge-cancelled');
+                break;
+        }
+        
+        // Update text
+        badgeElement.textContent = newStatus;
+    }
+    
+    // Helper function to show toast notifications
+    function showToast(type, message) {
+        const toastElement = document.getElementById(`${type}Toast`);
+        const toastBody = toastElement.querySelector('.toast-body');
+        toastBody.textContent = message;
+        
+        // Initialize Toast if not already done
+        if (!toastElement._toast) {
+            toastElement._toast = new bootstrap.Toast(toastElement);
+        }
+        
+        toastElement._toast.show();
+    }
+
     // Get filter elements
     const searchOrderNumber = document.getElementById('searchOrderNumber');
         const searchButton = document.getElementById('searchButton');
