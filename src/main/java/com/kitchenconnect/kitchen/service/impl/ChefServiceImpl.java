@@ -25,5 +25,9 @@ public class ChefServiceImpl implements ChefService {
         return chefRepository.save(chef);
     }
 
+    public Chef getChefByUserId(Long userID){
+        return chefRepository.findByUser_Id(userID).orElse(null);
+    }
+
 }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import com.kitchenconnect.kitchen.DTO.KitchenRequest;
 import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.User;
+import com.kitchenconnect.kitchen.enums.KitchenStatus;
 
 public interface KitchenService {
     List<Kitchen> getAllKitchens();
@@ -14,6 +15,6 @@ public interface KitchenService {
     Kitchen findKitchenByUser(User user);
     List<Kitchen> getKitchenUnderVerification();
     List<Kitchen> getActiveKitchens();
-    boolean updateKitchenStatus(Long kitchenId, boolean isApproved);
+    boolean updateKitchenStatus(Long kitchenId, KitchenStatus status);
     Kitchen updateKitchen(Long kitchenId, Kitchen updatedKitchen);
 }

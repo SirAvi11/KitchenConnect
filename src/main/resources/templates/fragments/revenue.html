@@ -1,0 +1,98 @@
+<div
+  class="mainContent col-lg-9 mb-4 tab-content d-none"
+  th:fragment="revenue"
+  id="revenue"
+  th:classappend="${param.tab == 'revenue'} ? 'active-content' : 'd-none'"
+>
+    <link rel="stylesheet" th:href="@{/css/revenue.css}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+
+    <!-- Include admin overview fragment if user is admin -->
+    <div  th:replace="~{Admin/admin-overview:: admin-overview}"></div>
+    
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="h4 font-weight-bold text-gray-800">Revenue Report</h4>
+            <div class="d-flex align-items-center">
+                <i id="prevPeriod" class="fas fa-chevron-left text-muted mr-2 cursor-pointer"></i>
+                <i class="fas fa-calendar-alt text-muted mr-2"></i>
+                <span id="dateRange" class="text-muted">
+                    Loading...
+                </span>
+                <i id="nextPeriod" class="fas fa-chevron-right text-muted ml-2 cursor-pointer"></i>
+            </div>
+            <select id="periodSelect" class="form-control rounded-full" style="width: auto;">
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        </div>
+        <div class="position-relative">
+            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="h6 font-weight-semibold">Earnings</h3>
+                <p id="earningsValue" class="h4 font-weight-bold mt-2">₹ 0.00</p>
+                <div class="d-flex align-items-center mt-2">
+                    <span id="earningsTrend" class="py-1 px-2 rounded-full small"></span>
+                    <span id="earningsComparison" class="text-muted ml-2"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="h6 font-weight-semibold">Product Sales</h3>
+                <p id="productSalesValue" class="h4 font-weight-bold mt-2">0 <span class="small text-muted">Items</span></p>
+                <div class="d-flex align-items-center mt-2">
+                    <span id="salesTrend" class="py-1 px-2 rounded-full small"></span>
+                    <span id="salesComparison" class="text-muted ml-2"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm">
+                <h3 class="h6 font-weight-semibold">All Insight</h3>
+                <p id="visitorsValue" class="h4 font-weight-bold mt-2">0 <span class="small text-muted">People</span></p>
+                <div class="d-flex align-items-center mt-2">
+                    <span id="visitorsTrend" class="py-1 px-2 rounded-full small"></span>
+                    <span id="visitorsComparison" class="text-muted ml-2"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="h4 font-weight-bold text-gray-800">Payment Records</h4>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover" id="paymentRecordsTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Order ID</th>
+                        <th>Credited</th>
+                        <th>Platform Fee</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be loaded dynamically -->
+                </tbody>
+            </table>
+        </div>
+        <div class="text-muted small mt-2" id="recordsInfo">
+            Showing records for selected period
+        </div>
+    </div>
+    <script th:src="@{/js/revenue.js}"></script>
+</div>

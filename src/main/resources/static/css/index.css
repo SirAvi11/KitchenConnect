@@ -96,41 +96,6 @@ body {
     font-weight: bold;
     margin-bottom: 10px;
 }
-.are-you-a-chef {
-    background-color: #ff5722;
-    color: white;
-    padding: 60px 0;
-}
-.are-you-a-chef .container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap:200px;
-}
-.are-you-a-chef .text-content {
-    max-width: 50%;
-}
-.are-you-a-chef .image-content {
-    max-width: 50%;
-}
-.are-you-a-chef .image-content img {
-    width: 80%;
-    border-radius: 10px;
-}
-.are-you-a-chef h2 {
-    font-weight: bold;
-    margin-bottom: 20px;
-}
-.are-you-a-chef p {
-    margin-bottom: 30px;
-}
-.are-you-a-chef .btn-register {
-    background-color: white;
-    color: #ff5722;
-    border: 2px solid white;
-    border-radius: 50px;
-    padding: 10px 20px;
-}
 .price {
 display: flex;
 align-items: center;

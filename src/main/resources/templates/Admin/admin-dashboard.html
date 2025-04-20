@@ -6,11 +6,14 @@
         <div th:replace="~{fragments/dashboard-navigation :: dashboard-navigation}"></div>
         <!-- Right Section -->
 
+        <!--Load Revenue Section-->
+        <div  th:replace="~{fragments/revenue :: revenue}"></div>
+
         <!--Load Personal Information Section-->
         <div  th:replace="~{fragments/personal-information :: personal-information}"></div>
 
         <!--Load View Kitchen Section-->
-        <div  th:replace="~{Admin/view-kitchens :: view-kitchens}"></div>
+        <div  th:replace="~{Admin/manage-kitchens :: manage-kitchens}"></div>
 
         <!--Manage Users-->
         <div  th:replace="~{Admin/manage-users :: manage-users}"></div>

@@ -6,14 +6,17 @@ import com.kitchenconnect.kitchen.entity.Kitchen;
 import com.kitchenconnect.kitchen.entity.MenuItem;
 import com.kitchenconnect.kitchen.entity.Order;
 import com.kitchenconnect.kitchen.entity.OrderDetails;
+import com.kitchenconnect.kitchen.entity.Payment;
 import com.kitchenconnect.kitchen.entity.Rating;
 import com.kitchenconnect.kitchen.entity.User;
 import com.kitchenconnect.kitchen.enums.OrderStatus;
+import com.kitchenconnect.kitchen.enums.PaymentStatus;
 import com.kitchenconnect.kitchen.repository.ItemRatingRepository;
 import com.kitchenconnect.kitchen.repository.KitchenRepository;
 import com.kitchenconnect.kitchen.repository.MenuItemRepository;
 import com.kitchenconnect.kitchen.repository.OrderDetailsRepository;
 import com.kitchenconnect.kitchen.repository.OrderRepository;
+import com.kitchenconnect.kitchen.repository.PaymentRepository;
 import com.kitchenconnect.kitchen.repository.RatingRepository;
 import com.kitchenconnect.kitchen.repository.UserRepository;
 import com.kitchenconnect.kitchen.service.OrderService;
@@ -55,6 +58,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private RatingService ratingService;
 
+    @Autowired
+    private PaymentRepository paymentRepository;
+
     // Create a new order
     @Transactional
     public Order placeOrder(OrderRequest orderRequest) {
@@ -71,6 +77,8 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(OrderStatus.PENDING);
         order.setTotalAmount(orderRequest.getTotalAmount());
+        order.setDeliveryAddress(orderRequest.getDeliveryAddress());
+        order.setContactNumber(orderRequest.getContactNumber());
 
         // Save the order
         Order savedOrder = orderRepository.save(order);
@@ -91,6 +99,22 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
 
         orderDetailsRepository.saveAll(orderDetails);
+
+        //Save payment infomation
+        double platformFee = orderRequest.getTotalAmount() * 0.05;
+        double chefAmount = orderRequest.getTotalAmount() - platformFee;
+
+        Payment payment = new Payment();
+        payment.setOrder(savedOrder);
+        payment.setAmount(orderRequest.getTotalAmount());
+        payment.setPlatformFee(platformFee);
+        payment.setChefAmount(chefAmount);
+        payment.setPaymentStatus(PaymentStatus.COMPLETED);
+        payment.setPaymentMethod("UPI");
+        payment.setUpiTransactionId(orderRequest.getUpiTransactionId());
+        payment.setPaymentDate(LocalDateTime.now());
+        
+        paymentRepository.save(payment);
 
         // // Create and save default Rating
         Rating rating = new Rating();

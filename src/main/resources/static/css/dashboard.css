@@ -11,7 +11,6 @@ body{
 }
 
 .biography-contents{
-    height: 200px;
     display: block;
     overflow: auto;
 }

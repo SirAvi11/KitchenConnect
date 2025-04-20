@@ -37,7 +37,7 @@
           <i class="fas fa-shopping-cart fa-5x text-muted"></i>
           <h2 class="mt-3">Your cart is empty!</h2>
           <p>Browse our menu and add some delicious food.</p>
-          <a href="/kitchens" class="btn btn-warning mt-3">Go to Menu</a>
+          <a href="/kitchens" class="btn mt-3" style="background-color: #ff5722; color:white;">Browse Kitchens</a>
         </div>
 
         <!-- Cart Items -->
@@ -120,7 +120,7 @@
             id="data"
             th:if="${session.loggedInUser != null and kitchen != null}"
             th:attr="data-user-id=${session.loggedInUser != null ? session.loggedInUser.getId() : null},
-                         data-kitchen-id=${kitchen != null ? kitchen.getKitchenId() : null}"
+                         data-kitchen-id=${kitchen != null ? kitchen.getKitchenId() : null}, data-username=${session.loggedInUser != null ? (session.loggedInUser.firstname + ' ' + session.loggedInUser.lastname) : 'Guest'}"
           ></div>
           <h2 class="h5 mb-4">Order Summary</h2>
           <div class="mb-4" th:if="${kitchen != null}">
@@ -137,29 +137,57 @@
             th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'ADMIN'}"
           >
             <div class="mb-4">
-              <h3 class="h6 d-flex justify-content-between align-items-center">
-                <b>Delivery Address</b>
-                <button class="btn btn-link p-0">
-                  <i class="fas fa-edit"></i>
-                </button>
-              </h3>
-              <p th:text="${session.loggedInUser.address}">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="h6 mb-0"><b>Delivery Address</b></h3>
+                  <div>
+                    <!-- Edit Button (visible by default) -->
+                    <button id="address-edit-button" class="btn btn-warning text-white">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <!-- Save Button (hidden by default) -->
+                    <button id="address-save-button" class="btn btn-warning text-white d-none">
+                      <i class="fas fa-save"></i>
+                    </button>
+                  </div>
+              </div>
+              
+              <!-- Display Mode -->
+              <p id="delivery-address" th:text="${session.loggedInUser?.address} ?: 'No address provided'">
                 123 Main Street, City, Country
               </p>
+            
+              <!-- Edit Mode (hidden initially) -->
+              <textarea id="address-input" class="form-control d-none" 
+                        th:text="${session.loggedInUser?.address}"></textarea>
             </div>
             <div class="mb-4">
-              <h3 class="h6 d-flex justify-content-between align-items-center">
-                <b>Contact Information</b>
-                <button class="btn btn-link p-0">
-                  <i class="fas fa-edit"></i>
-                </button>
-              </h3>
-              <p>
-                Phone:
-                <span th:text="${session.loggedInUser.phoneNumber}"
-                  >+123 456 7890</span
-                >
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h3 class="h6 mb-0"><b>Contact Information</b></h3>
+                <div>
+                  <!-- Edit Button (visible by default) -->
+                  <button id="contact-edit-button" class="btn btn-warning text-white">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <!-- Save Button (hidden by default) -->
+                  <button id="contact-save-button" class="btn btn-warning text-white d-none">
+                    <i class="fas fa-save"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Display Mode -->
+              <p id="contact-display">
+                <span id="contact-number" th:text="${session.loggedInUser?.phoneNumber} ?: 'Not provided'">+123 456 7890</span>
               </p>
+              
+              <!-- Edit Mode (hidden initially) -->
+              <div id="contact-edit" class="d-none">
+                <div class="input-group mb-2">
+                  <input type="tel" id="phone-input" class="form-control" 
+                         th:value="${session.loggedInUser?.phoneNumber}"
+                         placeholder="+123 456 7890">
+                </div>
+              </div>
             </div>
           </div>
           <div class="text-dark">
@@ -203,7 +231,7 @@
           <button
             class="btn btn-warning w-100 mt-4"
             th:unless="${session.loggedInUser == null}"
-            onclick="placeOrder()"
+            onclick="showPaymentModal()"
           >
             Place Order
           </button>
@@ -223,39 +251,6 @@
                 <h5 class="modal-title" id="cartModalLabel">Order Status</h5>
               </div>
               <div class="modal-body">
-                <div class="bg-white p-5 text-center">
-                  <div class="d-flex justify-content-center mb-4">
-                    <div
-                      class="d-flex align-items-center justify-content-center border border-2 theme-border rounded-circle"
-                      style="width: 48px; height: 48px"
-                    >
-                      <i
-                        class="fas fa-check theme-color"
-                        style="font-size: 24px"
-                      ></i>
-                    </div>
-                  </div>
-                  <p class="h5">Hey Anup Srivastava,</p>
-                  <h1 class="h3 font-weight-bold mt-2">
-                    Your Order is Confirmed!
-                  </h1>
-                  <p class="text-muted mt-2">
-                    We'll send you a shipping confirmation email as soon as your
-                    order ships.
-                  </p>
-                  <div class="mt-4 d-flex justify-content-center">
-                    <a
-                      th:href="@{/cart/redirect-to-dashboard-my-orders}"
-                      class="btn contrast-bg text-white contrast-bg-hover mr-2"
-                      >VIEW ORDER</a
-                    >
-                    <a
-                      th:href="@{/kitchens}"
-                      class="btn theme-bg text-white theme-bg-hover"
-                      >CONTINUE SHOPPING</a
-                    >
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -267,49 +262,143 @@
     <div th:replace="~{fragments/footer :: footer}"></div>
 
     <script>
-      function placeOrder() {
-        const dataElement = document.getElementById("data");
-        const userId = dataElement.getAttribute("data-user-id");
-        const kitchenId = dataElement.getAttribute("data-kitchen-id");
-        let orderRequest = {
-          userId: userId,
-          kitchenId: kitchenId,
-          totalAmount: parseFloat(
-            document
-              .querySelector(".order-summary-total-price")
-              .textContent.replace("₹", "")
-          ),
-          items: Array.from(
-            document.querySelectorAll(".cart-item-container .item")
-          ).map((item) => {
-            return {
-              foodItemId: parseInt(item.id.replace("item-", "")),
-              quantity: parseInt(
-                document.getElementById(
-                  `itemCount-${item.id.replace("item-", "")}`
-                ).textContent
-              ),
-            };
-          }),
-        };
+      function showPaymentModal() {
+        // Calculate total and platform fee
+        const totalAmount = parseFloat(
+            document.querySelector(".order-summary-total-price").textContent.replace("₹", "")
+        );
+        const platformFee = totalAmount * 0.05;
+        
+        // Set up modal content
+        const modalBody = document.querySelector("#cartModal .modal-body");
+        modalBody.innerHTML = `
+            <div class="bg-white p-4 text-center">
+                <h5 class="mb-4">Complete Payment</h5>
+                
+                <div class="text-start mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Order Total:</span>
+                        <span class="fw-bold">₹${totalAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span>Platform Fee (5%):</span>
+                        <span>₹${platformFee.toFixed(2)}</span>
+                    </div>
+                </div>
+                
+                <form id="paymentForm" onsubmit="event.preventDefault(); processPayment();">
+                    <div class="mb-3 text-start">
+                        <label for="upiId" class="form-label">UPI ID</label>
+                        <input type="text" class="form-control" id="upiId" placeholder="yourname@upi" required>
+                    </div>
+                    
+                    <button id="payNowBtn" type="submit" class="btn contrast-bg text-white contrast-bg-hover w-100">
+                        Pay Now
+                    </button>
+                </form>
+            </div>
+        `;
+        
+        // Show modal
+        const cartModal = new bootstrap.Modal(document.getElementById("cartModal"));
+        cartModal.show();
+      }
 
-        fetch("/cart/place", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(orderRequest),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.id) {
-              let cartModal = new bootstrap.Modal(
-                document.getElementById("cartModal")
-              );
-              cartModal.show();
-            }
+      function processPayment() {
+        // Get form data
+        const upiId = document.getElementById("upiId").value;
+        const transactionId = 'TXN' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        // Get order data
+        const dataElement = document.getElementById("data");
+        const orderRequest = {
+            userId: dataElement.getAttribute("data-user-id"),
+            kitchenId: dataElement.getAttribute("data-kitchen-id"),
+            deliveryAddress: document.getElementById('delivery-address').textContent,
+            contactNumber: document.getElementById('contact-display').textContent,
+            totalAmount: parseFloat(
+                document.querySelector(".order-summary-total-price").textContent.replace("₹", "")
+            ),
+            items: Array.from(
+                document.querySelectorAll(".cart-item-container .item")
+            ).map((item) => ({
+                foodItemId: parseInt(item.id.replace("item-", "")),
+                quantity: parseInt(
+                    document.getElementById(`itemCount-${item.id.replace("item-", "")}`).textContent
+                )
+            })),
+            upiId: upiId,
+            upiTransactionId: transactionId
+        };
+    
+        // Disable pay button and show spinner
+        const payBtn = document.getElementById("payNowBtn");
+        payBtn.disabled = true;
+        payBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Complete payment in your upi app...';
+    
+        // Simulate network delay (remove in production)
+        setTimeout(() => {
+          fetch("/cart/place", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(orderRequest),
           })
-          .catch((error) => console.error("Error placing order:", error));
+          .then(response => response.json())
+          .then(data => {
+              if(data.success) {
+                  showSuccessMessage(data.transactionId, data.orderId);
+              } else {
+                  showPaymentError();
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              showPaymentError();
+          })
+          .finally(() => {
+              payBtn.disabled = false;
+          });
+        }, 2500);
+        
+      }
+
+      function showSuccessMessage(transactionId, orderId) {
+        const modalBody = document.querySelector("#cartModal .modal-body");
+        const username =  document.getElementById("data").getAttribute("data-username");
+
+        modalBody.innerHTML = `
+            <div class="bg-white p-5 text-center">
+                <div class="d-flex justify-content-center mb-4">
+                    <div class="d-flex align-items-center justify-content-center border border-2 theme-border rounded-circle" 
+                         style="width: 48px; height: 48px">
+                        <i class="fas fa-check theme-color" style="font-size: 24px"></i>
+                    </div>
+                </div>
+                <p class="h5">
+                    Hey <span>${username}</span>
+                </p>
+                <h1 class="h3 font-weight-bold mt-2">
+                    Payment Successful!
+                </h1>
+                <p class="text-muted mt-2">
+                    Transaction ID: <strong>${transactionId}</strong><br>
+                    Order ID: <strong>${orderId}</strong>
+                </p>
+                <p>Your order is now confirmed and will be processed shortly.</p>
+                <div class="mt-4 d-flex justify-content-center">
+                    <a href="/cart/redirect-to-dashboard-my-orders"
+                       class="btn contrast-bg text-white contrast-bg-hover mr-2">
+                        VIEW ORDER
+                    </a>
+                    <a href="/kitchens" 
+                       class="btn theme-bg text-white theme-bg-hover">
+                        CONTINUE SHOPPING
+                    </a>
+                </div>
+            </div>
+        `;
       }
 
       function decreaseCount(foodItemId) {
@@ -362,7 +451,7 @@
                 <i class="fas fa-shopping-cart fa-5x text-muted"></i>
                 <h2 class="mt-3">Your cart is empty!</h2>
                 <p>Browse our menu and add some delicious food.</p>
-                <a href="/kitchens" class="btn btn-warning mt-3">Go to Menu</a>
+                <a href="/kitchens" class="btn mt-3" style="background-color: #ff5722; color:white;">Browse Kitchens</a>
             </div>`;
           let orderSummary = document.querySelector(".order-summary");
           if (orderSummary) {
@@ -387,6 +476,96 @@
           })
           .catch((error) => console.error("Error updating cart:", error));
       }
+
+      function setupAddressEditing() {
+        const editBtn = document.getElementById('address-edit-button');
+        const saveBtn = document.getElementById('address-save-button');
+        const display = document.getElementById('delivery-address');
+        const input = document.getElementById('address-input');
+        
+        let originalAddress = display.textContent.trim();
+      
+        // Edit button click handler
+        editBtn.addEventListener('click', function() {
+          // Switch to edit mode
+          display.classList.add('d-none');
+          input.classList.remove('d-none');
+          input.value = originalAddress;
+          input.focus();
+          
+          // Toggle buttons
+          editBtn.classList.add('d-none');
+          saveBtn.classList.remove('d-none');
+        });
+      
+        // Save button click handler
+        saveBtn.addEventListener('click', function() {
+          const newAddress = input.value.trim();
+          
+          if (newAddress) {
+            // Update display
+            display.textContent = newAddress;
+            originalAddress = newAddress;
+
+          }
+          
+          // Switch back to view mode
+          display.classList.remove('d-none');
+          input.classList.add('d-none');
+          
+          // Toggle buttons
+          saveBtn.classList.add('d-none');
+          editBtn.classList.remove('d-none');
+        });
+      }
+
+      function setupContactEditing() {
+        const editBtn = document.getElementById('contact-edit-button');
+        const saveBtn = document.getElementById('contact-save-button');
+        const display = document.getElementById('contact-display');
+        const editDiv = document.getElementById('contact-edit');
+        const phoneInput = document.getElementById('phone-input');
+        const phoneDisplay = display.querySelector('span');
+        
+        let originalPhone = phoneDisplay.textContent.trim();
+      
+        // Edit button click handler
+        editBtn.addEventListener('click', function() {
+          // Switch to edit mode
+          display.classList.add('d-none');
+          editDiv.classList.remove('d-none');
+          phoneInput.value = originalPhone;
+          phoneInput.focus();
+          
+          // Toggle buttons
+          editBtn.classList.add('d-none');
+          saveBtn.classList.remove('d-none');
+        });
+      
+        // Save button click handler
+        saveBtn.addEventListener('click', function() {
+          const newPhone = phoneInput.value.trim();
+          
+          if (newPhone) {
+            // Update display
+            phoneDisplay.textContent = newPhone;
+            originalPhone = newPhone;
+          }
+          
+          // Switch back to view mode
+          display.classList.remove('d-none');
+          editDiv.classList.add('d-none');
+          
+          // Toggle buttons
+          saveBtn.classList.add('d-none');
+          editBtn.classList.remove('d-none');
+        });
+      }
+      document.addEventListener('DOMContentLoaded', function(){
+        setupAddressEditing();
+        setupContactEditing();
+      });
+
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

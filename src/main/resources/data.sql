@@ -182,12 +182,12 @@ ON DUPLICATE KEY UPDATE
   rating_count = VALUES(rating_count);
 
 -- 7. Orders
-INSERT INTO orders (id, order_date, rating, status, total_amount, kitchen_id, user_id) VALUES
-(1, '2023-06-15 19:30:45', 4.5, 'DELIVERED', 765.00, 1, 6),
-(2, '2023-06-16 20:15:30', 4.0, 'DELIVERED', 480.00, 2, 7),
-(3, '2023-06-17 13:45:00', 5.0, 'DELIVERED', 730.00, 3, 8),
-(4, '2023-06-18 21:00:15', 4.5, 'DELIVERED', 580.00, 4, 9),
-(5, '2023-06-19 20:30:00', 4.0, 'DELIVERED', 540.00, 1, 10)
+INSERT INTO orders (id, order_date, rating, status, total_amount, kitchen_id, user_id,delivery_address,contact_number) VALUES
+(1, '2023-06-15 19:30:45', 4.5, 'DELIVERED', 765.00, 1, 6,"456 Connaught Place, Delhi","8177953291"),
+(2, '2023-06-16 20:15:30', 4.0, 'DELIVERED', 480.00, 2, 7,"456 Connaught Place, Delhi","8177953291"),
+(3, '2023-06-17 13:45:00', 5.0, 'DELIVERED', 730.00, 3, 8,"456 Connaught Place, Delhi","8177953291"),
+(4, '2023-06-18 21:00:15', 4.5, 'DELIVERED', 580.00, 4, 9,"456 Connaught Place, Delhi","8177953291"),
+(5, '2023-06-19 20:30:00', 4.0, 'DELIVERED', 540.00, 1, 10,"456 Connaught Place, Delhi","8177953291")
 ON DUPLICATE KEY UPDATE
   order_date = VALUES(order_date),
   rating = VALUES(rating),

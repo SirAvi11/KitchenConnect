@@ -90,7 +90,7 @@
                 data-target="#trackingModal"
                 th:data-order-id="${order.id}"
                 th:data-expected-delivery-time="${order.kitchen.maxDeliveryTime}"
-                th:data-delivery-address="${order.user.address}"
+                th:data-delivery-address="${order.deliveryAddress}"
                 th:data-contact-info="${order.kitchen.phoneNumber}"
                 th:data-status="${order.status}"
                 onclick="loadTrackingModal(this)"

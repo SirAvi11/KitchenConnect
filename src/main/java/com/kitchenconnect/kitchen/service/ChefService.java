@@ -6,5 +6,6 @@ public interface ChefService {
     Chef getChefById(Long id);
     Chef getChefByKitchenId(Long id);
     Chef updateChef(Chef chef);
+    Chef getChefByUserId(Long userID); 
 }
 

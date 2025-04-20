@@ -1,0 +1,126 @@
+:root {
+    --primary-color: #ff5722;
+    --secondary-color: #ff6b6b;
+    --dark-color: #2f3542;
+    --light-color: #f1f2f6;
+}
+
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+}
+
+.section-title {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 30px;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 3px;
+    background: var(--primary-color);
+    bottom: -10px;
+    left: 0;
+}
+
+.feature-card {
+    border: none;
+    border-radius: 10px;
+    transition: transform 0.3s;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    height: 100%;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.food-img {
+    border-radius: 10px;
+    transition: all 0.3s;
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.food-img:hover {
+    transform: scale(1.03);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    padding: 8px 20px;
+    border-radius: 30px;
+}
+
+.btn-primary:hover {
+    background-color: #ff5252;
+    border-color: #ff5252;
+}
+
+.testimonial-card {
+    border-left: 3px solid var(--primary-color);
+    border-radius: 0;
+}
+
+.stats-item {
+    text-align: center;
+    padding: 20px 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+
+.are-you-a-chef {
+    background-color: #ff5722;
+    color: white;
+    padding: 60px 0;
+}
+.are-you-a-chef .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap:200px;
+}
+.are-you-a-chef .text-content {
+    max-width: 50%;
+}
+.are-you-a-chef .image-content {
+    max-width: 50%;
+}
+.are-you-a-chef .image-content img {
+    width: 80%;
+    border-radius: 10px;
+}
+.are-you-a-chef h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.are-you-a-chef p {
+    margin-bottom: 30px;
+}
+.are-you-a-chef .btn-register {
+    background-color: white;
+    color: #f86c42;
+    border: 2px solid white;
+    border-radius: 50px;
+    padding: 10px 20px;
+}

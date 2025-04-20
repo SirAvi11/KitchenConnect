@@ -81,7 +81,7 @@
                                     th:text="${foodItem.isVeg} ? 'Veg' : 'Non-Veg'">
                                 </span>
                             </div>
-                            <div th:id="'cart-button-container-' + ${foodItem.id}">
+                            <div th:id="'inner-cart-button-container-' + ${foodItem.id}">
                                 <th:block th:if="${cartItems.containsKey(foodItem.id)}">
                                     <button class="cart-btn" th:onclick="'decreaseCount(' + ${foodItem.id} + ')'">-</button>
                                     <span th:id="'itemCount-' + ${foodItem.id}" class="count" th:text="${cartItems.get(foodItem.id)}"></span>
