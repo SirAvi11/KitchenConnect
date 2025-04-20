@@ -42,6 +42,22 @@
      Dashboard
     </h2>
     <ul class="list-unstyled">
+        <li class="dashboard-item tab-link" 
+            th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() != 'FOOD_LOVER'}" 
+            data-tab="revenue" 
+            th:classappend="${param.tab == 'revenue'} ? 'active-tab' : ''">
+            <div class="dashboard-icon">
+                <!-- Show money-bill icon for CHEF, chart-line icon for ADMIN -->
+                <i th:if="${session.loggedInUser.getRole().name() == 'CHEF'}" 
+                class="fas fa-money-bill tab-icon" 
+                th:classappend="${param.tab == 'revenue'} ? 'theme-text' : 'text-muted'"></i>
+                <i th:if="${session.loggedInUser.getRole().name() == 'ADMIN'}" 
+                class="fas fa-chart-line tab-icon" 
+                th:classappend="${param.tab == 'revenue'} ? 'theme-text' : 'text-muted'"></i>
+            </div>
+            <!-- Show Revenue text for CHEF, Analytics for ADMIN -->
+            <span th:text="${session.loggedInUser.getRole().name() == 'CHEF'} ? 'Revenue' : 'Analytics'"></span>
+        </li>
         <li class="dashboard-item tab-link" data-tab="personal-information" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'active-tab' : ''">
             <div class="dashboard-icon">
                 <i class="fas fa-user text-dark tab-icon" th:classappend="${param.tab == 'personal-information' or param.tab == null} ? 'theme-text' : 'text-muted'"></i>
@@ -83,12 +99,6 @@
                 <i class="fas fa-book-open text-dark tab-icon" th:classappend="${param.tab == 'manage-menu'} ? 'theme-text' : 'text-muted'"></i>
             </div>
             <span>Update Menu</span>
-        </li>
-        <li class="dashboard-item tab-link" th:if="${session.loggedInUser != null and session.loggedInUser.getRole().name() == 'CHEF'}" data-tab="revenue" th:classappend="${param.tab == 'revenue'} ? 'active-tab' : ''">
-            <div class="dashboard-icon">
-                <i class="fas fa-money-bill text-dark tab-icon" th:classappend="${param.tab == 'revenue'} ? 'theme-text' : 'text-muted'"></i>
-            </div>
-            <span>Revenue</span>
         </li>
     </ul>
 </div>

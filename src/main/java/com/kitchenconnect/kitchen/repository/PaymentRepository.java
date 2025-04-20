@@ -86,5 +86,35 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
         @Param("start") LocalDateTime start,
         @Param("end") LocalDateTime end,
         @Param("status") PaymentStatus status);
+
+        // Platform-wide payment queries (without chef filtering)
+    @Query("SELECT p FROM Payment p WHERE p.paymentDate BETWEEN :start AND :end")
+    List<Payment> findByPaymentDateBetween(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end);
+
+    @Query("SELECT p FROM Payment p WHERE p.paymentDate BETWEEN :start AND :end AND p.paymentStatus = :status")
+    List<Payment> findByPaymentDateBetweenAndPaymentStatus(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
+
+    @Query("SELECT COUNT(p) FROM Payment p WHERE p.paymentDate BETWEEN :start AND :end AND p.paymentStatus = :status")
+    int countByPaymentDateBetweenAndPaymentStatus(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
+
+    @Query("SELECT COUNT(DISTINCT o.user.id) FROM Payment p JOIN p.order o WHERE p.paymentDate BETWEEN :start AND :end AND p.paymentStatus = :status")
+    int countDistinctCustomersByPaymentDateBetweenAndPaymentStatus(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
+
+    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.paymentDate BETWEEN :start AND :end AND p.paymentStatus = :status")
+    double sumAmountByPaymentDateBetweenAndPaymentStatus(
+        @Param("start") LocalDateTime start,
+        @Param("end") LocalDateTime end,
+        @Param("status") PaymentStatus status);
     
 }

@@ -6,12 +6,19 @@ public class PaymentRecordRequest {
     private Long id;
     private Long orderId;
     private Double amount;
+    private Double chefAmount;
     private Double platformFee;
     private String status;
     private LocalDateTime paymentDate;
     
     public Long getId() {
         return id;
+    }
+    public Double getChefAmount() {
+        return chefAmount;
+    }
+    public void setChefAmount(Double chefAmount) {
+        this.chefAmount = chefAmount;
     }
     public void setId(Long id) {
         this.id = id;

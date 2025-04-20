@@ -90,6 +90,7 @@ public class RevenueServiceImpl implements RevenueService {
         dto.setId(payment.getId());
         dto.setOrderId(payment.getOrder().getId());
         dto.setAmount(payment.getAmount());
+        dto.setChefAmount(payment.getChefAmount());
         dto.setPlatformFee(payment.getPlatformFee());
         dto.setStatus(payment.getPaymentStatus().toString());
         dto.setPaymentDate(payment.getPaymentDate());
@@ -133,15 +134,15 @@ public class RevenueServiceImpl implements RevenueService {
             chefId, startDateTime, endDateTime, PaymentStatus.COMPLETED);
         
         if ("weekly".equals(period)) {
-            return calculateDailyRevenue(payments, start, end);
+            return calculateDailyRevenue(payments, start, end, true);
         } else if ("monthly".equals(period)) {
-            return calculateMonthlyRevenue(payments, start, end);
+            return calculateMonthlyRevenue(payments, start, end, true);
         } else {
-            return calculateYearlyRevenue(payments, start, end);
+            return calculateYearlyRevenue(payments, start, end, true);
         }
     }
     
-    private List<Double> calculateDailyRevenue(List<Payment> payments, LocalDate start, LocalDate end) {
+    private List<Double> calculateDailyRevenue(List<Payment> payments, LocalDate start, LocalDate end,boolean isChef) {
         List<Double> dailyRevenue = new ArrayList<>();
         LocalDate current = start;
         
@@ -149,7 +150,7 @@ public class RevenueServiceImpl implements RevenueService {
             final LocalDate date = current;
             double total = payments.stream()
                 .filter(p -> p.getPaymentDate().toLocalDate().equals(date))
-                .mapToDouble(Payment::getAmount)
+                .mapToDouble(p -> isChef ? p.getChefAmount() : p.getPlatformFee())
                 .sum();
             dailyRevenue.add(total);
             current = current.plusDays(1);
@@ -158,7 +159,7 @@ public class RevenueServiceImpl implements RevenueService {
         return dailyRevenue;
     }
     
-    private List<Double> calculateMonthlyRevenue(List<Payment> payments, LocalDate start, LocalDate end) {
+    private List<Double> calculateMonthlyRevenue(List<Payment> payments, LocalDate start, LocalDate end, boolean isChef) {
         List<Double> monthlyRevenue = new ArrayList<>();
         LocalDate current = start.with(TemporalAdjusters.firstDayOfMonth());
         
@@ -172,7 +173,7 @@ public class RevenueServiceImpl implements RevenueService {
                     return paymentDate.getMonthValue() == month && 
                            paymentDate.getYear() == year;
                 })
-                .mapToDouble(Payment::getAmount)
+                .mapToDouble(p -> isChef ? p.getChefAmount() : p.getPlatformFee())
                 .sum();
             
             monthlyRevenue.add(total);
@@ -182,7 +183,7 @@ public class RevenueServiceImpl implements RevenueService {
         return monthlyRevenue;
     }
     
-    private List<Double> calculateYearlyRevenue(List<Payment> payments, LocalDate start, LocalDate end) {
+    private List<Double> calculateYearlyRevenue(List<Payment> payments, LocalDate start, LocalDate end, boolean isChef) {
         List<Double> yearlyRevenue = new ArrayList<>();
         int startYear = start.getYear();
         int endYear = end.getYear();
@@ -191,7 +192,7 @@ public class RevenueServiceImpl implements RevenueService {
             final int y = year;
             double total = payments.stream()
                 .filter(p -> p.getPaymentDate().getYear() == y)
-                .mapToDouble(Payment::getAmount)
+                .mapToDouble(p -> isChef ? p.getChefAmount() : p.getPlatformFee())
                 .sum();
             yearlyRevenue.add(total);
         }
@@ -246,11 +247,117 @@ public class RevenueServiceImpl implements RevenueService {
             return currentTotal == 0 ? 0 : 100;
         }
         
-        return ((currentTotal - previousTotal) / previousTotal) * 100;
+        double percentageChange = ((currentTotal - previousTotal) / previousTotal) * 100;
+    
+        // Round to 2 decimal places
+        return Math.round(percentageChange * 100.0) / 100.0;
     }
     
     @Override
     public double calculateEarnings(List<Double> values) {
-        return values.stream().mapToDouble(Double::doubleValue).sum();
+        double sum = values.stream().mapToDouble(Double::doubleValue).sum();
+        return Math.round(sum * 100.0) / 100.0;
+    }
+
+    @Override
+    public RevenueData getPlatformRevenueData(String period, String startDateStr, String endDateStr) {
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+        
+        RevenueData data = new RevenueData();
+        List<String> labels = generateDateLabels(period, startDate, endDate);
+        data.setLabels(labels.stream()
+            .map(date -> date.toString())
+            .collect(Collectors.toList()));
+        
+        List<Double> values = getPlatformRevenueValues(period, startDate, endDate);
+        data.setValues(values);
+        
+        data.setEarnings(calculateEarnings(values));
+        data.setProductSales(getPlatformProductSales(period, startDate, endDate));
+        data.setVisitors(getPlatformVisitorCount(period, startDate, endDate));
+        
+        double percentageChange = calculatePlatformPercentageChange(period, startDate, endDate);
+        data.setPercentageChange(Math.abs(percentageChange));
+        data.setIncrease(percentageChange >= 0);
+        
+        return data;
+    }
+
+    @Override
+    public List<PaymentRecordRequest> getPlatformPaymentsBetweenDates(LocalDate startDate, LocalDate endDate) {
+        return paymentRepository.findByPaymentDateBetween(
+            startDate.atStartOfDay(),
+            endDate.atTime(23, 59, 59)
+        ).stream()
+        .map(this::convertToDto)
+        .collect(Collectors.toList());
+    }
+
+    // Helper methods for platform revenue calculations
+    private List<Double> getPlatformRevenueValues(String period, LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(23, 59, 59);
+        
+        List<Payment> payments = paymentRepository.findByPaymentDateBetweenAndPaymentStatus(
+            startDateTime, endDateTime, PaymentStatus.COMPLETED);
+        
+        if ("weekly".equals(period)) {
+            return calculateDailyRevenue(payments, start, end, false);
+        } else if ("monthly".equals(period)) {
+            return calculateMonthlyRevenue(payments, start, end, false);
+        } else {
+            return calculateYearlyRevenue(payments, start, end, false);
+        }
+    }
+
+    private int getPlatformProductSales(String period, LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(23, 59, 59);
+        
+        return paymentRepository.countByPaymentDateBetweenAndPaymentStatus(
+            startDateTime, endDateTime, PaymentStatus.COMPLETED);
+    }
+
+    private int getPlatformVisitorCount(String period, LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(23, 59, 59);
+        
+        return paymentRepository.countDistinctCustomersByPaymentDateBetweenAndPaymentStatus(
+            startDateTime, endDateTime, PaymentStatus.COMPLETED);
+    }
+
+    private double calculatePlatformPercentageChange(String period, LocalDate start, LocalDate end) {
+        LocalDateTime currentStart = start.atStartOfDay();
+        LocalDateTime currentEnd = end.atTime(23, 59, 59);
+        
+        double currentTotal = paymentRepository.sumAmountByPaymentDateBetweenAndPaymentStatus(
+            currentStart, currentEnd, PaymentStatus.COMPLETED);
+        
+        LocalDateTime previousStart;
+        LocalDateTime previousEnd;
+        
+        if ("weekly".equals(period)) {
+            previousStart = currentStart.minusWeeks(1);
+            previousEnd = currentEnd.minusWeeks(1);
+        } else if ("monthly".equals(period)) {
+            previousStart = currentStart.minusMonths(1);
+            previousEnd = currentEnd.minusMonths(1);
+        } else {
+            previousStart = currentStart.minusYears(1);
+            previousEnd = currentEnd.minusYears(1);
+        }
+        
+        double previousTotal = paymentRepository.sumAmountByPaymentDateBetweenAndPaymentStatus(
+            previousStart, previousEnd, PaymentStatus.COMPLETED);
+        
+        if (previousTotal == 0) {
+            return currentTotal == 0 ? 0 : 100;
+        }
+        
+        double percentageChange = ((currentTotal - previousTotal) / previousTotal) * 100;
+    
+        // Round to 2 decimal places
+        return Math.round(percentageChange * 100.0) / 100.0;
     }
 }

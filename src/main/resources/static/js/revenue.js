@@ -3,6 +3,8 @@
 let revenueChart;
 let currentStartDate, currentEndDate;
 let currentPeriod = 'weekly';
+let userRole = document.getElementById("loggedInUser").value;
+let role = userRole == 'ADMIN' ? 'platform' : "chef";
 
 // Initialize the dashboard
 document.addEventListener('DOMContentLoaded', function() {
@@ -77,7 +79,7 @@ function initializeDashboard() {
                     displayColors: true,
                     callbacks: {
                         label: function(context) {
-                            return '$' + context.parsed.y.toLocaleString();
+                            return '₹' + context.parsed.y.toLocaleString();
                         }
                     }
                 }
@@ -124,7 +126,7 @@ function initializeDashboard() {
                         },
                         padding: 10,
                         callback: function(value) {
-                            return '$' + value.toLocaleString();
+                            return '₹' + value.toLocaleString();
                         }
                     }
                 }
@@ -142,6 +144,106 @@ function initializeDashboard() {
     
     // Fetch initial data
     fetchRevenueData();
+}
+
+function fetchRevenueData() {
+    // Format dates for display
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    document.getElementById('dateRange').textContent = 
+        currentStartDate.toLocaleDateString('en-US', options) + ' - ' + 
+        currentEndDate.toLocaleDateString('en-US', options);
+
+    // Format dates for API
+    const startDateStr = formatDateForAPI(currentStartDate);
+    const endDateStr = formatDateForAPI(currentEndDate);
+    
+    // Fetch data from backend
+    fetch(`/revenue/${role}?period=${currentPeriod}&startDate=${startDateStr}&endDate=${endDateStr}`)
+        .then(response => response.json())
+        .then(data => {
+            updateChart(data);
+            updateMetrics(data);
+        })
+        .catch(error => console.error('Error fetching revenue data:', error));
+}
+
+function updateChart(data) {
+    // Convert ISO strings to Date objects with proper time
+    const dateObjects = data.labels.map(label => {
+        // Add noon time to avoid timezone issues
+        return new Date(label + 'T12:00:00');
+    });
+
+    // Update chart data
+    revenueChart.data.labels = dateObjects;
+    revenueChart.data.datasets[0].data = data.values;
+    
+    // Configure time scale based on period
+    const timeScale = revenueChart.options.scales.x;
+    timeScale.time.unit = currentPeriod === 'yearly' ? 'month' : 
+                            currentPeriod === 'monthly' ? 'week' : 'day';
+    
+    // For weekly view, force daily ticks with proper formatting
+    if (currentPeriod === 'weekly') {
+        timeScale.time.displayFormats.day = 'MMM d'; // Format as "Mar 31"
+        timeScale.ticks = {
+            callback: function(value) {
+                // Custom formatter to ensure proper dates
+                const date = new Date(value);
+                return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+            }
+        };
+    }
+    
+    // Set explicit bounds for the axis
+    timeScale.min = dateObjects[0];
+    timeScale.max = dateObjects[dateObjects.length - 1];
+    
+    revenueChart.update();
+}
+
+function updateMetrics(data) {
+    // Update earnings
+    document.getElementById('earningsValue').textContent = 
+    '₹ ' + data.earnings.toFixed(2);
+    
+    // Update product sales
+    document.getElementById('productSalesValue').innerHTML = 
+        data.productSales.toLocaleString() + ' <span class="small text-muted">Items</span>';
+    
+    // Update visitors
+    document.getElementById('visitorsValue').innerHTML = 
+        data.visitors.toLocaleString() + ' <span class="small text-muted">People</span>';
+    
+    // Update trends
+    updateTrendIndicator(
+        'earningsTrend', 
+        'earningsComparison', 
+        data.percentageChange, 
+        data.isIncrease,
+        'Earnings'
+    );
+    
+    // Note: You might want to add separate percentage changes for sales and visitors
+    // For now using the same as earnings
+    updateTrendIndicator(
+        'salesTrend', 
+        'salesComparison', 
+        data.percentageChange, 
+        data.isIncrease,
+        'Sales'
+    );
+    
+    updateTrendIndicator(
+        'visitorsTrend', 
+        'visitorsComparison', 
+        data.percentageChange, 
+        data.isIncrease,
+        'Visitors'
+    );
 }
 
 function resetDateRange() {
@@ -187,108 +289,8 @@ function navigatePeriod(direction) {
     fetchPaymentRecords();
 }
 
-function fetchRevenueData() {
-    // Format dates for display
-    const options = { year: 'numeric', month: 'short', day: 'numeric' };
-    document.getElementById('dateRange').textContent = 
-        currentStartDate.toLocaleDateString('en-US', options) + ' - ' + 
-        currentEndDate.toLocaleDateString('en-US', options);
-    
-    // Format dates for API
-    const startDateStr = formatDateForAPI(currentStartDate);
-    const endDateStr = formatDateForAPI(currentEndDate);
-    
-    // Fetch data from backend
-    fetch(`/revenue/data?period=${currentPeriod}&startDate=${startDateStr}&endDate=${endDateStr}`)
-        .then(response => response.json())
-        .then(data => {
-            updateChart(data);
-            updateMetrics(data);
-        })
-        .catch(error => console.error('Error fetching revenue data:', error));
-}
-
 function formatDateForAPI(date) {
     return date.toISOString().split('T')[0];
-}
-
-function updateChart(data) {
-    // Convert ISO strings to Date objects with proper time
-    const dateObjects = data.labels.map(label => {
-        // Add noon time to avoid timezone issues
-        return new Date(label + 'T12:00:00');
-    });
-
-    // Update chart data
-    revenueChart.data.labels = dateObjects;
-    revenueChart.data.datasets[0].data = data.values;
-    
-    // Configure time scale based on period
-    const timeScale = revenueChart.options.scales.x;
-    timeScale.time.unit = currentPeriod === 'yearly' ? 'month' : 
-                            currentPeriod === 'monthly' ? 'week' : 'day';
-    
-    // For weekly view, force daily ticks with proper formatting
-    if (currentPeriod === 'weekly') {
-        timeScale.time.displayFormats.day = 'MMM d'; // Format as "Mar 31"
-        timeScale.ticks = {
-            callback: function(value) {
-                // Custom formatter to ensure proper dates
-                const date = new Date(value);
-                return date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric'
-                });
-            }
-        };
-    }
-    
-    // Set explicit bounds for the axis
-    timeScale.min = dateObjects[0];
-    timeScale.max = dateObjects[dateObjects.length - 1];
-    
-    revenueChart.update();
-}
-
-function updateMetrics(data) {
-    // Update earnings
-    document.getElementById('earningsValue').textContent = 
-        '$ ' + data.earnings.toLocaleString('en-US', {maximumFractionDigits: 2});
-    
-    // Update product sales
-    document.getElementById('productSalesValue').innerHTML = 
-        data.productSales.toLocaleString() + ' <span class="small text-muted">Items</span>';
-    
-    // Update visitors
-    document.getElementById('visitorsValue').innerHTML = 
-        data.visitors.toLocaleString() + ' <span class="small text-muted">People</span>';
-    
-    // Update trends
-    updateTrendIndicator(
-        'earningsTrend', 
-        'earningsComparison', 
-        data.percentageChange, 
-        data.isIncrease,
-        'Earnings'
-    );
-    
-    // Note: You might want to add separate percentage changes for sales and visitors
-    // For now using the same as earnings
-    updateTrendIndicator(
-        'salesTrend', 
-        'salesComparison', 
-        data.percentageChange, 
-        data.isIncrease,
-        'Sales'
-    );
-    
-    updateTrendIndicator(
-        'visitorsTrend', 
-        'visitorsComparison', 
-        data.percentageChange, 
-        data.isIncrease,
-        'Visitors'
-    );
 }
 
 function updateTrendIndicator(elementId, comparisonId, percentage, isIncrease, metricName) {
@@ -313,7 +315,7 @@ function fetchPaymentRecords() {
     const startDateStr = formatDateForAPI(currentStartDate);
     const endDateStr = formatDateForAPI(currentEndDate);
     
-    fetch(`/revenue/payments?startDate=${startDateStr}&endDate=${endDateStr}`)
+    fetch(`/revenue/${role}-payments?startDate=${startDateStr}&endDate=${endDateStr}`)
         .then(response => response.json())
         .then(data => {
             renderPaymentRecords(data);
@@ -349,8 +351,9 @@ function renderPaymentRecords(payments) {
         row.innerHTML = `
             <td>${formattedDate}</td>
             <td>${payment.orderId}</td>
-            <td>₹${payment.amount.toFixed(2)}</td>
+            <td>₹${payment.chefAmount.toFixed(2)}</td>
             <td>₹${payment.platformFee.toFixed(2)}</td>
+            <td>₹${payment.amount.toFixed(2)}</td>
             <td><span class="status-badge ${statusClass}">${payment.status}</span></td>
         `;
         

@@ -9,6 +9,7 @@ import com.kitchenconnect.kitchen.DTO.RevenueData;
 public interface RevenueService {
 
     RevenueData getRevenueData(String period, String startDateStr, String endDateStr);
+    RevenueData getPlatformRevenueData(String period, String startDateStr, String endDateStr);
     List<String> generateDateLabels(String period, LocalDate start, LocalDate end);
     List<Double> getRevenueValues(String period, LocalDate start, LocalDate end, Long chefId);
     int getProductSales(String period, LocalDate start, LocalDate end, Long chefId);
@@ -16,4 +17,5 @@ public interface RevenueService {
     double calculatePercentageChange(String period, LocalDate start, LocalDate end, Long chefId);
     double calculateEarnings(List<Double> values);
     List<PaymentRecordRequest> getPaymentsBetweenDates(LocalDate startDate, LocalDate endDate);
+    List<PaymentRecordRequest> getPlatformPaymentsBetweenDates(LocalDate startDate, LocalDate endDate);
 }

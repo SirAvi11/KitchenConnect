@@ -23,7 +23,7 @@ public class RevenueController {
     @Autowired
     private RevenueService revenueService;
     
-    @GetMapping("/data")
+    @GetMapping("/chef")
     @ResponseBody
     public RevenueData getRevenueData(
             @RequestParam String period,
@@ -33,7 +33,17 @@ public class RevenueController {
         return revenueService.getRevenueData(period, startDate, endDate);
     }
 
-    @GetMapping("/payments")
+    @GetMapping("/platform")
+    @ResponseBody
+    public RevenueData getPlatformRevenueData(
+            @RequestParam String period,
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+        
+        return revenueService.getPlatformRevenueData(period, startDate, endDate);
+    }
+
+    @GetMapping("/chef-payments")
     public ResponseEntity<List<PaymentRecordRequest>> getPaymentRecords(
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
@@ -41,4 +51,14 @@ public class RevenueController {
         List<PaymentRecordRequest> payments = revenueService.getPaymentsBetweenDates(startDate, endDate);
         return ResponseEntity.ok(payments);
     }
+
+    @GetMapping("/platform-payments")
+    public ResponseEntity<List<PaymentRecordRequest>> getPlatformPaymentsRecords(
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        
+        List<PaymentRecordRequest> payments = revenueService.getPlatformPaymentsBetweenDates(startDate, endDate);
+        return ResponseEntity.ok(payments);
+    }
+    
 }

@@ -8,21 +8,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
-    
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h4 class="h4 font-weight-bold">Revenue</h4>
-        <select id="periodSelect" class="form-control rounded-full" style="width: auto;">
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-        </select>
-    </div>
+
+    <!-- Include admin overview fragment if user is admin -->
+    <div  th:replace="~{Admin/admin-overview:: admin-overview}"></div>
     
     <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h6 font-weight-semibold">
-                <strong>Report</strong>
-            </h2>
+            <h4 class="h4 font-weight-bold text-gray-800">Revenue Report</h4>
             <div class="d-flex align-items-center">
                 <i id="prevPeriod" class="fas fa-chevron-left text-muted mr-2 cursor-pointer"></i>
                 <i class="fas fa-calendar-alt text-muted mr-2"></i>
@@ -31,6 +23,11 @@
                 </span>
                 <i id="nextPeriod" class="fas fa-chevron-right text-muted ml-2 cursor-pointer"></i>
             </div>
+            <select id="periodSelect" class="form-control rounded-full" style="width: auto;">
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
+            </select>
         </div>
         <div class="position-relative">
             <div class="chart-container" style="position: relative; height:400px; width:100%">
@@ -43,7 +40,7 @@
         <div class="col-md-4 mb-4">
             <div class="bg-white p-4 rounded-lg shadow-sm">
                 <h3 class="h6 font-weight-semibold">Earnings</h3>
-                <p id="earningsValue" class="h4 font-weight-bold mt-2">$ 0.00</p>
+                <p id="earningsValue" class="h4 font-weight-bold mt-2">₹ 0.00</p>
                 <div class="d-flex align-items-center mt-2">
                     <span id="earningsTrend" class="py-1 px-2 rounded-full small"></span>
                     <span id="earningsComparison" class="text-muted ml-2"></span>
@@ -74,9 +71,7 @@
 
     <div class="bg-white p-4 rounded-lg shadow-sm mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h6 font-weight-semibold">
-                <strong>Payment Records</strong>
-            </h2>
+            <h4 class="h4 font-weight-bold text-gray-800">Payment Records</h4>
         </div>
         <div class="table-responsive">
             <table class="table table-hover" id="paymentRecordsTable">
@@ -86,6 +81,7 @@
                         <th>Order ID</th>
                         <th>Credited</th>
                         <th>Platform Fee</th>
+                        <th>Total</th>
                         <th>Status</th>
                     </tr>
                 </thead>
