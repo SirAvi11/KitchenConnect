@@ -159,14 +159,46 @@
                 }
             });
 
-            $('#registerForm').on('submit', function (e) {
-                let password = $('#regPassword').val();
-                let confirmPassword = $('#regConfirmPassword').val();
-                if (password !== confirmPassword) {
+            $('#registerForm form').on('submit', function (e) {
+                const username = $('#regUsername').val().trim();
+                const firstname = $('#regFirstname').val().trim();
+                const lastname = $('#regLastname').val().trim();
+                const email = $('#regEmail').val().trim();
+                const password = $('#regPassword').val();
+                const confirmPassword = $('#regConfirmPassword').val();
+                const address = $('#regAddress').val().trim();
+                const phone = $('#regPhone').val().trim();
+            
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const phoneRegex = /^\d{10,}$/;
+            
+                if (!username || !firstname || !lastname || !email || !password || !confirmPassword || !address || !phone) {
+                    alert('Please fill in all required fields.');
                     e.preventDefault();
-                    alert('Passwords do not match.');
+                    return;
                 }
+            
+                if (!emailRegex.test(email)) {
+                    alert('Please enter a valid email address.');
+                    e.preventDefault();
+                    return;
+                }
+            
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    e.preventDefault();
+                    return;
+                }
+            
+                if (!phoneRegex.test(phone)) {
+                    alert('Please enter a valid 10-digit phone number.');
+                    e.preventDefault();
+                    return;
+                }
+            
+                // All validations passed
             });
+            
         </script>
 </body>
 
