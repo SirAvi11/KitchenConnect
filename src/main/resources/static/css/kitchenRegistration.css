@@ -19,6 +19,12 @@ body{
   float:right;
 }
 
+.is-invalid {
+  border: 2px dashed red !important;
+  border-radius: 0.25rem !important;
+}
+
+
 li:hover{
   cursor: pointer;
 }

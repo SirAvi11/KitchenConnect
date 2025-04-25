@@ -72,7 +72,7 @@
                             <div class="form-group">
                                 <label class="font-weight-bold text-dark" for="Kitchen-name">Kitchen name</label>
                                 <p class="text-muted small mb-2">Customers will see this name on KitchenConnect</p>
-                                <input th:field="*{kitchenName}" class="form-control" id="Kitchen-name" placeholder="Kitchen name*" type="text" />
+                                <input th:field="*{kitchenName}" class="form-control" id="Kitchen-name" placeholder="Kitchen name*" type="text" required/>
                             </div>
                             <div class="form-group">
                                 <label class="font-weight-bold text-dark" for="kitchen-description">Kitchen Description</label>
@@ -85,27 +85,27 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold text-dark" for="building-name">Shop/Building No.</label>
-                                    <input th:field="*{shopName}" id="building-name" class="form-control" placeholder="Shop name*" type="text" />
+                                    <input th:field="*{shopName}" id="building-name" class="form-control" placeholder="Shop name*" type="text" required/>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold text-dark" for="building-floor">Floor/Tower</label>
-                                    <input th:field="*{floor}" id="building-floor" class="form-control" placeholder="Floor*" type="text" />
+                                    <input th:field="*{floor}" id="building-floor" class="form-control" placeholder="Floor*" type="text" required/>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold text-dark" for="area-name">Area/Sector/Locality</label>
-                                    <input th:field="*{area}" id="area-name" class="form-control" placeholder="Area/Sector/Locality*" type="text" />
+                                    <input th:field="*{area}" id="area-name" class="form-control" placeholder="Area/Sector/Locality*" type="text" required/>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold text-dark" for="city-name">City</label>
-                                    <input th:field="*{city}" id="city-name" class="form-control" placeholder="City*" type="text" />
+                                    <input th:field="*{city}" id="city-name" class="form-control" placeholder="City*" type="text" required/>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold text-dark" for="owner-phone">Phone number</label>
-                                    <input th:field="*{phoneNumber}" id="owner-phone" class="form-control" placeholder="Phone number*" type="text" />
+                                    <input th:field="*{phoneNumber}" id="owner-phone" class="form-control" placeholder="Phone number*" type="text" required/>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                                 <p class="text-muted">
                                     jpeg, png or jpg formats up-to 5MB
                                 </p>
-                                <input th:field="*{menuImages}" name="menuImages" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple />
+                                <input th:field="*{menuImages}" name="menuImages" type="file" id="menuFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'menu-images-container', 10, 100, 100)" multiple required/>
                             </div>
                             <div class="image-container" id="menu-images-container">
                             </div>
@@ -152,7 +152,7 @@
                                 <p class="text-muted">
                                     jpeg, png or jpg formats up-to 5MB
                                 </p>
-                                <input th:field="*{kitchenImage}" type="file" id="kitchenFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'kitchen-image-container')" />
+                                <input th:field="*{kitchenImage}" type="file" id="kitchenFileInput" class="d-none" accept="image/jpeg, image/png, image/jpg" onchange="previewImage(event, 'kitchen-image-container')" required/>
                             </div>
                             <div class="image-container" id="kitchen-image-container">
                             </div>
@@ -206,7 +206,7 @@
                                 <a href="#" class="text-primary" style="text-decoration: underline;" id="show-more">Show more</a>
                             </div>
                             <!-- Hidden input to store selected cuisines -->
-                            <input type="hidden" th:field="*{selectedCuisines}" id="selectedCuisines" />
+                            <input type="hidden" th:field="*{selectedCuisines}" id="selectedCuisines"/>
                         </div>
                         <div class="bg-white shadow-sm rounded-lg p-4 mb-4">
                             <h1 class="h4 font-weight-bold mb-3">
@@ -217,7 +217,7 @@
                             </p>
                             <div class="d-flex flex-wrap mb-3">
                                 <label class="day-pill mr-2 mb-2">
-                                    <input type="checkbox" value="Monday" name="openDays"checked>
+                                    <input type="checkbox" value="Monday" name="openDays" checked>
                                     <span>Monday</span>
                                 </label>
                                 <label class="day-pill mr-2 mb-2">
@@ -250,12 +250,12 @@
                             </h5>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <select class="form-control" th:field="*{openTime}">
+                                    <select class="form-control" th:field="*{openTime}" required>
                                         <option value="Open time">Open time</option>
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <select class="form-control" th:field="*{closeTime}">
+                                    <select class="form-control" th:field="*{closeTime}" required>
                                         <option value="Close time">Close time</option>
                                     </select>
                                 </div>
@@ -263,7 +263,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label class="font-weight-bold text-dark" for="delivery-fees">Approximate Delivery Fees (Rs)</label>
-                                    <input th:field="*{deliveryFees}" id="delivery-fees" class="form-control" placeholder="Delivery Fees" type="text" />
+                                    <input th:field="*{deliveryFees}" id="delivery-fees" class="form-control" placeholder="Delivery Fees" type="text" required/>
                                 </div>
                             </div>
                         </div>
@@ -289,11 +289,11 @@
                             <div class="form-row mb-4">
                                 <div class="col">
                                     <label class="font-weight-bold text-dark" for="fssai-number">FSSAI Number</label>
-                                    <input th:field="*{fssaiNumber}" id ="fssai-number" type="text" class="form-control" placeholder="FSSAI number*"* >
+                                    <input th:field="*{fssaiNumber}" id ="fssai-number" type="text" class="form-control" placeholder="FSSAI number*"* required>
                                 </div>
                                 <div class="col">
                                     <label class="font-weight-bold text-dark" for="expiry-date">Expiry date</label>
-                                    <input th:field="*{fssaiExpiryDate}" id="expiry-date" type="text" class="form-control" placeholder="Expiry date*" >
+                                    <input th:field="*{fssaiExpiryDate}" id="expiry-date" type="text" class="form-control" placeholder="Expiry date*" required>
                                 </div>
                             </div>
                             <div class="upload-area mb-4" onclick="document.getElementById('fssaiUpload').click()">
@@ -304,7 +304,7 @@
                                 <p class="text-muted">
                                     jpeg, png or pdf formats up-to 5MB
                                 </p>
-                                <input th:field="*{fssaiDocument}" type="file" id="fssaiUpload" class="d-none" accept=".jpg, .png, .pdf" onchange="previewImage(event, 'fssai-image-container')" />
+                                <input th:field="*{fssaiDocument}" type="file" id="fssaiUpload" class="d-none" accept=".jpg, .png, .pdf" onchange="previewImage(event, 'fssai-image-container')" required/>
                             </div>
                             <div class="image-container" id="fssai-image-container">
                             </div>
@@ -319,7 +319,7 @@
                             <div class="form-row mb-4">
                                 <div class="col">
                                     <label class="font-weight-bold text-dark" for="pan-number">PAN Number</label>
-                                    <input th:field="*{panNumber}" id ="pan-number" type="text" class="form-control" placeholder="PAN number*"* >
+                                    <input th:field="*{panNumber}" id ="pan-number" type="text" class="form-control" placeholder="PAN number*"* required>
                                 </div>
                             </div>
                             <div class="upload-area mb-4" onclick="document.getElementById('panUpload').click()">
@@ -330,7 +330,7 @@
                                 <p class="text-muted">
                                     jpeg, png or pdf formats up-to 5MB
                                 </p>
-                                <input th:field="*{panDocument}" type="file" id="panUpload" class="d-none" accept=".jpeg, .png, .pdf" onchange="previewImage(event, 'pan-image-container')" />
+                                <input th:field="*{panDocument}" type="file" id="panUpload" class="d-none" accept=".jpeg, .png, .pdf" onchange="previewImage(event, 'pan-image-container')" required/>
                             </div>
                             <div class="image-container" id="pan-image-container">
                             </div>
@@ -353,7 +353,7 @@
                                 <p class="text-gray-700">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                             </div>
                             <div class="form-check">
-                                <input th:field="*{acceptTerms}" type="checkbox" class="form-check-input" id="acceptTerms">
+                                <input th:field="*{acceptTerms}" type="checkbox" class="form-check-input" id="acceptTerms" required>
                                 <label class="form-check-label" for="acceptTerms">I accept the terms and conditions</label>
                             </div>
                         </div>
@@ -471,7 +471,7 @@
 
             const isValid = validateForm(currentContent.getAttribute("id"));
 
-            if(true){
+            if(isValid){
                 let nextContent = currentContent.nextElementSibling;
 
                 // If there is no next content, return (last tab)
@@ -559,7 +559,7 @@
                     let target = this.getAttribute("data-tab");
                     const currentContent = document.querySelector(".tab-content.active-content");
                     const isValid = validateForm(currentContent.getAttribute("id"));
-                    if(true){
+                    if(isValid){
                         activateTab(target);
                     }
                 });
@@ -633,10 +633,18 @@
                 if (input.hasAttribute('required') && input.value.trim() === '') {
                     // If required and empty, add an error message (or style)
                     isValid = false;
-                    input.classList.add('is-invalid'); // Example of marking the field as invalid
+                    if(input.classList.contains('d-none')){
+                        input.parentElement.classList.add('is-invalid');
+                    }else{
+                        input.classList.add('is-invalid'); // Example of marking the field as invalid
+                    }
                 } else {
                     // Remove any invalid class if the field is valid
-                    input.classList.remove('is-invalid');
+                    if(input.classList.contains('d-none')){
+                        input.parentElement.classList.remove('is-invalid');
+                    }else{
+                        input.classList.remove('is-invalid');
+                    }
                 }        
             });
         
